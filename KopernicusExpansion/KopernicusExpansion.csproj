@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C5172BAC-8DE1-465F-8AE9-C91F2CF4D6B7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>KopernicusExpansion</RootNamespace>
+    <AssemblyName>KopernicusExpansion</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="afterbuild_export.bat" />
+        <Command type="AfterBuild" command="afterbuild_run.bat" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\References\1.0.4\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\References\1.0.4\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Kopernicus">
+      <HintPath>..\..\..\..\KSP\ksp_win_1.0_B_planet_testing\KSP_win\GameData\Kopernicus\Plugins\Kopernicus.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Textures.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Textures.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\RuntimeUtility.cs" />
+    <Compile Include="Resources\Shaders.Designer.cs">
+      <DependentUpon>Shaders.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Utility\ImprovedPerlinNoise.cs" />
+    <Compile Include="Configuration\ProceduralGasGiantLoader.cs" />
+    <Compile Include="Configuration\RefractiveAtmosphereLoader.cs" />
+    <Compile Include="KopernicusExpansionSettings.cs" />
+    <Compile Include="Utility\IngameEditors.cs" />
+    <Compile Include="Utility\Utils.cs" />
+    <Compile Include="Configuration\EmissiveEffectsLoader.cs" />
+    <Compile Include="Configuration\CometTailsLoader.cs" />
+    <Compile Include="Configuration\Parser\MuParser.cs" />
+    <Compile Include="Utility\Geometry\UVSphere.cs" />
+    <Compile Include="Utility\Geometry\Teardrop.cs" />
+    <Compile Include="Utility\Geometry\InvertNormals.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="Resources\CometTail.shader" />
+    <None Include="Resources\ProceduralGasGiantEditorIcon.png">
+      <DependentUpon>Textures.resx</DependentUpon>
+    </None>
+    <None Include="Resources\Compiled-CometTail.shader">
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EmissiveQuad.shader" />
+    <None Include="Resources\EmissiveScaled.shader" />
+    <None Include="Resources\Compiled-EmissiveScaled.shader">
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </None>
+    <None Include="Resources\Compiled-EmissiveQuad.shader">
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </None>
+    <None Include="Resources\Compiled-RefractiveAtmosphere.shader">
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </None>
+    <None Include="Resources\RefractiveAtmosphere.shader" />
+    <None Include="Resources\RefractiveAtmosphereNormals.png">
+      <DependentUpon>Textures.resx</DependentUpon>
+    </None>
+    <None Include="Resources\Compiled-ProceduralGasGiant.shader">
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </None>
+    <None Include="Resources\ProceduralGasGiant.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Shaders.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Shaders.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Textures.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Textures.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CometTailEditorIcon.png">
+      <DependentUpon>Textures.resx</DependentUpon>
+    </None>
+  </ItemGroup>
+</Project>
