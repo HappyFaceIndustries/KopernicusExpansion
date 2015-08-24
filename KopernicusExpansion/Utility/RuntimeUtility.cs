@@ -15,6 +15,13 @@ namespace KopernicusExpansion.Utility
 
 		void Start()
 		{
+			//don't startup when editors are off
+			if (!Settings.AllowEditors)
+			{
+				DestroyImmediate (this);
+				return;
+			}
+
 			DontDestroyOnLoad (this);
 
 			foreach (var body in PSystemManager.Instance.localBodies)
