@@ -1,6 +1,6 @@
 #Kopernicus Expansion
 
-Forum thread: ---
+Forum thread: [http://forum.kerbalspaceprogram.com/threads/132390](http://forum.kerbalspaceprogram.com/threads/132390)
 
 KopernicusExpansion is an expansion to Kopernicus
 
