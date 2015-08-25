@@ -30,45 +30,6 @@ namespace KopernicusExpansion.Utility
 					pqsPlanets.Add (body);
 			}
 
-//			string scaledShader = System.IO.File.ReadAllText (KSPUtil.ApplicationRootPath + "GameData/KopernicusExpansion/Compiled-EmissiveScaled.shader");
-//			string quadShader = System.IO.File.ReadAllText (KSPUtil.ApplicationRootPath + "GameData/KopernicusExpansion/Compiled-EmissiveQuad.shader");
-//
-//			var quadMaterial = new Material (quadShader);
-//			quadMaterial.SetColor ("_Color", new Color (1.000f, 0.212f, 0.976f));
-//			quadMaterial.SetFloat ("_Brightness", 1.4f);
-//			quadMaterial.SetFloat ("_Transparency", 0.6f);
-//
-//			var pqsValklipperOcean = PSystemManager.Instance.localBodies.Find (p => p.name == "Valklipper").pqsController.ChildSpheres[0];
-//			var gameobj = new GameObject ("EmissiveOceanFX");
-//			var mod = gameobj.AddComponent<PQSMod_EmissiveOceanFX> ();
-//			mod.sphere = pqsValklipperOcean;
-//			mod.modEnabled = true;
-//			mod.order = 1000000;
-//			mod.EmissiveMaterial = quadMaterial;
-//			gameobj.transform.parent = pqsValklipperOcean.transform;
-//			gameobj.layer = Kopernicus.Constants.GameLayers.LocalSpace;
-//			pqsValklipperOcean.RebuildSphere ();
-//
-//			var scaledValklipper = PSystemManager.Instance.scaledBodies.Find (p => p.name == "Valklipper");
-//			maskTexture = GameDatabase.Instance.GetTexture ("KopernicusExpansion/ValklipperOceanMask", false);
-//			if (scaledValklipper != null)
-//			{
-//				var mat = scaledValklipper.renderer.sharedMaterial;
-//				var emMat = new Material (scaledShader);
-//				emMat.SetTexture ("_EmissiveMap", maskTexture);
-//				emMat.SetTextureScale ("_EmissiveMap", Vector2.one);
-//				emMat.SetTextureOffset ("_EmissiveMap", Vector2.zero);
-//				emMat.SetColor ("_Color", new Color (1.000f, 0.212f, 0.976f));
-//				emMat.SetFloat ("_Brightness", 1.25f);
-//				emMat.SetFloat ("_Transparency", 0.75f);
-//				scaledValklipper.renderer.materials = new Material[]{ mat, emMat };
-//			}
-//			else
-//				Debug.LogError ("didn't find Valklipper");
-
-			//note: there are apparently null entries in this list for some reason, hence the check
-			//FindObjectOfType<AssetBase>().textures.Where(t => t != null).ToList().ForEach(t => Debug.Log("AssetBase: " + t.name));
-
 			if (!buttonAdded) {
 				ApplicationLauncher.Instance.AddModApplication (delegate {
 					showWindow = true;
@@ -242,6 +203,12 @@ namespace KopernicusExpansion.Utility
 			{
 				Utils.Log (MapView.OrbitLinesMaterial.renderQueue);
 				Utils.Log (MapView.DottedLinesMaterial.renderQueue);
+			}
+
+			if (isModDown && Input.GetKeyDown (KeyCode.Alpha6))
+			{
+				Debug.Log ("Loading test scene...");
+				PSystemSetup.Instance.LoadTestScene (GameScenes.MAINMENU);
 			}
 		}
 	}

@@ -41,20 +41,23 @@ namespace KopernicusExpansion.Editors
 		}
 		void LoadEditorTypes()
 		{
-			Utils.Log ("Finding editor types...");
-
-			foreach (var assembly in AssemblyLoader.loadedAssemblies.Select(a => a.assembly))
+			if (Settings.AllowEditors)
 			{
-				foreach (var type in assembly.GetTypes())
+				Utils.Log ("Finding editor types...");
+
+				foreach (var assembly in AssemblyLoader.loadedAssemblies.Select(a => a.assembly))
 				{
-					var attributes = Attribute.GetCustomAttributes (type);
-					foreach (var attr in attributes)
+					foreach (var type in assembly.GetTypes())
 					{
-						if (attr is IngameEditor)
+						var attributes = Attribute.GetCustomAttributes (type);
+						foreach (var attr in attributes)
 						{
-							var editor = (IngameEditor)attr;
-							editorTypes.Add (editor.editorType, editor.scenes);
-							Utils.Log ("IngameEditor found: " + editor.editorType.Name + " for " + type.Name);
+							if (attr is IngameEditor)
+							{
+								var editor = (IngameEditor)attr;
+								editorTypes.Add (editor.editorType, editor.scenes);
+								Utils.Log ("IngameEditor found: " + editor.editorType.Name + " for " + type.Name);
+							}
 						}
 					}
 				}

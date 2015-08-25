@@ -52,6 +52,7 @@ namespace KopernicusExpansion.Configuration
 
 		public CometTail tail;
 
+		[PreApply]
 		[ParserTarget("type", optional = false)]
 		public EnumParser<CometTailType> type
 		{
@@ -117,13 +118,26 @@ namespace KopernicusExpansion.Configuration
 			tail.opacityCurve.Add (3e10f, 0f);
 			tail.opacityCurve.Add (float.MaxValue, 0f);
 
-			tail.brightnessCurve = new FloatCurve ();
-			tail.brightnessCurve.Add (0f, 1f);
-			tail.brightnessCurve.Add (5e9f, 0.4f);
-			tail.brightnessCurve.Add (1.25e10f, 0.09f);
-			tail.brightnessCurve.Add (2e10f, 0.0075f);
-			tail.brightnessCurve.Add (3e10f, 0f);
-			tail.brightnessCurve.Add (float.MaxValue, 0f);
+			if (tail.type == CometTailType.Ion)
+			{
+				tail.brightnessCurve = new FloatCurve ();
+				tail.brightnessCurve.Add (0f, 1f);
+				tail.brightnessCurve.Add (5e9f, 0.4f);
+				tail.brightnessCurve.Add (1.25e10f, 0.09f);
+				tail.brightnessCurve.Add (2e10f, 0.0075f);
+				tail.brightnessCurve.Add (3e10f, 0f);
+				tail.brightnessCurve.Add (float.MaxValue, 0f);
+			}
+			else
+			{
+				tail.brightnessCurve = new FloatCurve ();
+				tail.brightnessCurve.Add (0f, 1f);
+				tail.brightnessCurve.Add (5e9f, 0.53f);
+				tail.brightnessCurve.Add (1.25e10f, 0.1f);
+				tail.brightnessCurve.Add (2e10f, 0.008f);
+				tail.brightnessCurve.Add (3e10f, 0f);
+				tail.brightnessCurve.Add (float.MaxValue, 0f);
+			}
 		}
 		public void PostApply(ConfigNode node)
 		{
@@ -190,7 +204,7 @@ namespace KopernicusExpansion.Effects
 			cometController.usingAdvancedShader = Settings.AllowAdvancedCometShader;
 			cometController.type = tail.type;
 			cometController.color = tail.color;
-			cometController.orbit = body.orbitDriver.orbit;
+			cometController.orbit = body.celestialBody.orbit;
 			cometController.opacityCurve = tail.opacityCurve;
 			cometController.brightnessCurve = tail.brightnessCurve;
 
@@ -218,7 +232,7 @@ namespace KopernicusExpansion.Effects
 
 		public CometTailType type;
 		public Orbit orbit;
-		public string targetBodyName; 
+		public string targetBodyName;
 		public Color color;
 
 		public FloatCurve opacityCurve;
@@ -311,10 +325,10 @@ namespace KopernicusExpansion.Effects
 				GetTarget();
 		}
 		void GetTarget()
- 		{
+		{
 			if (HighLogic.LoadedScene == GameScenes.PSYSTEM)
 				return;
-			this.target = PSystemManager.Instance.scaledBodies.First (t => t.gameObject.name == targetBodyName).transform;
+			target = PSystemManager.Instance.scaledBodies.First (t => t.gameObject.name == targetBodyName).transform;
 		}
 	}
 }

@@ -10,12 +10,16 @@ namespace KopernicusExpansion
 		{
 			get
 			{
-				return KSPUtil.ApplicationRootPath + "GameData/KopernicusExpansion/Data/Settings.cfg";
+				return KSPUtil.ApplicationRootPath + "GameData/KopernicusExpansion/Settings.cfg";
 			}
 		}
 		public static void Load()
 		{
 			node = ConfigNode.Load (ConfigPath);
+			if (node == null)
+			{
+				node = CreateNewSettingsConfig ();
+			}
 
 			//set defaults
 			AllowEditors = false;
@@ -51,6 +55,18 @@ namespace KopernicusExpansion
 			bool allowRefractiveAtmospheres = true;
 			bool.TryParse (node.GetValue ("allowRefractiveAtmospheres"), out allowRefractiveAtmospheres);
 			AllowRefractiveAtmospheres = allowRefractiveAtmospheres;
+		}
+		private static ConfigNode CreateNewSettingsConfig()
+		{
+			ConfigNode node = new ConfigNode ();
+			node.AddValue ("mode", "normal");
+			node.AddValue ("allowProceduralGasGiants", true);
+			node.AddValue ("allowAdvancedCometShader", true);
+			node.AddValue ("allowAnimatedComets", true);
+			node.AddValue ("allowAnimatedProceduralGasGiants", true);
+			node.AddValue ("allowRefractiveAtmospheres", true);
+			node.Save (ConfigPath);
+			return node;
 		}
 
 
