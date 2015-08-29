@@ -1,12 +1,12 @@
 ﻿
 
-Shader "Surface/ProceduralGasGiant" {
+Shader "ProceduralGasGiant" {
 	Properties {
 		_MainTex ("Ramp Texture", 2D) = "white"{}
-		_PlanetOpacity ("Opacity", Float) = 1
 		_Evolution ("Time", Float) = 0
+		_StormMap ("Storm Map", 2D) = "white"{}
 		_StormFrequency ("Storm Frequency", Float) = 5
-		_StormThreshold ("Storm Threshold", Float) = 0.85
+		_StormDistortion ("Storm Distortion", Float) = 0.85
 		_Distortion ("Distortion", Range(0, 0.05)) = 0.02
 		_MainFrequency ("Frequency", Float) = 25
 		_Lacunarity ("Lacunarity", Float) = 1.3
@@ -17,7 +17,7 @@ Shader "Surface/ProceduralGasGiant" {
 
 	}
 	SubShader {
-		Tags { "RenderType"="Opaque" }
+		Tags { "RenderType"="Opaque" "ForceNoShadowCasting" = "True" }
 		LOD 200
 		
 		CGPROGRAM
@@ -26,16 +26,19 @@ Shader "Surface/ProceduralGasGiant" {
 		#pragma surface surf Lambert alpha vertex:vert
 
 		sampler2D _PermTable2D, _Gradient3D;
-		sampler2D _MainTex;
-		fixed _PlanetOpacity;
-		float _MainFrequency;
 		float _Frequency = 1;
 		float _Lacunarity = 1.5;
 		float _Gain = 1;
+
+		sampler2D _MainTex;
+		float _MainFrequency;
 		half _Distortion;
-		float _Evolution;
+
+		sampler2D _StormMap;
 		float _StormFrequency;
-		half _StormThreshold;
+		half _StormDistortion;
+
+		float _Evolution;
 
 
 		float3 fade(float3 t)
@@ -136,6 +139,7 @@ Shader "Surface/ProceduralGasGiant" {
 
 		struct Input {
 			float3 vertPos;
+			float2 uv_StormMap;
 		};
 
 		void vert(inout appdata_full v, out Input i)
@@ -143,39 +147,28 @@ Shader "Surface/ProceduralGasGiant" {
 			i.vertPos = normalize(v.vertex.xyz);
 		}
 
-		half3 getColor (float3 vertPos)
+		void surf (Input i, inout SurfaceOutput o)
 		{
 			//noise functions are fBm, turbulence, and ridgemf. use i.uv.xyz as the first argument, second argument is octaves
-			half3 c;
+			fixed3 c;
 
 			_Frequency = _MainFrequency;
 
 			//main pattern
-			float n = turbulence(vertPos + float3(_Evolution, 0, _Evolution), 6) * _Distortion;
+			float n = turbulence(i.vertPos + float3(_Evolution, 0, _Evolution), 4) * _Distortion;
 
 			_Frequency = _StormFrequency;
 
-			//storms
-			float s = _StormThreshold * 2;
-			float sn1 = turbulence((vertPos + float3(0, 0, 0) * 2), 1) - s;
-			float sn2 = turbulence((vertPos + float3(800, 0, 800) * 2), 1) - s;
-			float sn3 = turbulence((vertPos + float3(1600, 0, 1600) * 2), 1) - s;
-			float threshold = max(0, sn1 * sn2 * sn3) * 50;
-			float sn4 = fBm(vertPos * 0.1, 4) * threshold;
-			
-			float2 uv = float2(((vertPos.y + n + sn4) * 0.5) - 0.5, 0);
-			
-			c.rgb = tex2D(_MainTex, uv).rgb;
-			
-			c.r = max(0.05, c.r);
-			c.g = max(0.05, c.g);
-			c.b = max(0.05, c.b);
-			return c;
-		}
-		void surf (Input i, inout SurfaceOutput o)
-		{
-			o.Albedo = getColor(i.vertPos);
-			o.Alpha = _PlanetOpacity;
+			//storm pattern
+			float stormStrength = tex2D(_StormMap, i.uv_StormMap).a;
+			float sn4 = fBm(i.vertPos + float3(_Evolution, 0, _Evolution), 3) * stormStrength * _StormDistortion;
+
+			//color
+			float2 mainUV = float2(((i.vertPos.y + n + sn4 + stormStrength) * 0.5) - 0.5, 0);
+			c.rgb = tex2D(_MainTex, mainUV).rgb;
+
+			o.Albedo = c;
+			o.Alpha = 1;
 		}
 		ENDCG
 	} 

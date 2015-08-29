@@ -27,6 +27,9 @@ namespace KopernicusExpansion.Configuration
 		{
 			material = new Material (Shaders.ProceduralGasGiant);
 			material.name = "ProceduralGasGiant_" + Guid.NewGuid ().ToString ();
+
+			//set default values
+			material.SetFloat ("_StormDistortion", 0f);
 		}
 
 		private Material material;
@@ -85,6 +88,15 @@ namespace KopernicusExpansion.Configuration
 				{
 					Logger.Active.LogException (exception);
 				}
+			}
+		}
+
+		[ParserTarget("stormMap", optional = true)]
+		public Texture2DParser stormMap
+		{
+			set
+			{
+				material.SetTexture ("_StormMap", value.value);
 			}
 		}
 
@@ -173,15 +185,15 @@ namespace KopernicusExpansion.Configuration
 			}
 		}
 
-		[ParserTarget("stormThreshold", optional = true)]
+		[ParserTarget("stormDistortion", optional = true)]
 		public NumericParser<float> stormThreshold
 		{
 			set
 			{
 				if(_hasStorms)
-					material.SetFloat ("_StormThreshold", Mathf.Max (0f, value.value));
+					material.SetFloat ("_StormDistortion", Mathf.Max (0f, value.value));
 				else
-					material.SetFloat ("_StormThreshold", 2f);
+					material.SetFloat ("_StormDistortion", 2f);
 			}
 		}
 
@@ -295,7 +307,7 @@ namespace KopernicusExpansion.Editors
 			if (mapObj.celestialBody != null &&
 			    mapObj.celestialBody.scaledBody != null &&
 			    mapObj.celestialBody.scaledBody.renderer != null &&
-				mapObj.celestialBody.scaledBody.renderer.sharedMaterial.shader.name == "Surface/ProceduralGasGiant")
+				mapObj.celestialBody.scaledBody.renderer.sharedMaterial.shader.name == "ProceduralGasGiant")
 			{
 				targetPlanetScaled = mapObj.celestialBody.scaledBody;
 			}
@@ -319,14 +331,14 @@ namespace KopernicusExpansion.Editors
 
 			try
 			{
-				targetPlanetScaled.renderer.material.SetFloat("_Distortion", slider (targetPlanetScaled.renderer.material.GetFloat ("_Distortion"), "Distortion", 0f, 0.05f));
-				targetPlanetScaled.renderer.material.SetFloat("_MainFrequency", slider (targetPlanetScaled.renderer.material.GetFloat ("_MainFrequency"), "Frequency", 0.01f, 50f));
-				targetPlanetScaled.renderer.material.SetFloat("_Lacunarity", slider (targetPlanetScaled.renderer.material.GetFloat ("_Lacunarity"), "Lacunarity", 0f, 3f));
-				targetPlanetScaled.renderer.material.SetFloat("_Gain", slider (targetPlanetScaled.renderer.material.GetFloat ("_Gain"), "Gain", 0f, 3f));
+				targetPlanetScaled.renderer.material.SetFloat("_Distortion", slider (targetPlanetScaled.renderer.material.GetFloat ("_Distortion"), "distortion", 0f, 0.15f));
+				targetPlanetScaled.renderer.material.SetFloat("_MainFrequency", slider (targetPlanetScaled.renderer.material.GetFloat ("_MainFrequency"), "frequency", 0.01f, 50f));
+				targetPlanetScaled.renderer.material.SetFloat("_Lacunarity", slider (targetPlanetScaled.renderer.material.GetFloat ("_Lacunarity"), "lacunarity", 0f, 9f));
+				targetPlanetScaled.renderer.material.SetFloat("_Gain", slider (targetPlanetScaled.renderer.material.GetFloat ("_Gain"), "gain", 0f, 3f));
 				GUILayout.Space (8f);
 				GUILayout.Label ("<b>Storms:</b>");
-				targetPlanetScaled.renderer.material.SetFloat("_StormFrequency", slider (targetPlanetScaled.renderer.material.GetFloat ("_StormFrequency"), "Storm Frequency", 0.01f, 8f));
-				targetPlanetScaled.renderer.material.SetFloat("_StormThreshold", slider (targetPlanetScaled.renderer.material.GetFloat ("_StormThreshold"), "_Storm Threshold", 0f, 1.1f));
+				targetPlanetScaled.renderer.material.SetFloat("_StormFrequency", slider (targetPlanetScaled.renderer.material.GetFloat ("_StormFrequency"), "stormFrequency", 0.01f, 8f));
+				targetPlanetScaled.renderer.material.SetFloat("_StormDistortion", slider (targetPlanetScaled.renderer.material.GetFloat ("_StormDistortion"), "stormDistortion", 0f, 1.1f));
 			}
 			catch
 			{
