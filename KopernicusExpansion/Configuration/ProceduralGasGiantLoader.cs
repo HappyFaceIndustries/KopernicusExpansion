@@ -210,7 +210,6 @@ namespace KopernicusExpansion.Configuration
 			}
 
 			Renderer scaledRenderer = generatedBody.scaledVersion.renderer;
-			material.renderQueue = 3100;
 			scaledRenderer.sharedMaterial = material;
 
 			var gasGiantComponent = generatedBody.scaledVersion.AddComponent<ProceduralGasGiant> ();

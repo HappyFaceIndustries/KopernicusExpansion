@@ -1,4 +1,4 @@
-// Compiled shader for all platforms, uncompressed size: 455.4KB
+// Compiled shader for all platforms, uncompressed size: 455.5KB
 
 Shader "ProceduralGasGiant" {
 Properties {
@@ -17,6 +17,9 @@ Properties {
 SubShader { 
  LOD 200
  Tags { "ForceNoShadowCasting"="true" "RenderType"="Opaque" }
+ Pass {
+  Tags { "ForceNoShadowCasting"="true" "RenderType"="Opaque" }
+ }
 
 
  // Stats for Vertex shader:

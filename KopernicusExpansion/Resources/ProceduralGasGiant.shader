@@ -19,6 +19,11 @@ Shader "ProceduralGasGiant" {
 	SubShader {
 		Tags { "RenderType"="Opaque" "ForceNoShadowCasting" = "True" }
 		LOD 200
+
+		//renders to depth buffer
+		Pass {
+			ZWrite On
+		}
 		
 		CGPROGRAM
 		#pragma target 3.0

@@ -6,7 +6,7 @@ namespace KopernicusExpansion.Utility
 	[KSPAddon(KSPAddon.Startup.EveryScene, false)]
 	public class SceneLoadHooks : MonoBehaviour
 	{
-		public static EventVoid OnEverySceneLoaded = new EventVoid("OnEverySceneLoaded");
+		public static EventData<GameScenes> OnEverySceneLoaded = new EventData<GameScenes>("OnEverySceneLoaded");
 		public static EventVoid OnMenuLoaded = new EventVoid("OnMenuLoaded");
 		public static EventVoid OnSpaceCenterLoaded = new EventVoid("OnSpaceCenterLoaded");
 		public static EventVoid OnTrackingStationLoaded = new EventVoid("OnTrackingStationLoaded");
@@ -14,7 +14,7 @@ namespace KopernicusExpansion.Utility
 
 		private void Start()
 		{
-			OnEverySceneLoaded.Fire ();
+			OnEverySceneLoaded.Fire (HighLogic.LoadedScene);
 			switch (HighLogic.LoadedScene)
 			{
 			case GameScenes.MAINMENU:
