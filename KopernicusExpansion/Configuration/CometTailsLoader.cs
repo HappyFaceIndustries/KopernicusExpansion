@@ -170,7 +170,7 @@ namespace KopernicusExpansion.Effects
 			var mf = obj.AddComponent<MeshFilter> ();
 
 			var teardrop = new Teardrop (1f, (tail.length / tail.radius), 60, 90);
-			mf.mesh = new InvertNormals (teardrop);
+			mf.mesh = teardrop;
 
 			if (Settings.AllowAdvancedCometShader)
 			{

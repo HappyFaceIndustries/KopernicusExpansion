@@ -35,7 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\References\1.0.4\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -67,11 +66,25 @@
     <Compile Include="Utility\Utils.cs" />
     <Compile Include="Configuration\EmissiveEffectsLoader.cs" />
     <Compile Include="Configuration\CometTailsLoader.cs" />
-    <Compile Include="Configuration\Parser\MuParser.cs" />
     <Compile Include="Utility\Geometry\UVSphere.cs" />
     <Compile Include="Utility\Geometry\Teardrop.cs" />
-    <Compile Include="Utility\Geometry\InvertNormals.cs" />
     <Compile Include="Utility\SceneLoadHooks.cs" />
+    <Compile Include="Configuration\SubsurfaceOceans.cs" />
+    <Compile Include="Utility\Geometry\CopyMesh.cs" />
+    <Compile Include="Utility\WireframeViewer.cs" />
+    <Compile Include="Utility\Geometry\ReverseMesh.cs" />
+    <Compile Include="Creatures\Creature.cs" />
+    <Compile Include="Creatures\AI\AIModule.cs" />
+    <Compile Include="Creatures\CreatureSpawning.cs" />
+    <Compile Include="Creatures\CreatureLoader.cs" />
+    <Compile Include="Creatures\AI\LookAtTargets.cs" />
+    <Compile Include="Creatures\AI\Idle.cs" />
+    <Compile Include="Creatures\AI\AlignWithUpAxis.cs" />
+    <Compile Include="Creatures\CreatureVessel.cs" />
+    <Compile Include="Creatures\CreatureVesselSwitching.cs" />
+    <Compile Include="Creatures\CreaturePart.cs" />
+    <Compile Include="Creatures\CreatureFXMonger.cs" />
+    <Compile Include="Creatures\PartModules\ModuleRemovePartBuoyancy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -82,6 +95,10 @@
     <None Include="Resources\Compiled-CometTail.shader">
       <DependentUpon>Shaders.resx</DependentUpon>
     </None>
+    <None Include="Resources\Compiled-DebugCave.shader">
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </None>
+    <None Include="Resources\DebugCave.shader" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\EmissiveQuad.shader" />
@@ -108,6 +125,7 @@
     <EmbeddedResource Include="Resources\Shaders.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Shaders.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Textures.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -119,5 +137,10 @@
     <None Include="Resources\CometTailEditorIcon.png">
       <DependentUpon>Textures.resx</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Creatures\" />
+    <Folder Include="Creatures\AI\" />
+    <Folder Include="Creatures\PartModules\" />
   </ItemGroup>
 </Project>
