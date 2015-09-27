@@ -10,20 +10,25 @@ using Kopernicus.Configuration.ModLoader;
 
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Creatures.AI;
+using KopernicusExpansion.Creatures.AI.Configuration;
 
 using UnityEngine;
 
-namespace KopernicusExpansion.Creatures.AI
+namespace KopernicusExpansion.Creatures.AI.Configuration
 {
 	[RequireConfigType(ConfigType.Node)]
-	public class LookAtTargets : AIModule, IParserEventSubscriber
+	public class LookAtTargetsLoader : AIModuleLoader<LookAtTargets>, IParserEventSubscriber
 	{
 		//constructor
-		public LookAtTargets()
+		public LookAtTargetsLoader()
 		{
 		}
 
-		//parser stuff
+		private float eyeSpeed = 6f;
+		private float maxDistance = 250000f;
+		private float maxTargetChangeInterval = 10f;
+		private float minTargetChangeInterval = 1f;
+
 		[ParserTarget("eyeTransformName", optional = true)]
 		public string eyeTransformName = "Eyeball";
 
@@ -60,17 +65,28 @@ namespace KopernicusExpansion.Creatures.AI
 			}
 		}
 
-		//apply/postApply
-		public new void Apply(ConfigNode node)
+		//creation
+		protected override void OnCreateInstance (LookAtTargets instance)
 		{
-
+			instance.eyeTransformName = eyeTransformName;
+			instance.eyeSpeed = eyeSpeed;
+			instance.maxDistance = maxDistance;
+			instance.maxTargetChangeInterval = maxTargetChangeInterval;
+			instance.minTargetChangeInterval = minTargetChangeInterval;
 		}
-		public new void PostApply(ConfigNode node)
+	}
+}
+
+namespace KopernicusExpansion.Creatures.AI
+{
+	[AILoaderType(typeof(LookAtTargetsLoader))]
+	public class LookAtTargets : AIModule
+	{
+		//constructor
+		public LookAtTargets()
 		{
-
 		}
 
-		//actual behaviour
 		public Transform currentTarget
 		{
 			get
@@ -88,10 +104,11 @@ namespace KopernicusExpansion.Creatures.AI
 		}
 		private EyeLook eyeLook;
 
-		private float eyeSpeed = 6f;
-		private float maxDistance = 250000f;
-		private float maxTargetChangeInterval = 10f;
-		private float minTargetChangeInterval = 1f;
+		public string eyeTransformName = "";
+		public float eyeSpeed = 6f;
+		public float maxDistance = 250000f;
+		public float maxTargetChangeInterval = 10f;
+		public float minTargetChangeInterval = 1f;
 
 		public override bool CanRunConcurrently ()
 		{

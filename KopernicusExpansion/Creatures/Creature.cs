@@ -10,6 +10,7 @@ using Kopernicus.Configuration.ModLoader;
 
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Creatures.AI;
+using KopernicusExpansion.Creatures.AI.Configuration;
 
 using UnityEngine;
 
@@ -18,10 +19,14 @@ namespace KopernicusExpansion.Creatures
 	[RequireConfigType(ConfigType.Node)]
 	public class Creature : IParserEventSubscriber
 	{
+		private static Dictionary<string, Type> AILoaderTypes = new Dictionary<string, Type> ();
+
 		//constructor
 		public Creature()
 		{
 		}
+
+		private const string AINodeName = "AI";
 
 		//fields
 		[ParserTarget("name", optional = false)]
@@ -30,8 +35,7 @@ namespace KopernicusExpansion.Creatures
 		[ParserTarget("part", optional = false)]
 		public string part;
 
-		[ParserTargetCollection("AI", optional = true, typePrefix = "KopernicusExpansion.Creatures.AI.", nameSignificance = NameSignificance.Type, allowMerge = true)]
-		public List<AIModule> AIModules = new List<AIModule>();
+		public List<AIModuleLoaderGeneric> AIModules;
 
 		//apply/postApply
 		public void Apply(ConfigNode node)
@@ -40,9 +44,56 @@ namespace KopernicusExpansion.Creatures
 		}
 		public void PostApply(ConfigNode node)
 		{
+			AIModules = new List<AIModuleLoaderGeneric> ();
+
+			//parse the ai modules
+			if (node.HasNode (AINodeName))
+			{
+				ConfigNode aiNode = node.GetNode (AINodeName);
+
+				foreach(var aiModuleNode in aiNode.GetNodes())
+				{
+					//get the loader type
+					Type loaderType = null;
+
+					if (AILoaderTypes.ContainsKey (aiModuleNode.name))
+						loaderType = AILoaderTypes [aiModuleNode.name];
+					else
+					{
+						foreach (var assembly in AssemblyLoader.loadedAssemblies)
+						{
+							foreach (var type in assembly.assembly.GetTypes())
+							{
+								AILoaderType typeAttribute = null;
+
+								foreach (var attr in Attribute.GetCustomAttributes(type))
+								{
+									if (attr is AILoaderType)
+										typeAttribute = (AILoaderType)attr;
+								}
+
+								if (typeAttribute != null)
+								{
+									AILoaderTypes.Add (type.Name, typeAttribute.loaderType);
+									loaderType = typeAttribute.loaderType;
+								}
+							}
+						}
+					}
+
+					//parse the object
+					if (loaderType != null)
+					{
+						var loader = Parser.CreateObjectFromConfigNode (loaderType, aiModuleNode);
+						if(loader is AIModuleLoaderGeneric)
+							AIModules.Add ((AIModuleLoaderGeneric)loader);
+					}
+				}
+			}
+
 			//sort the list by priority
-			AIModules.Sort (delegate(AIModule a, AIModule b) {
-				return a.priority.CompareTo (b.priority);
+			AIModules.Sort (delegate(AIModuleLoaderGeneric a, AIModuleLoaderGeneric b) {
+				return a.priority.CompareTo(b.priority);
 			});
 
 			for(int i = 0; i < AIModules.Count; i++)

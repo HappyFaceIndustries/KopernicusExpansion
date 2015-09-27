@@ -8,6 +8,7 @@ using Kopernicus.Constants;
 
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Creatures.AI;
+using KopernicusExpansion.Creatures.AI.Configuration;
 
 using UnityEngine;
 
@@ -31,11 +32,21 @@ namespace KopernicusExpansion.Creatures
 			//activate the part
 			base.force_activate ();
 
-			AI = creature.AIModules;
-			foreach (var ai in AI)
+			AI = new List<AIModule> ();
+			foreach (var ai in creature.AIModules)
 			{
-				ai.creature = this;
+				try
+				{
+					Type type = ai.GetType();
+					var createInstanceMethod = type.GetMethod("CreateInstance", BindingFlags.Instance | BindingFlags.Public);
+					AI.Add ((AIModule)createInstanceMethod.Invoke(ai, new object[]{this}));
+				}
+				catch(Exception e)
+				{
+					Debug.LogException (e);
+				}
 			}
+
 			foreach (var ai in AI)
 			{
 				try
@@ -50,6 +61,9 @@ namespace KopernicusExpansion.Creatures
 		}
 		protected override void onPartDestroy ()
 		{
+			if (AI == null)
+				return;
+
 			foreach (var ai in AI)
 			{
 				try
@@ -64,6 +78,8 @@ namespace KopernicusExpansion.Creatures
 		}
 		protected override void onPartUpdate ()
 		{
+			if (AI == null)
+				return;
 			if (this.packed || !vessel.loaded)
 				return;
 
@@ -100,6 +116,8 @@ namespace KopernicusExpansion.Creatures
 		}
 		protected override void onPartFixedUpdate ()
 		{
+			if (AI == null)
+				return;
 			if (this.packed || !vessel.loaded)
 				return;
 

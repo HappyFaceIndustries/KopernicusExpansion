@@ -10,20 +10,22 @@ using Kopernicus.Configuration.ModLoader;
 
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Creatures.AI;
+using KopernicusExpansion.Creatures.AI.Configuration;
 
 using UnityEngine;
 
-namespace KopernicusExpansion.Creatures.AI
+namespace KopernicusExpansion.Creatures.AI.Configuration
 {
 	[RequireConfigType(ConfigType.Node)]
-	public class AlignWithUpAxis : AIModule, IParserEventSubscriber
+	public class AlignWithUpAxisLoader : AIModuleLoader<AlignWithUpAxis>, IParserEventSubscriber
 	{
 		//constructor
-		public AlignWithUpAxis ()
+		public AlignWithUpAxisLoader ()
 		{
 		}
 
-		//parser stuff
+		private float rotateSpeed = 4f;
+
 		[ParserTarget("rotateSpeed", optional = true)]
 		public NumericParser<float> rotateSpeedParser
 		{
@@ -33,18 +35,25 @@ namespace KopernicusExpansion.Creatures.AI
 			}
 		}
 
-		//apply/postApply
-		public new void Apply(ConfigNode node)
+		//creation
+		protected override void OnCreateInstance (AlignWithUpAxis instance)
 		{
-
+			instance.rotateSpeed = rotateSpeed;
 		}
-		public new void PostApply(ConfigNode node)
+	}
+}
+
+namespace KopernicusExpansion.Creatures.AI
+{
+	[AILoaderType(typeof(AlignWithUpAxisLoader))]
+	public class AlignWithUpAxis : AIModule
+	{
+		//constructor
+		public AlignWithUpAxis ()
 		{
-
 		}
 
-		//actual behaviour
-		private float rotateSpeed = 4f;
+		public float rotateSpeed = 4f;
 
 		public override bool CanRunConcurrently ()
 		{

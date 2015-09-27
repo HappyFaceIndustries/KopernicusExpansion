@@ -10,34 +10,43 @@ using Kopernicus.Configuration.ModLoader;
 
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Creatures.AI;
+using KopernicusExpansion.Creatures.AI.Configuration;
 
 using UnityEngine;
 
-namespace KopernicusExpansion.Creatures.AI
+namespace KopernicusExpansion.Creatures.AI.Configuration
 {
 	[RequireConfigType(ConfigType.Node)]
-	public class Idle : AIModule, IParserEventSubscriber
+	public class IdleLoader : AIModuleLoader<Idle>, IParserEventSubscriber
+	{
+		//constructor
+		public IdleLoader ()
+		{
+		}
+
+		[ParserTarget("animationName", optional = false)]
+		public string idleAnimationName = "";
+
+		//creation
+		protected override void OnCreateInstance (Idle instance)
+		{
+			instance.idleAnimationName = idleAnimationName;
+		}
+	}
+}
+
+namespace KopernicusExpansion.Creatures.AI
+{
+	[AILoaderType(typeof(IdleLoader))]
+	public class Idle : AIModule
 	{
 		//constructor
 		public Idle ()
 		{
 		}
 
-		//parser stuff
-		[ParserTarget("animationName", optional = false)]
-		public string idleAnimationName = null;
+		public string idleAnimationName = "";
 
-		//apply/postApply
-		public new void Apply(ConfigNode node)
-		{
-
-		}
-		public new void PostApply(ConfigNode node)
-		{
-
-		}
-
-		//actual behaviour
 		private Animation animator;
 
 		public override bool CanRunConcurrently ()
