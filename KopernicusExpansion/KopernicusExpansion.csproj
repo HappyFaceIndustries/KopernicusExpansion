@@ -99,6 +99,9 @@
       <DependentUpon>Shaders.resx</DependentUpon>
     </None>
     <None Include="Resources\DebugCave.shader" />
+    <None Include="Resources\CreatureBloodExplosionParticle.png">
+      <DependentUpon>Textures.resx</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\EmissiveQuad.shader" />

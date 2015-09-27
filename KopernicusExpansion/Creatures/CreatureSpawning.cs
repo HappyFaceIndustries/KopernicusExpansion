@@ -21,13 +21,16 @@ namespace KopernicusExpansion.Creatures
 		{
 			if (Input.GetKey (KeyCode.LeftAlt) && Input.GetKeyDown (KeyCode.B))
 			{
-				SpawnCreature (FlightGlobals.upAxis.normalized * 8, CreatureLoader.LoadedCreatures[0]);
+				SpawnCreature (FlightGlobals.upAxis.normalized * 18, CreatureLoader.LoadedCreatures[0]);
 			}
 		}
 
 		private void SpawnCreature(Vector3 position, Creature creature)
 		{
+			//spawn in creature vessel
 			var vessel = Creature.Create (creature, position);
+
+			//orient up
 			vessel.ReferenceTransform.up = FlightGlobals.upAxis.normalized;
 		}
 	}

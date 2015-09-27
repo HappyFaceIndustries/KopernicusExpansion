@@ -153,10 +153,109 @@ namespace KopernicusExpansion.Creatures
 			}
 		}
 
-		// >:D
-		protected override void onPartExplode ()
+		/*
+		 * In order to entirely remove the FXMonger.explode call, I will have to rewrite these functions
+		 * 
+		 * OnCollisionEnter			+	<--- this is for collision based explosions
+		 * ---CheckCollision		+
+		 * ------HandleCollision	+
+		 * ---------explode			+
+		 * FixedUpdate					<--- this is for heat based explosions
+		 * ---explode				+
+		 */
+
+		//TODO: optimize the collisions for having multiple colliders
+		//TODO: make heat damage use the new explode method. Could just make maxTemp the maximum value and do my own heat simulation, instead of rewriting FixedUpdate.
+
+		public new void OnCollisionEnter(Collision c)
 		{
-			//TODO: add blood effects
+			if (!HighLogic.LoadedSceneIsFlight)
+				return;
+			if (state == PartStates.DEAD)
+				return;
+				
+			CheckCollision (c);
+		}
+		public new bool CheckCollision(Collision c)
+		{
+			foreach (var contact in c.contacts)
+			{
+				if (collider != contact.thisCollider && collider != contact.otherCollider)
+				{
+					continue;
+				}
+				HandleCollision (c);
+				return true;
+			}
+			foreach (var child in children)
+			{
+				if (child.physicalSignificance != PhysicalSignificance.FULL)
+				{
+					if (child.State != PartStates.DEAD && child.isAttached)
+					{
+						return child.CheckCollision (c);
+					}
+				}
+			}
+			return false;
+		}
+		public new void HandleCollision(Collision c)
+		{
+			if (!c.collider.enabled)
+				return;
+
+			if (c.collider.gameObject.activeInHierarchy && !c.collider.isTrigger)
+			{
+				if (c.collider.attachedRigidbody != null)
+				{
+					if (c.relativeVelocity.magnitude * c.collider.attachedRigidbody.mass <= crashTolerance)
+						return;
+				}
+				else if (c.relativeVelocity.magnitude <= crashTolerance)
+					return;
+
+				if (CheatOptions.NoCrashDamage) //cheater
+					return;
+
+				explode ();
+
+				if (c.gameObject.GetComponent<PQ> () != null)
+				{
+					GameEvents.onCrash.Fire (new EventReport (FlightEvents.CRASH, this, this.partInfo.title, c.collider.name, 0, "", c.relativeVelocity.magnitude));
+				}
+				else
+				{
+					if (Part.GetComponentUpwards<Part> (c.gameObject) != null)
+					{
+						GameEvents.onCollision.Fire (new EventReport (FlightEvents.COLLISION, this, this.partInfo.title, Part.GetComponentUpwards<Part> (c.gameObject).partInfo.title, 0, "", c.relativeVelocity.magnitude));
+					}
+					else
+					{
+						if (Part.GetComponentUpwards<CrashObjectName> (c.gameObject) != null)
+							GameEvents.onCollision.Fire (new EventReport (FlightEvents.COLLISION, this, this.partInfo.title, Part.GetComponentUpwards<CrashObjectName> (c.gameObject).objectName, 0, "", c.relativeVelocity.magnitude));
+						else
+							GameEvents.onCollision.Fire (new EventReport (FlightEvents.CRASH, this, this.partInfo.title, c.gameObject.name, 0, "", c.relativeVelocity.magnitude));
+					}
+				}
+				return;
+			}
+		}
+		public new void explode()
+		{
+			if (state == PartStates.DEAD)
+				return;
+
+			CreatureFXMonger.CreateCreatureExplosion (this);
+			Debug.Log ("Creature explosion of " + name);
+
+			float distance = 0f;
+			if (vessel == FlightGlobals.ActiveVessel)
+				distance = 0f;
+			else
+				distance = Vector3.Distance (partTransform.position, FlightGlobals.ActiveVessel.vesselTransform.position);
+			GameEvents.onPartExplode.Fire (new GameEvents.ExplosionReaction (distance, 0f));
+
+			Die ();
 		}
 	}
 }

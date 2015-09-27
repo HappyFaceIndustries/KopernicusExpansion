@@ -73,6 +73,16 @@ namespace KopernicusExpansion.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] CreatureBloodExplosionParticle {
+            get {
+                object obj = ResourceManager.GetObject("CreatureBloodExplosionParticle", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] ProceduralGasGiantEditorIcon {
             get {
                 object obj = ResourceManager.GetObject("ProceduralGasGiantEditorIcon", resourceCulture);

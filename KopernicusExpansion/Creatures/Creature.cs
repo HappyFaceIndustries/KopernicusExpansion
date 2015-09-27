@@ -35,6 +35,9 @@ namespace KopernicusExpansion.Creatures
 		[ParserTarget("part", optional = false)]
 		public string part;
 
+		[ParserTarget("Gore", optional = true)]
+		public CreatureGoreSettings Gore = new CreatureGoreSettings ();
+
 		public List<AIModuleLoaderGeneric> AIModules;
 
 		//apply/postApply
@@ -153,6 +156,8 @@ namespace KopernicusExpansion.Creatures
 
 				vessel.gameObject.AddComponent<CreatureVessel>();
 
+				FlightLogger.eventLog.Add(Utils.FormatTime(referencePart.vessel.missionTime) + "A " + creature.name + " was seen.");
+
 				return vessel;
 			}
 			catch(Exception e)
@@ -163,6 +168,78 @@ namespace KopernicusExpansion.Creatures
 			}
 
 			return null;
+		}
+
+		[RequireConfigType(ConfigType.Node)]
+		public class CreatureGoreSettings : IParserEventSubscriber
+		{
+			//constructor
+			public CreatureGoreSettings()
+			{
+			}
+
+			public bool enabled = true;
+			public Color bloodColor = Color.red;
+			public Color fleshColor = Color.magenta;
+			public Color skinColor = Color.white;
+			public float bloodSphereSize = 2f;
+			public float bloodVelocityMultiplier = 1f;
+
+			[ParserTarget("enabled", optional = true)]
+			public NumericParser<bool> enabledParser
+			{
+				set
+				{
+					enabled = value.value;
+				}
+			}
+			[ParserTarget("bloodColor", optional = true)]
+			public ColorParser bloodColorParser
+			{
+				set
+				{
+					bloodColor = value.value;
+				}
+			}
+			[ParserTarget("fleshColor", optional = true)]
+			public ColorParser fleshColorParser
+			{
+				set
+				{
+					fleshColor = value.value;
+				}
+			}
+			[ParserTarget("skinColor", optional = true)]
+			public ColorParser skinColorParser
+			{
+				set
+				{
+					skinColor = value.value;
+				}
+			}
+			[ParserTarget("bloodSphereSize", optional = true)]
+			public NumericParser<float> bloodSphereSizeParser
+			{
+				set
+				{
+					bloodSphereSize = value.value;
+				}
+			}
+			[ParserTarget("bloodVelocityMultiplier", optional = true)]
+			public NumericParser<float> bloodVelocityMultiplierParser
+			{
+				set
+				{
+					bloodVelocityMultiplier = value.value;
+				}
+			}
+
+			public void Apply(ConfigNode node)
+			{
+			}
+			public void PostApply(ConfigNode node)
+			{
+			}
 		}
 	}
 }
