@@ -44,15 +44,9 @@ namespace KopernicusExpansion.Creatures.AI.Configuration
 		}
 
 		//creation
-		public AIModule CreateInstance(CreaturePart part)
+		public object CreateInstance(CreaturePart part)
 		{
-			Debug.Log ("0");
-			AIModule instance = new AIModule ();
-			instance.creature = part;
-			instance.enabled = enabled;
-			instance.priority = priority;
-
-			return instance;
+			return null;
 		}
 	}
 
@@ -62,7 +56,6 @@ namespace KopernicusExpansion.Creatures.AI.Configuration
 		//creation
 		public new T CreateInstance(CreaturePart part)
 		{
-			Debug.Log ("1");
 			T instance = Activator.CreateInstance<T> ();
 			instance.creature = part;
 			instance.enabled = enabled;
@@ -89,15 +82,15 @@ namespace KopernicusExpansion.Creatures.AI.Configuration
 
 namespace KopernicusExpansion.Creatures.AI
 {
-	public class AIModule
+	public abstract class AIModule
 	{
 		public int priority = 0;
 		public bool enabled = true;
 
 		public CreaturePart creature;
 
-		public virtual bool CanRunConcurrently () {return true;}
-		public virtual bool ShouldRun () {return false;}
+		public abstract bool CanRunConcurrently ();
+		public abstract bool ShouldRun ();
 		public virtual void Start () {}
 		public virtual void OnDestroy () {}
 		public virtual void Update () {}
