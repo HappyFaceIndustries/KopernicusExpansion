@@ -151,21 +151,26 @@ namespace KopernicusExpansion.Creatures
 					}
 				}
 			}
+
+			//heat simulation
+			maxTemp = double.MaxValue;
+			skinMaxTemp = double.MaxValue;
+			UpdateHeatValues ();
 		}
 
-		/*
-		 * In order to entirely remove the FXMonger.explode call, I will have to rewrite these functions
-		 * 
-		 * OnCollisionEnter			+	<--- this is for collision based explosions
-		 * ---CheckCollision		+
-		 * ------HandleCollision	+
-		 * ---------explode			+
-		 * FixedUpdate					<--- this is for heat based explosions
-		 * ---explode				+
-		 */
+		public void UpdateHeatValues()
+		{
+			if (temperature > 60000 || skinTemperature > 60000)
+			{
+				GameEvents.onOverheat.Fire (new EventReport (FlightEvents.OVERHEAT, this, partInfo.title, "", 0, "", 0f));
+				if (creature.Gore.enabled)
+					explode ();
+				else
+					base.explode ();
+			}
+		}
 
 		//TODO: optimize the collisions for having multiple colliders
-		//TODO: make heat damage use the new explode method. Could just make maxTemp the maximum value and do my own heat simulation, instead of rewriting FixedUpdate.
 
 		public new void OnCollisionEnter(Collision c)
 		{
@@ -217,7 +222,10 @@ namespace KopernicusExpansion.Creatures
 				if (CheatOptions.NoCrashDamage) //cheater
 					return;
 
-				explode ();
+				if (creature.Gore.enabled)
+					explode ();
+				else
+					base.explode ();
 
 				if (c.gameObject.GetComponent<PQ> () != null)
 				{

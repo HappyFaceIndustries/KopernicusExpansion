@@ -171,7 +171,7 @@ namespace KopernicusExpansion.Creatures
 		}
 
 		[RequireConfigType(ConfigType.Node)]
-		public class CreatureGoreSettings : IParserEventSubscriber
+		public class CreatureGoreSettings
 		{
 			//constructor
 			public CreatureGoreSettings()
@@ -180,7 +180,6 @@ namespace KopernicusExpansion.Creatures
 
 			public bool enabled = true;
 			public Color bloodColor = Color.red;
-			public Color fleshColor = Color.magenta;
 			public Color skinColor = Color.white;
 			public float bloodSphereSize = 2f;
 			public float bloodVelocityMultiplier = 1f;
@@ -199,14 +198,6 @@ namespace KopernicusExpansion.Creatures
 				set
 				{
 					bloodColor = value.value;
-				}
-			}
-			[ParserTarget("fleshColor", optional = true)]
-			public ColorParser fleshColorParser
-			{
-				set
-				{
-					fleshColor = value.value;
 				}
 			}
 			[ParserTarget("skinColor", optional = true)]
@@ -232,13 +223,6 @@ namespace KopernicusExpansion.Creatures
 				{
 					bloodVelocityMultiplier = value.value;
 				}
-			}
-
-			public void Apply(ConfigNode node)
-			{
-			}
-			public void PostApply(ConfigNode node)
-			{
 			}
 		}
 	}

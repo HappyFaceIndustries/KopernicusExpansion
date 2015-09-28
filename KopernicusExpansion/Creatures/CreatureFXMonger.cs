@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Kopernicus;
 using Kopernicus.Constants;
 
+using KopernicusExpansion;
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Resources;
 using KopernicusExpansion.Creatures.AI;
@@ -28,36 +29,23 @@ namespace KopernicusExpansion.Creatures
 			Instance = this;
 		}
 
-		private void Start()
-		{
-			FXMonger monger = UnityEngine.Object.FindObjectOfType<FXMonger> ();
-			foreach(var explosion in monger.explosions)
-			{
-				if (explosion.GetComponent<IgnoreCreatureExplosions> () == null)
-				{
-					explosion.AddComponent<IgnoreCreatureExplosions> ();
-				}
-			}
-		}
-
 		private void CreateCreatureExplosion(Creature creature, CreaturePart part)
 		{
-			IgnoreCreatureExplosions.LastWasCreature = true;
-
 			GameObject obj = new GameObject ("CreatureExplosionFX");
 			obj.transform.position = part.transform.position;
 
 			KSPParticleEmitter particles = obj.AddComponent<KSPParticleEmitter> ();
 			CreateKSPParticleEmitter (particles);
 
-			particles.color = creature.Gore.bloodColor;
+			Color color = (Settings.AllowCreatureGore ? creature.Gore.bloodColor : creature.Gore.skinColor);
+			particles.color = color;
 			particles.doesAnimateColor = true;
 			particles.colorAnimation = new Color[5];
-			particles.colorAnimation [0] = creature.Gore.bloodColor;
-			particles.colorAnimation [1] = creature.Gore.bloodColor.A (0.8f);
-			particles.colorAnimation [2] = creature.Gore.bloodColor.A (0.4f);
-			particles.colorAnimation [3] = creature.Gore.bloodColor.A (0.2f);
-			particles.colorAnimation [4] = creature.Gore.bloodColor.A (0f);
+			particles.colorAnimation [0] = color;
+			particles.colorAnimation [1] = color.A (0.8f);
+			particles.colorAnimation [2] = color.A (0.4f);
+			particles.colorAnimation [3] = color.A (0.2f);
+			particles.colorAnimation [4] = color.A (0f);
 
 			Texture2D bloodParticleTexture = new Texture2D (4, 4);
 			bloodParticleTexture.LoadImage (Textures.CreatureBloodExplosionParticle);
@@ -71,8 +59,8 @@ namespace KopernicusExpansion.Creatures
 			particles.minEnergy = 0.5f;
 			particles.minSize = 2f;
 
-			particles.damping = 0.8f;
-			particles.force = FlightGlobals.getGeeForceAtPosition (obj.transform.position) * 0.66;
+			particles.damping = 0.9f;
+			particles.force = FlightGlobals.getGeeForceAtPosition (obj.transform.position) * 2.5f;
 			particles.rndAngularVelocity = 0f;
 			particles.rndRotation = true;
 			particles.rndForce = Vector3.one * 4f * creature.Gore.bloodVelocityMultiplier;
@@ -137,23 +125,6 @@ namespace KopernicusExpansion.Creatures
 				particles.emit = false;
 				yield return new WaitForSeconds (Mathf.Max(0f, secondsToDie - secondsToEmit));
 				Destroy (gameObject);
-			}
-		}
-		public class IgnoreCreatureExplosions : MonoBehaviour
-		{
-			public static bool LastWasCreature = false;
-
-
-			//this appears to be unstable
-			//TODO: fix creature explosions
-			private void Update()
-			{
-				if (LastWasCreature && gameObject.activeSelf)
-				{
-					Utils.Log ("Removing explosion effect from Creature explosion");
-					gameObject.SetActive (false);
-					LastWasCreature = false;
-				}
 			}
 		}
 	}
