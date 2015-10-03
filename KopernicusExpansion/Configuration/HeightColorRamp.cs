@@ -27,6 +27,10 @@ namespace KopernicusExpansion.Configuration
 			_mod.transform.parent = Kopernicus.Utility.Deactivator;
 			base.mod = _mod;
 			_mod.simplex = new Simplex (0, 3, 0.5, 20);
+			_mod.Ramp = new Gradient ();
+			_mod.Ramp.Add (0f, Color.white);
+			_mod.NoiseRamp = new Gradient ();
+			_mod.NoiseRamp.Add (0f, Color.white);
 		}
 
 		private PQSMod_HeightColorRamp _mod;
