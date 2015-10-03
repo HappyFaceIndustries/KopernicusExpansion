@@ -29,8 +29,29 @@ namespace KopernicusExpansion.Creatures
 		//overridden functions
 		protected override void onFlightStart ()
 		{
+			//get the creature
+			if (partInfo.partConfig.HasValue ("creature"))
+			{
+				var creatureName = partInfo.partConfig.GetValue ("creature");
+				foreach (var c in CreatureLoader.LoadedCreatures)
+				{
+					if (c.name == creatureName)
+						creature = c;
+				}
+			}
+
+			//destroy us if we don't have a creature
+			if (creature == null)
+			{
+				Utils.LogError ("CreaturePart " + partName + " did not have a valid creature");
+			}
+
 			//activate the part
 			base.force_activate ();
+
+			//deactivate the highlighting
+			highlightType = Part.HighlightType.Disabled;
+			SetHighlightType(Part.HighlightType.Disabled);
 
 			AI = new List<AIModule> ();
 			foreach (var ai in creature.AIModules)

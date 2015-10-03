@@ -126,8 +126,6 @@ namespace KopernicusExpansion.Creatures
 				part.gameObject.SetActive(true);
 				part.gameObject.name = partInfo.name;
 				part.partInfo = partInfo;
-				part.highlightType = Part.HighlightType.Disabled;
-				part.SetHighlightType(Part.HighlightType.Disabled);
 				part.SetMirror(Vector3.one);
 
 				ShipConstruct sc = new ShipConstruct();
@@ -144,17 +142,17 @@ namespace KopernicusExpansion.Creatures
 				vessel.ctrlState.NeutralizeAll();
 				vessel.Initialize(false);
 				vessel.Landed = false;
-				UnityEngine.Object.Destroy(vessel.orbitDriver.Renderer);
 				vessel.SetPosition(referencePart.transform.position + positionOffset);
 				vessel.SetRotation(Quaternion.identity);
+
+				//manually remove orbit renderer
+				UnityEngine.Object.Destroy(vessel.orbitDriver.Renderer);
 
 				CreaturePart cp = (CreaturePart)vessel.rootPart;
 				cp.creature = creature;
 				cp.flightID = ShipConstruction.GetUniqueFlightID(HighLogic.CurrentGame.flightState);
 				cp.missionID = referencePart.missionID;
 				cp.flagURL = referencePart.flagURL;
-
-				vessel.gameObject.AddComponent<CreatureVessel>();
 
 				FlightLogger.eventLog.Add(Utils.FormatTime(referencePart.vessel.missionTime) + "A " + creature.name + " was seen.");
 

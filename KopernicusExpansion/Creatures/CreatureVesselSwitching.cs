@@ -63,8 +63,8 @@ namespace KopernicusExpansion.Creatures
 								currentVessel = FlightGlobals.Vessels [currentIndex];
 								if (currentVessel.loaded && currentVessel != FlightGlobals.ActiveVessel)
 								{
-									var cv = currentVessel.gameObject.GetComponent<CreatureVessel> ();
-									if (cv == null)
+									//only allow switching to non-creature vessels
+									if (!(currentVessel.rootPart is CreaturePart))
 									{
 										this.vesselList.Add (currentVessel);
 									}
@@ -94,8 +94,8 @@ namespace KopernicusExpansion.Creatures
 								currentVessel = FlightGlobals.Vessels [currentIndex];
 								if (currentVessel.loaded && currentVessel != FlightGlobals.ActiveVessel)
 								{
-									var cv = currentVessel.gameObject.GetComponent<CreatureVessel> ();
-									if (cv == null)
+									//only allow switching to non-creature vessels
+									if (!(currentVessel.rootPart is CreaturePart))
 									{
 										this.vesselList.Add (currentVessel);
 									}

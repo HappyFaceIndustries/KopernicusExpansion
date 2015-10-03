@@ -80,11 +80,13 @@
     <Compile Include="Creatures\AI\LookAtTargets.cs" />
     <Compile Include="Creatures\AI\Idle.cs" />
     <Compile Include="Creatures\AI\AlignWithUpAxis.cs" />
-    <Compile Include="Creatures\CreatureVessel.cs" />
     <Compile Include="Creatures\CreatureVesselSwitching.cs" />
     <Compile Include="Creatures\CreaturePart.cs" />
     <Compile Include="Creatures\CreatureFXMonger.cs" />
     <Compile Include="Creatures\PartModules\ModuleRemovePartBuoyancy.cs" />
+    <Compile Include="Creatures\CreatureVesselHandler.cs" />
+    <Compile Include="KopernicusExpansionLogger.cs" />
+    <Compile Include="KopernicusExpansionLoaderSystemAdder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -27,6 +27,8 @@ namespace KopernicusExpansion
 			AllowGasGiantAnimation = true;
 			AllowAdvancedCometShader = true;
 			AllowCometAnimation = true;
+			AllowCreatures = true;
+			AllowCreatureGore = true;
 
 			if (node == null)
 				return;
@@ -56,6 +58,10 @@ namespace KopernicusExpansion
 			bool.TryParse (node.GetValue ("allowRefractiveAtmospheres"), out allowRefractiveAtmospheres);
 			AllowRefractiveAtmospheres = allowRefractiveAtmospheres;
 
+			bool allowCreatures = true;
+			bool.TryParse (node.GetValue ("allowCreatures"), out allowCreatures);
+			AllowCreatures = allowCreatures;
+
 			bool allowCreatureGore = true;
 			bool.TryParse (node.GetValue ("allowCreatureGore"), out allowCreatureGore);
 			AllowCreatureGore = allowCreatureGore;
@@ -70,6 +76,7 @@ namespace KopernicusExpansion
 			node.AddValue ("allowAnimatedProceduralGasGiants", true);
 			node.AddValue ("allowRefractiveAtmospheres", true);
 			node.AddValue ("allowCreatureGore", true);
+			node.AddValue ("allowCreatures", true);
 			node.Save (ConfigPath);
 			return node;
 		}
@@ -101,6 +108,11 @@ namespace KopernicusExpansion
 			private set;
 		}
 		public static bool AllowRefractiveAtmospheres
+		{
+			get;
+			private set;
+		}
+		public static bool AllowCreatures
 		{
 			get;
 			private set;

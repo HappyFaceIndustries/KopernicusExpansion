@@ -1,11 +1,13 @@
 ﻿<Properties StartupItem="KopernicusExpansion\KopernicusExpansion.csproj" GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="KopernicusExpansion\Creatures\CreaturePart.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="KopernicusExpansion\Configuration\SubsurfaceOceans.cs">
     <Files>
-      <File FileName="KopernicusExpansion\Creatures\CreaturePart.cs" Line="161" Column="161" NotebookId="1" />
-      <File FileName="KopernicusExpansion\Creatures\Creature.cs" Line="121" Column="121" NotebookId="1" />
-      <File FileName="KopernicusExpansion\Creatures\CreatureSpawning.cs" Line="5" Column="5" NotebookId="1" />
-      <File FileName="KopernicusExpansion\Creatures\CreatureFXMonger.cs" Line="35" Column="35" NotebookId="1" />
+      <File FileName="KopernicusExpansion\Creatures\CreaturePart.cs" Line="17" Column="17" />
+      <File FileName="KopernicusExpansion\Creatures\Creature.cs" Line="5" Column="5" />
+      <File FileName="KopernicusExpansion\Creatures\CreatureSpawning.cs" Line="1" Column="1" />
+      <File FileName="KopernicusExpansion\Creatures\CreatureLoader.cs" Line="1" Column="1" />
+      <File FileName="KopernicusExpansion\Creatures\CreatureVesselHandler.cs" Line="4" Column="4" />
+      <File FileName="KopernicusExpansion\Configuration\SubsurfaceOceans.cs" Line="4" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
