@@ -87,6 +87,7 @@
     <Compile Include="Creatures\CreatureVesselHandler.cs" />
     <Compile Include="KopernicusExpansionLogger.cs" />
     <Compile Include="KopernicusExpansionLoaderSystemAdder.cs" />
+    <Compile Include="Configuration\HeightColorRamp.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
