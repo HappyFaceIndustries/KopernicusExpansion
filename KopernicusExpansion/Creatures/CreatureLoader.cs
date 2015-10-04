@@ -43,9 +43,6 @@ namespace KopernicusExpansion.Creatures
 			ConfigNode[] creatures = GameDatabase.Instance.GetConfigNodes ("CREATURE");
 			totalCreatures = creatures.Length;
 
-			//initlialize KopE loggers
-			KopernicusExpansionLogger.InitializeKopernicusExpansionLoggers ();
-
 			foreach (var node in creatures)
 			{
 				try

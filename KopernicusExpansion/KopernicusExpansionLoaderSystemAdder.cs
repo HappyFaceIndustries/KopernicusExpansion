@@ -77,6 +77,12 @@ namespace KopernicusExpansion
 				}
 			}
 		}
+
+		private void Start()
+		{
+			//initlialize KopE loggers
+			KopernicusExpansionLogger.InitializeKopernicusExpansionLoggers ();
+		}
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
