@@ -210,7 +210,7 @@ namespace KopernicusExpansion.Effects
 
 			obj.transform.parent = scaledVersion;
 			obj.transform.localPosition = Vector3.zero;
-			obj.transform.localScale = Vector3.one * tail.length;
+			obj.transform.localScale = (Vector3.one * tail.length);
 			obj.SetActive (true);
 			obj.layer = GameLayers.ScaledSpace;
 
@@ -239,7 +239,7 @@ namespace KopernicusExpansion.Effects
 		public FloatCurve brightnessCurve;
 
 		private Transform target;
-
+		
 		private float currentTime = 0f;
 		public int seed = 0;
 		public float speed = 0.05f;

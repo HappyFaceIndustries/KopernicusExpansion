@@ -255,10 +255,6 @@ namespace KopernicusExpansion.Effects
 				if (currentTime >= MaxTime)
 					currentTime = 0;
 
-				//debug
-				if (Input.GetKeyDown (KeyCode.H))
-					currentTime = MaxTime - (speed * 2f);
-
 				renderer.material.SetFloat ("_Evolution", currentTime);
 			}
 		}
