@@ -46,6 +46,10 @@ namespace KopernicusExpansion.Creatures
 				Utils.LogError ("CreaturePart " + partName + " did not have a valid creature");
 			}
 
+			//cache actual maxTemp and skinMaxTemp values
+			this.maxTemp = base.maxTemp;
+			this.skinMaxTemp = base.maxTemp;
+
 			//activate the part
 			base.force_activate ();
 
@@ -174,14 +178,17 @@ namespace KopernicusExpansion.Creatures
 			}
 
 			//heat simulation
-			maxTemp = double.MaxValue;
-			skinMaxTemp = double.MaxValue;
+			base.maxTemp = double.MaxValue;
+			base.skinMaxTemp = double.MaxValue;
 			UpdateHeatValues ();
 		}
 
+		public new double maxTemp;
+		public new double skinMaxTemp;
+
 		public void UpdateHeatValues()
 		{
-			if (temperature > 60000 || skinTemperature > 60000)
+			if (base.temperature > this.maxTemp || base.skinTemperature > this.skinMaxTemp)
 			{
 				GameEvents.onOverheat.Fire (new EventReport (FlightEvents.OVERHEAT, this, partInfo.title, "", 0, "", 0f));
 				if (creature.Gore.enabled)
