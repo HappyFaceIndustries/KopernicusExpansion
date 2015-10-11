@@ -88,6 +88,8 @@
     <Compile Include="KopernicusExpansionLogger.cs" />
     <Compile Include="KopernicusExpansionLoaderSystemAdder.cs" />
     <Compile Include="Configuration\HeightColorRamp.cs" />
+    <Compile Include="Configuration\MultipurposeNoise.cs" />
+    <Compile Include="Configuration\ParticleGrass.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
