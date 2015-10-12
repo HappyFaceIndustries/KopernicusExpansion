@@ -12,7 +12,7 @@ using KopernicusExpansion;
 using KopernicusExpansion.Effects;
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Configuration;
-using KopernicusExpansion.Configuration.MultipurposeNoise;
+using KopernicusExpansion.Configuration.ModularNoise;
 
 using UnityEngine;
 
@@ -102,12 +102,15 @@ namespace KopernicusExpansion.Effects
 	}
 }
 
-namespace KopernicusExpansion.Configuration.MultipurposeNoise
+namespace KopernicusExpansion.Configuration.ModularNoise
 {
 	//generic noise configurator
 	[RequireConfigType(ConfigType.Node)]
 	public class NoiseLoader : IParserEventSubscriber
 	{
+		[ParserTarget("name", optional = true)]
+		public string name;
+
 		[ParserTarget("type", optional = false)]
 		public EnumParser<NoiseType> noiseTypeParser
 		{
@@ -116,7 +119,7 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 				type = value.value;
 			}
 		}
-		[ParserTarget("seed", optional = false)]
+		[ParserTarget("seed", optional = true)]
 		public NumericParser<int> seedParser
 		{
 			set
@@ -124,7 +127,7 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 				seed = value.value;
 			}
 		}
-		[ParserTarget("octaves", optional = false)]
+		[ParserTarget("octaves", optional = true)]
 		public NumericParser<int> octavesParser
 		{
 			set
@@ -132,7 +135,7 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 				octaves = value.value;
 			}
 		}
-		[ParserTarget("frequency", optional = false)]
+		[ParserTarget("frequency", optional = true)]
 		public NumericParser<double> frequencyParser
 		{
 			set
@@ -140,7 +143,7 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 				frequency = value.value;
 			}
 		}
-		[ParserTarget("persistence", optional = false)]
+		[ParserTarget("persistence", optional = true)]
 		public NumericParser<double> persistenceParser
 		{
 			set
@@ -148,12 +151,36 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 				persistence = value.value;
 			}
 		}
-		[ParserTarget("lacunarity", optional = false)]
+		[ParserTarget("lacunarity", optional = true)]
 		public NumericParser<double> lacunarityParser
 		{
 			set
 			{
 				lacunarity = value.value;
+			}
+		}
+		[ParserTarget("displacement", optional = true)]
+		public NumericParser<double> displacementParser
+		{
+			set
+			{
+				displacement = value.value;
+			}
+		}
+		[ParserTarget("voronoiUseDistance", optional = true)]
+		public NumericParser<bool> voronoiUseDistanceParser
+		{
+			set
+			{
+				voronoiUseDistance = value.value;
+			}
+		}
+		[ParserTarget("constantValue", optional = true)]
+		public NumericParser<double> constantValueParser
+		{
+			set
+			{
+				constantValue = value.value;
 			}
 		}
 
@@ -165,6 +192,9 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 		private double frequency = 1;
 		private double persistence = 0.5;
 		private double lacunarity = 1.5;
+		private double displacement = 0;
+		private bool voronoiUseDistance = true;
+		private double constantValue = 0;
 
 		public void Apply(ConfigNode node)
 		{
@@ -182,6 +212,16 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 				perlin.Lacunarity = lacunarity;
 				perlin.Persistence = persistence;
 				Module = perlin;
+				break;
+			case NoiseType.Billow:
+				var billow = new Billow ();
+				billow.Quality = QualityMode.High;
+				billow.Seed = seed;
+				billow.OctaveCount = octaves;
+				billow.Frequency = frequency;
+				billow.Lacunarity = lacunarity;
+				billow.Persistence = persistence;
+				Module = billow;
 				break;
 			case NoiseType.RidgedMultiFractal:
 				var ridgedMultiFractal = new RiggedMultifractal ();
@@ -203,10 +243,15 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 			case NoiseType.Voronoi:
 				var voronoi = new Voronoi ();
 				voronoi.Seed = seed;
-				voronoi.UseDistance = true;
-				voronoi.Displacement = 0;
+				voronoi.UseDistance = voronoiUseDistance;
+				voronoi.Displacement = displacement;
 				voronoi.Frequency = frequency;
 				Module = voronoi;
+				break;
+			case NoiseType.Const:
+				var constant = new Const ();
+				constant.Value = constantValue;
+				Module = constant;
 				break;
 			}
 		}
@@ -214,9 +259,11 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 	public enum NoiseType
 	{
 		Perlin,
+		Billow,
 		RidgedMultiFractal,
 		Simplex,
-		Voronoi
+		Voronoi,
+		Const
 	}
 
 	//ModuleBase inheriting wrapper of Simplex class
@@ -358,24 +405,6 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 		}
 	}
 	[RequireConfigType(ConfigType.Node)]
-	public class SUB : MN_Operator
-	{
-		[ParserTarget("X", optional = false)]
-		public NumericParser<double> XParser
-		{
-			set
-			{
-				valueToSub = value.value;
-			}
-		}
-		public double valueToSub = 0f;
-
-		public override void Output (MN_Operator_OutputData data)
-		{
-			data.noiseValue -= valueToSub;
-		}
-	}
-	[RequireConfigType(ConfigType.Node)]
 	public class MULT : MN_Operator
 	{
 		[ParserTarget("X", optional = false)]
@@ -391,25 +420,6 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 		public override void Output (MN_Operator_OutputData data)
 		{
 			data.noiseValue *= valueToMult;
-		}
-	}
-	[RequireConfigType(ConfigType.Node)]
-	public class DIV : MN_Operator
-	{
-		[ParserTarget("X", optional = false)]
-		public NumericParser<double> XParser
-		{
-			set
-			{
-				valueToDiv = value.value;
-			}
-		}
-		public double valueToDiv = 0f;
-
-		public override void Output (MN_Operator_OutputData data)
-		{
-			if (valueToDiv != 0)
-				data.noiseValue /= valueToDiv;
 		}
 	}
 
@@ -498,6 +508,24 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 			data.noiseValue = (data.noiseValue + 1) * 0.5;
 		}
 	}
+	[RequireConfigType(ConfigType.Node)]
+	public class EXPONENT : MN_Operator
+	{
+		[ParserTarget("X", optional = false)]
+		public NumericParser<double> XParser
+		{
+			set
+			{
+				power = value.value;
+			}
+		}
+		public double power = 0f;
+
+		public override void Output (MN_Operator_OutputData data)
+		{
+			data.noiseValue = Math.Abs(Math.Pow (data.noiseValue, power)) * Math.Sign(data.noiseValue);
+		}
+	}
 
 	//curve operators
 	[RequireConfigType(ConfigType.Node)]
@@ -575,8 +603,16 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 
 	//input operators
 	[RequireConfigType(ConfigType.Node)]
-	public class YSCALE : MN_Operator
+	public class SCALE : MN_Operator
 	{
+		[ParserTarget("XScale", optional = false)]
+		public NumericParser<double> XScaleParser
+		{
+			set
+			{
+				XScale = value.value;
+			}
+		}
 		[ParserTarget("YScale", optional = false)]
 		public NumericParser<double> YScaleParser
 		{
@@ -585,11 +621,21 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 				YScale = value.value;
 			}
 		}
+		[ParserTarget("ZScale", optional = false)]
+		public NumericParser<double> ZScaleParser
+		{
+			set
+			{
+				ZScale = value.value;
+			}
+		}
+		public double XScale = 0f;
 		public double YScale = 0f;
+		public double ZScale = 0f;
 
 		public override void Input (MN_Operator_InputData data)
 		{
-			data.inputVector.y *= YScale;
+			data.inputVector.Scale(new Vector3d(XScale, YScale, ZScale));
 		}
 	}
 	[RequireConfigType(ConfigType.Node)]
@@ -683,7 +729,7 @@ namespace KopernicusExpansion.Configuration.MultipurposeNoise
 			double y2 = sY.GetValue (x + pertubeY1, y + pertubeY2, z + pertubeY3) * power;
 			double z2 = sZ.GetValue (x + pertubeZ1, y + pertubeZ2, z + pertubeZ3) * power;
 
-			data.inputVector = new Vector3d (x + x2, y + y2, z + z2);
+			data.inputVector = new Vector3d (x + x2, y + y2, z + z2).normalized;
 		}
 	}
 }
