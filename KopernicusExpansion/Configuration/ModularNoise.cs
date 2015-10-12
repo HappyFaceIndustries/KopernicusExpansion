@@ -28,7 +28,7 @@ namespace Kopernicus.Configuration.ModLoader
 		//constructor
 		public ModularNoise()
 		{
-			_mod = new GameObject ("MultipurposeNoise").AddComponent<PQSMod_MultipurposeNoise> ();
+			_mod = new GameObject ("ModularNoise").AddComponent<PQSMod_ModularNoise> ();
 			_mod.transform.parent = Kopernicus.Utility.Deactivator;
 			base.mod = _mod;
 		}
