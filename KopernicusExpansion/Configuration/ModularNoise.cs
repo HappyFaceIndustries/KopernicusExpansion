@@ -28,8 +28,9 @@ namespace Kopernicus.Configuration.ModLoader
 		//constructor
 		public ModularNoise()
 		{
-			_mod = new GameObject ("ModularNoise").AddComponent<PQSMod_ModularNoise> ();
-			_mod.transform.parent = Kopernicus.Utility.Deactivator;
+			var modObj = new GameObject ("ModularNoise");
+			modObj.transform.parent = Kopernicus.Utility.Deactivator;
+			_mod = modObj.AddComponent<PQSMod_ModularNoise> ();
 			base.mod = _mod;
 		}
 
@@ -43,6 +44,7 @@ namespace Kopernicus.Configuration.ModLoader
 				_mod.noise = value.Module;
 			}
 		}
+
 		[ParserTarget("deformity", optional = true)]
 		public NumericParser<double> deformity
 		{
@@ -65,6 +67,12 @@ namespace Kopernicus.Configuration.ModLoader
 				return a.order.CompareTo(b.order);
 			});
 
+			Logger.Active.Log ("ModularNoise Operators:");
+			foreach(var op in Operators)
+			{
+				Logger.Active.Log (op.order + " => " + op.GetType ().Name);
+			}
+
 			_mod.Operators = Operators.ToArray ();
 		}
 	}
@@ -83,6 +91,30 @@ namespace KopernicusExpansion.Effects
 
 		public override void OnVertexBuildHeight (PQS.VertexBuildData data)
 		{
+			if (Operators == null)
+			{
+				Debug.Log ("Operators is null!");
+			}
+			if (noise == null)
+			{
+				Debug.Log ("noise is null!");
+			}
+			if(Operators == null || noise == null)
+				Utils.GameObjectWalk (sphere.gameObject);
+
+			Debug.Log ("Resources.FindAll stuff...");
+			foreach (var mn in UnityEngine.Resources.FindObjectsOfTypeAll<PQSMod_ModularNoise>())
+			{
+				Debug.Log ("mn: " + mn.name + " => " + mn.enabled + " | " + mn.gameObject.activeSelf + " => " + mn.transform.parent.name);
+				Debug.Log ("mn C: " + mn.deformity + ", Operators: " + (mn.Operators == null ? "NULL" : "NON-NULL") + ", noise: " + (mn.noise == null ? "NULL" : "NON-NULL"));
+			}
+			Debug.Log ("sphere.GetComponent stuff...");
+			foreach (var mn in sphere.GetComponentsInChildren<PQSMod_ModularNoise>())
+			{
+				Debug.Log ("mnS: " + mn.name + " => " + mn.enabled + " | " + mn.gameObject.activeSelf + " => " + mn.transform.parent.name);
+				Debug.Log ("mnS C: " + mn.deformity + ", Operators: " + (mn.Operators == null ? "NULL" : "NON-NULL") + ", noise: " + (mn.noise == null ? "NULL" : "NON-NULL"));
+			}
+
 			var input = new MN_Operator_InputData (data.directionFromCenter);
 			foreach (var op in Operators)
 			{
