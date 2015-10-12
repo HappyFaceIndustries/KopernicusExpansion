@@ -23,17 +23,17 @@ using LibNoise.Unity.Generator;
 namespace Kopernicus.Configuration.ModLoader
 {
 	[RequireConfigType(ConfigType.Node)]
-	public class MultipurposeNoise : ModLoader, IParserEventSubscriber
+	public class ModularNoise : ModLoader, IParserEventSubscriber
 	{
 		//constructor
-		public MultipurposeNoise()
+		public ModularNoise()
 		{
 			_mod = new GameObject ("MultipurposeNoise").AddComponent<PQSMod_MultipurposeNoise> ();
 			_mod.transform.parent = Kopernicus.Utility.Deactivator;
 			base.mod = _mod;
 		}
 
-		private PQSMod_MultipurposeNoise _mod;
+		private PQSMod_ModularNoise _mod;
 
 		[ParserTarget("Noise", optional = false)]
 		public NoiseLoader Noise
@@ -72,7 +72,7 @@ namespace Kopernicus.Configuration.ModLoader
 
 namespace KopernicusExpansion.Effects
 {
-	public class PQSMod_MultipurposeNoise : PQSMod
+	public class PQSMod_ModularNoise : PQSMod
 	{
 		//operators
 		public MN_Operator[] Operators;
