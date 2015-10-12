@@ -605,7 +605,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	[RequireConfigType(ConfigType.Node)]
 	public class SCALE : MN_Operator
 	{
-		[ParserTarget("XScale", optional = false)]
+		[ParserTarget("XScale", optional = true)]
 		public NumericParser<double> XScaleParser
 		{
 			set
@@ -613,7 +613,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 				XScale = value.value;
 			}
 		}
-		[ParserTarget("YScale", optional = false)]
+		[ParserTarget("YScale", optional = true)]
 		public NumericParser<double> YScaleParser
 		{
 			set
@@ -621,7 +621,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 				YScale = value.value;
 			}
 		}
-		[ParserTarget("ZScale", optional = false)]
+		[ParserTarget("ZScale", optional = true)]
 		public NumericParser<double> ZScaleParser
 		{
 			set
