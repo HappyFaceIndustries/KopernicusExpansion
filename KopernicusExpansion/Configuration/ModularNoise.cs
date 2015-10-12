@@ -52,7 +52,7 @@ namespace Kopernicus.Configuration.ModLoader
 			}
 		}
 
-		[ParserTargetCollection("Operators", optional = true, typePrefix = "KopernicusExpansion.Configuration.MultipurposeNoise.", nameSignificance = NameSignificance.Type)]
+		[ParserTargetCollection("Operators", optional = true, typePrefix = "KopernicusExpansion.Configuration.ModularNoise.", nameSignificance = NameSignificance.Type)]
 		public List<MN_Operator> Operators;
 
 		public void Apply(ConfigNode node)
