@@ -144,7 +144,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 		public string name;
 
 		[ParserTarget("type", optional = false)]
-		public EnumParser<NoiseType> noiseTypeParser
+		private EnumParser<NoiseType> noiseTypeParser
 		{
 			set
 			{
@@ -152,7 +152,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("seed", optional = true)]
-		public NumericParser<int> seedParser
+		private NumericParser<int> seedParser
 		{
 			set
 			{
@@ -160,7 +160,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("octaves", optional = true)]
-		public NumericParser<int> octavesParser
+		private NumericParser<int> octavesParser
 		{
 			set
 			{
@@ -168,7 +168,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("frequency", optional = true)]
-		public NumericParser<double> frequencyParser
+		private NumericParser<double> frequencyParser
 		{
 			set
 			{
@@ -176,7 +176,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("persistence", optional = true)]
-		public NumericParser<double> persistenceParser
+		private NumericParser<double> persistenceParser
 		{
 			set
 			{
@@ -184,7 +184,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("lacunarity", optional = true)]
-		public NumericParser<double> lacunarityParser
+		private NumericParser<double> lacunarityParser
 		{
 			set
 			{
@@ -192,7 +192,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("displacement", optional = true)]
-		public NumericParser<double> displacementParser
+		private NumericParser<double> displacementParser
 		{
 			set
 			{
@@ -200,7 +200,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("voronoiUseDistance", optional = true)]
-		public NumericParser<bool> voronoiUseDistanceParser
+		private NumericParser<bool> voronoiUseDistanceParser
 		{
 			set
 			{
@@ -208,7 +208,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("constantValue", optional = true)]
-		public NumericParser<double> constantValueParser
+		private NumericParser<double> constantValueParser
 		{
 			set
 			{
@@ -218,7 +218,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 
 		public ModuleBase Module;
 
-		private NoiseType type = NoiseType.Perlin;
+		public NoiseType type = NoiseType.Perlin;
 		private int seed = 0;
 		private int octaves = 4;
 		private double frequency = 1;
@@ -377,7 +377,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public abstract class MN_Operator
 	{
 		[ParserTarget("order", optional = false)]
-		public NumericParser<int> orderParser
+		private NumericParser<int> orderParser
 		{
 			set
 			{
@@ -422,7 +422,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class ADD : MN_Operator
 	{
 		[ParserTarget("X", optional = false)]
-		public NumericParser<double> XParser
+		private NumericParser<double> XParser
 		{
 			set
 			{
@@ -440,7 +440,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class MULT : MN_Operator
 	{
 		[ParserTarget("X", optional = false)]
-		public NumericParser<double> XParser
+		private NumericParser<double> XParser
 		{
 			set
 			{
@@ -468,7 +468,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class CLAMP : MN_Operator
 	{
 		[ParserTarget("min", optional = false)]
-		public NumericParser<double> minParser
+		private NumericParser<double> minParser
 		{
 			set
 			{
@@ -476,7 +476,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("max", optional = false)]
-		public NumericParser<double> maxParser
+		private NumericParser<double> maxParser
 		{
 			set
 			{
@@ -498,7 +498,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class MIN : MN_Operator
 	{
 		[ParserTarget("min", optional = false)]
-		public NumericParser<double> minParser
+		private NumericParser<double> minParser
 		{
 			set
 			{
@@ -517,7 +517,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class MAX : MN_Operator
 	{
 		[ParserTarget("max", optional = false)]
-		public NumericParser<double> minParser
+		private NumericParser<double> minParser
 		{
 			set
 			{
@@ -544,7 +544,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class EXPONENT : MN_Operator
 	{
 		[ParserTarget("X", optional = false)]
-		public NumericParser<double> XParser
+		private NumericParser<double> XParser
 		{
 			set
 			{
@@ -564,7 +564,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class CURVE : MN_Operator
 	{
 		[ParserTarget("Curve", optional = false)]
-		public FloatCurveParser curveParser
+		private FloatCurveParser curveParser
 		{
 			set
 			{
@@ -582,7 +582,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class DEFORMITYCURVE : MN_Operator
 	{
 		[ParserTarget("DeformityCurve", optional = false)]
-		public FloatCurveParser deformityCurveParser
+		private FloatCurveParser deformityCurveParser
 		{
 			set
 			{
@@ -600,7 +600,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class LATITUDECURVE : MN_Operator
 	{
 		[ParserTarget("LatitudeCurve", optional = false)]
-		public FloatCurveParser latitudeCurveParser
+		private FloatCurveParser latitudeCurveParser
 		{
 			set
 			{
@@ -618,7 +618,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class LONGITUDECURVE : MN_Operator
 	{
 		[ParserTarget("LongitudeCurve", optional = false)]
-		public FloatCurveParser longitudeCurveParser
+		private FloatCurveParser longitudeCurveParser
 		{
 			set
 			{
@@ -638,7 +638,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	public class SCALE : MN_Operator
 	{
 		[ParserTarget("XScale", optional = true)]
-		public NumericParser<double> XScaleParser
+		private NumericParser<double> XScaleParser
 		{
 			set
 			{
@@ -646,7 +646,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("YScale", optional = true)]
-		public NumericParser<double> YScaleParser
+		private NumericParser<double> YScaleParser
 		{
 			set
 			{
@@ -654,7 +654,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("ZScale", optional = true)]
-		public NumericParser<double> ZScaleParser
+		private NumericParser<double> ZScaleParser
 		{
 			set
 			{
@@ -675,7 +675,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 	{
 		[PreApply]
 		[ParserTarget("seed", optional = false)]
-		public NumericParser<int> seedParser
+		private NumericParser<int> seedParser
 		{
 			set
 			{
@@ -684,7 +684,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 		}
 
 		[ParserTarget("frequency", optional = false)]
-		public NumericParser<double> frequencyParser
+		private NumericParser<double> frequencyParser
 		{
 			set
 			{
@@ -692,7 +692,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("persistence", optional = false)]
-		public NumericParser<double> persistenceParser
+		private NumericParser<double> persistenceParser
 		{
 			set
 			{
@@ -701,7 +701,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 		}
 
 		[ParserTarget("power", optional = false)]
-		public NumericParser<double> powerParser
+		private NumericParser<double> powerParser
 		{
 			set
 			{
@@ -709,7 +709,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			}
 		}
 		[ParserTarget("roughness", optional = false)]
-		public NumericParser<int> roughnessParser
+		private NumericParser<int> roughnessParser
 		{
 			set
 			{
