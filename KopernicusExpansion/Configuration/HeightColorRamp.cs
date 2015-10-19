@@ -18,7 +18,7 @@ using UnityEngine;
 
 using LibNoise.Unity;
 
-namespace KopernicusExpansion.Configuration
+namespace Kopernicus.Configuration.ModLoader
 {
 	[RequireConfigType(ConfigType.Node)]
 	public class HeightColorRamp : ModLoader, IParserEventSubscriber
