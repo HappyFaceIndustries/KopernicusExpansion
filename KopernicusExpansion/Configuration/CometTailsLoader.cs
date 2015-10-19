@@ -6,6 +6,7 @@ using KopernicusExpansion.Editors;
 using KopernicusExpansion.Effects;
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Resources;
+using KopernicusExpansion.Utility.Noise;
 using KopernicusExpansion.Utility.Geometry;
 
 using Kopernicus;

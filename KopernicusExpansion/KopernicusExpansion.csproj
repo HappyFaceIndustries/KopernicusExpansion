@@ -42,7 +42,7 @@
       <HintPath>..\..\..\References\1.0.4\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="Kopernicus">
-      <HintPath>..\..\..\References\Kopernicus\Kopernicus.dll</HintPath>
+      <HintPath>..\..\..\..\..\KSP\ksp_win_1.0_B_planet_testing\KSP_win\GameData\Kopernicus\Plugins\Kopernicus.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -58,7 +58,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Utility\ImprovedPerlinNoise.cs" />
     <Compile Include="Configuration\ProceduralGasGiantLoader.cs" />
     <Compile Include="Configuration\RefractiveAtmosphereLoader.cs" />
     <Compile Include="KopernicusExpansionSettings.cs" />
@@ -90,6 +89,11 @@
     <Compile Include="Configuration\HeightColorRamp.cs" />
     <Compile Include="Configuration\ParticleGrass.cs" />
     <Compile Include="Configuration\ModularNoise.cs" />
+    <Compile Include="Configuration\DebugHeightColor.cs" />
+    <Compile Include="Utility\Serialization\SerializedPQSMod.cs" />
+    <Compile Include="Configuration\NoiseLoader.cs" />
+    <Compile Include="Utility\Noise\ExDistPerlin.cs" />
+    <Compile Include="Utility\Noise\ImprovedPerlinNoise.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -150,5 +154,7 @@
     <Folder Include="Creatures\" />
     <Folder Include="Creatures\AI\" />
     <Folder Include="Creatures\PartModules\" />
+    <Folder Include="Utility\Serialization\" />
+    <Folder Include="Utility\Noise\" />
   </ItemGroup>
 </Project>

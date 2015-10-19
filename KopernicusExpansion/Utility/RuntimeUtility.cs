@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Kopernicus;
 
+using KopernicusExpansion.Effects;
+using KopernicusExpansion.Configuration;
+
 namespace KopernicusExpansion.Utility
 {
 	[KSPAddon(KSPAddon.Startup.MainMenu, true)]

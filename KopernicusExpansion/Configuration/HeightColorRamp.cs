@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Collections;
 using System.Collections.Generic;
 
 using Kopernicus;
@@ -11,46 +12,49 @@ using Kopernicus.Configuration.ModLoader;
 using KopernicusExpansion.Effects;
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Configuration;
+using KopernicusExpansion.Utility.Serialization;
 
 using UnityEngine;
 
-using Gradient = Kopernicus.Configuration.Gradient;
+using LibNoise.Unity;
 
 namespace KopernicusExpansion.Configuration
 {
 	[RequireConfigType(ConfigType.Node)]
 	public class HeightColorRamp : ModLoader, IParserEventSubscriber
 	{
+		//constructor
 		public HeightColorRamp ()
 		{
-			_mod = new GameObject ("HeightColorRamp").AddComponent<PQSMod_SubsurfaceOceans> ();
+			var modObject = new GameObject ("HeightColorRamp");
+			_mod = modObject.AddComponent<PQSMod_HeightColorRamp> ();
 			_mod.transform.parent = Kopernicus.Utility.Deactivator;
+			var tempRamp = new ColorRamp ();
+			tempRamp.Add (Color.white, Color.black, 0f);
+			_mod.SetProperty ("Ramp", tempRamp);
 			base.mod = _mod;
-			_mod.simplex = new Simplex (0, 3, 0.5, 20);
-			_mod.Ramp = new Gradient ();
-			_mod.Ramp.Add (0f, Color.white);
-			_mod.NoiseRamp = new Gradient ();
-			_mod.NoiseRamp.Add (0f, Color.white);
 		}
 
 		private PQSMod_HeightColorRamp _mod;
 
-		[ParserTarget("ColorRamp", optional = false)]
-		public Gradient ColorRamp
+		[ParserTarget("ColorRamp", optional = true)]
+		public ColorRamp ColorRamp
 		{
 			set
 			{
-				_mod.Ramp = value;
+				_mod.SetProperty ("Ramp", value);
 			}
 		}
-		[ParserTarget("NoiseColorRamp", optional = false)]
-		public Gradient NoiseColorRamp
+
+		[ParserTarget("Noise", optional = true)]
+		public NoiseLoader Noise
 		{
 			set
 			{
-				_mod.NoiseRamp = value;
+				_mod.SetProperty ("Noise", value.Module);
 			}
 		}
+
 		[ParserTarget("blend", optional = true)]
 		public NumericParser<float> blend
 		{
@@ -68,58 +72,180 @@ namespace KopernicusExpansion.Configuration
 			}
 		}
 
-		[PreApply]
-		[ParserTarget("seed", optional = true)]
-		public NumericParser<int> seed
+		void IParserEventSubscriber.Apply(ConfigNode node)
 		{
-			set
+
+		}
+		void IParserEventSubscriber.PostApply(ConfigNode node)
+		{
+
+		}
+	}
+
+	[RequireConfigType(ConfigType.Node)]
+	public class ColorRamp : IParserEventSubscriber, IEnumerable<ColorRamp.ColorRampKeyframe>
+	{
+		//constructor
+		public ColorRamp()
+		{
+			r = new FloatCurve();
+			g = new FloatCurve();
+			b = new FloatCurve();
+
+			rn = new FloatCurve();
+			gn = new FloatCurve();
+			bn = new FloatCurve();
+
+			keyframes = new List<ColorRampKeyframe> ();
+		}
+
+		FloatCurve r;
+		FloatCurve g;
+		FloatCurve b;
+
+		FloatCurve rn;
+		FloatCurve gn;
+		FloatCurve bn;
+
+		private List<ColorRampKeyframe> keyframes;
+		public ColorRampKeyframe this[int index]
+		{
+			get
 			{
-				_mod.simplex.seed = value.value;
+				return keyframes [index];
 			}
 		}
-		[ParserTarget("frequency", optional = true)]
-		public NumericParser<double> frequency
+		public IEnumerator<ColorRampKeyframe> GetEnumerator()
 		{
-			set
-			{
-				_mod.simplex.frequency = value.value;
-			}
+			return keyframes.GetEnumerator ();
 		}
-		[ParserTarget("persistence", optional = true)]
-		public NumericParser<double> persistence
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			set
-			{
-				_mod.simplex.persistence = value.value;
-			}
+			return keyframes.GetEnumerator();
 		}
-		[ParserTarget("octaves", optional = true)]
-		public NumericParser<int> octaves
+
+		public Color ColorAt(float height)
+		{
+			var color = new Color (r.Evaluate (height), g.Evaluate (height), b.Evaluate (height));
+			return color;
+		}
+		public Color NoiseAt(float height)
+		{
+			var noise = new Color (rn.Evaluate (height), gn.Evaluate (height), bn.Evaluate (height));
+			return noise;
+		}
+
+		public void Add(Color color, Color noise, float height)
+		{
+			this.Add (new ColorRampKeyframe (color, noise, height));
+		}
+		public void Add(ColorRampKeyframe key)
+		{
+			r.Add (key.height, key.color.r);
+			g.Add (key.height, key.color.g);
+			b.Add (key.height, key.color.b);
+
+			rn.Add (key.height, key.noise.r);
+			gn.Add (key.height, key.noise.g);
+			bn.Add (key.height, key.noise.b);
+
+			keyframes.Add (key);
+		}
+
+		public bool Is32 = false;
+		[ParserTarget("Is32", optional = true)]
+		public NumericParser<bool> Is32Parser
 		{
 			set
 			{
-				_mod.simplex.octaves = value.value;
+				Is32 = value.value;
 			}
 		}
 
 		public void Apply(ConfigNode node)
 		{
+			foreach (ConfigNode.Value value in node.values)
+			{
+				float height;
+				if (float.TryParse (value.name, out height))
+				{
+					string[] splitString = value.value.Split (new char[]{ '|' }, 2, StringSplitOptions.RemoveEmptyEntries);
+					if (Is32)
+					{
+						var colorParser = new Color32Parser();
 
+						colorParser.SetFromString (splitString [0]);
+						var color = colorParser.value;
+
+						colorParser.SetFromString (splitString [1]);
+						var noise = colorParser.value;
+
+						Add (color, noise, height);
+					}
+					else
+					{
+						var colorParser = new ColorParser();
+
+						colorParser.SetFromString (splitString [0]);
+						var color = colorParser.value;
+
+						colorParser.SetFromString (splitString [1]);
+						var noise = colorParser.value;
+
+						Add (color, noise, height);
+					}
+				}
+			}
 		}
 		public void PostApply(ConfigNode node)
 		{
+		}
 
+		public struct ColorRampKeyframe
+		{
+			public Color color;
+			public Color noise;
+			public float height;
+			public ColorRampKeyframe(Color color, Color noise, float height)
+			{
+				this.color = color;
+				this.noise = noise;
+				this.height = height;
+			}
+
+			public override string ToString ()
+			{
+				return "ColorRamp.ColorRampKeyframe (" + height + ": " + color.ToString () + " -> " + noise.ToString () + ")";
+			}
 		}
 	}
 }
 
 namespace KopernicusExpansion.Effects
 {
-	public class PQSMod_HeightColorRamp : PQSMod
+	public class PQSMod_HeightColorRamp : SerializedPQSMod
 	{
-		public Gradient Ramp;
-		public Gradient NoiseRamp;
-		public Simplex simplex;
+		private ColorRamp __Ramp;
+		public ColorRamp Ramp
+		{
+			get
+			{
+				if (__Ramp == null)
+					__Ramp = (ColorRamp)GetProperty ("Ramp");
+				return __Ramp;
+			}
+		}
+		private ModuleBase __Noise;
+		public ModuleBase Noise
+		{
+			get
+			{
+				if (__Noise == null)
+					__Noise = (ModuleBase)GetProperty ("Noise");
+				return __Noise;
+			}
+		}
+
 		public float BaseColorBias = 0.2f;
 		public float blend = 1.0f;
 
@@ -133,9 +259,13 @@ namespace KopernicusExpansion.Effects
 			float height = (float)(data.vertHeight - sphere.radius);
 
 			var color = Ramp.ColorAt (height);
-			var noiseColor = Ramp.ColorAt (height);
+			var noiseColor = Ramp.NoiseAt (height);
 
-			double noise = simplex.noiseNormalized (data.directionFromCenter);
+			double noise = 0;
+			if(Noise != null)
+			{
+				noise = (Noise.GetValue (data.directionFromCenter) + 1) * 0.5;
+			}
 			float noiseAmount = Mathf.Clamp01 ((float)noise - BaseColorBias);
 
 			data.vertColor = Color.Lerp (data.vertColor, Color.Lerp (color, noiseColor, noiseAmount), blend);

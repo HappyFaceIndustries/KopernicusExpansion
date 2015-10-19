@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace KopernicusExpansion.Utility
+namespace KopernicusExpansion.Utility.Noise
 {
 	public class ImprovedPerlinNoise
 	{

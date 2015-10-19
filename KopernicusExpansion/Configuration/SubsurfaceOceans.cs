@@ -16,7 +16,7 @@ using KopernicusExpansion.Utility.Geometry;
 
 using UnityEngine;
 
-namespace Kopernicus.Configuration.ModLoader
+namespace KopernicusExpansion.Configuration
 {
 	[RequireConfigType(ConfigType.Node)]
 	public class SubsurfaceOceans : ModLoader, IParserEventSubscriber
@@ -73,41 +73,172 @@ namespace KopernicusExpansion.Effects
 	public class PQSMod_RemoveTrianglesBelowAltitude : PQSMod
 	{
 		public double altitude = 0;
+		private double sphereAltitude = 0;
 
 		private double[] vertHeights;
+
+		public override void OnSetup ()
+		{
+			sphereAltitude = altitude + sphere.radius;
+		}
 
 		public override void OnQuadPreBuild (PQ quad)
 		{
 			vertHeights = new double[PQS.cacheVertCount];
 		}
+		static bool hasRun = false;
 		public override void OnQuadBuilt (PQ quad)
 		{
-			var mesh = quad.meshFilter.sharedMesh;
-			var tris = mesh.triangles;
-			var colors = mesh.colors;
-
-			for (int i = 0; i < tris.Length; i += 3)
+			try
 			{
-				int t1 = tris [i];
-				int t2 = tris [i + 1];
-				int t3 = tris [i + 2];
-				double alt = sphere.radius + altitude;
+				if (!hasRun)
+					Debug.Log ("0");
 
-				if (vertHeights [t1] < alt || vertHeights [t2] < alt || vertHeights [t3] < alt)
+				bool shouldRemoveTris = false;
+				bool shouldRemovePQ = false;
+
+				double maxAlt = double.MinValue;
+				foreach (var alt in vertHeights)
 				{
-					tris [i] = 0;
-					tris [i + 1] = 0;
-					tris [i + 2] = 0;
-					colors [t1] = Color.magenta;
-					colors [t2] = Color.magenta;
-					colors [t3] = Color.magenta;
-				}
-			}
+					if (alt > maxAlt)
+						maxAlt = alt;
 
-			mesh.colors = colors;
-			mesh.triangles = tris;
-			quad.mesh = mesh;
-			quad.meshFilter.sharedMesh = mesh;
+					if (alt < sphereAltitude)
+						shouldRemoveTris = true;
+				}
+
+				if (!hasRun)
+					Debug.Log ("1");
+
+				//if all triangles are below threshold, just remove quad
+				if (maxAlt < sphereAltitude)
+				{
+					shouldRemoveTris = false;
+					shouldRemovePQ = true;
+				}
+
+				if (!hasRun)
+					Debug.Log ("2");
+
+				if(shouldRemoveTris)
+				{
+					if (!hasRun)
+						Debug.Log ("2.5");
+
+					//TODO: try disabling meshRenderer/Collider in the Update function
+					if(quad.meshRenderer != null)
+						quad.meshRenderer.enabled = false;
+					else
+					{
+						var pqmr = quad.GetComponent<MeshRenderer>();
+						if(pqmr != null)
+							pqmr.enabled = false;
+					}
+					if(quad.meshCollider != null)
+						quad.meshCollider.enabled = false;
+					else
+					{
+						var pqmc = quad.GetComponent<MeshCollider>();
+						if(pqmc != null)
+							pqmc.enabled = false;
+					}
+
+					if (!hasRun)
+						Debug.Log ("3");
+
+					GameObject obj = new GameObject ("PQ_TrianglesRemoved");
+					obj.transform.parent = quad.transform;
+					obj.transform.localPosition = Vector3.zero;
+					obj.transform.rotation = quad.transform.rotation;
+					obj.SetActive (true);
+					obj.layer = GameLayers.LocalSpace;
+
+					if (!hasRun)
+						Debug.Log ("4");
+
+					var mf = obj.AddComponent<MeshFilter> ();
+					var mr = obj.AddComponent<MeshRenderer> ();
+					var mc = obj.AddComponent<MeshCollider> ();
+
+					if (!hasRun)
+						Debug.Log ("5");
+
+					mf.mesh = new CopyMesh (quad.mesh);
+
+					if (!hasRun)
+						Debug.Log ("6");
+
+					mr.sharedMaterial = quad.meshRenderer.sharedMaterial;
+					mr.receiveShadows = true;
+					mr.castShadows = true;
+
+					if (!hasRun)
+						Debug.Log ("7");
+
+					mc.convex = false;
+					mc.sharedMesh = mf.sharedMesh;
+					mc.smoothSphereCollisions = true;
+
+					if (!hasRun)
+						Debug.Log ("8");
+
+					var mesh = mf.sharedMesh;
+					var tris = mesh.triangles;
+					if (!hasRun)
+						Debug.Log ("9");
+					for (int i = 0; i < tris.Length; i += 3)
+					{
+						int t1 = tris [i];
+						int t2 = tris [i + 1];
+						int t3 = tris [i + 2];
+
+						if (vertHeights [t1] < sphereAltitude || vertHeights [t2] < sphereAltitude || vertHeights [t3] < sphereAltitude)
+						{
+							tris [i] = 0;
+							tris [i + 1] = 0;
+							tris [i + 2] = 0;
+						}
+					}
+					if (!hasRun)
+						Debug.Log ("10");
+					mesh.triangles = tris;
+					if (!hasRun)
+						Debug.Log ("11");
+
+					quad.gameObject.AddComponent<WireframeViewer> ();
+
+					if (!hasRun)
+						Debug.Log ("12");
+				}
+				else if(shouldRemovePQ)
+				{
+					if (!hasRun)
+						Debug.Log ("13");
+
+					if(quad.meshRenderer != null)
+						quad.meshRenderer.enabled = false;
+					else
+					{
+						var pqmr = quad.GetComponent<MeshRenderer>();
+						if(pqmr != null)
+							pqmr.enabled = false;
+					}
+					if(quad.meshCollider != null)
+						quad.meshCollider.enabled = false;
+					else
+					{
+						var pqmc = quad.GetComponent<MeshCollider>();
+						if(pqmc != null)
+							pqmc.enabled = false;
+					}
+
+					if (!hasRun)
+						Debug.Log ("14");
+				}
+
+				hasRun = true;
+			}
+			catch(Exception e){Debug.LogException (e); hasRun = true;}
 		}
 		public override void OnVertexBuildHeight (PQS.VertexBuildData data)
 		{
@@ -115,6 +246,15 @@ namespace KopernicusExpansion.Effects
 				return;
 
 			vertHeights [data.vertIndex] = data.vertHeight;
+		}
+
+		public override void OnQuadDestroy (PQ quad)
+		{
+			var removeTris = quad.transform.FindChild ("PQ_TrianglesRemoved");
+			if (removeTris != null)
+			{
+				Destroy (removeTris.gameObject);
+			}
 		}
 	}
 	public class PQSMod_SubsurfaceOceans : PQSMod
