@@ -729,6 +729,77 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			MN.SetInput (applyTo, input);
 		}
 	}
+	[RequireConfigType(ConfigType.Node)]
+	public class ROTATE : MN_Operator, IParserEventSubscriber
+	{
+		[ParserTarget("XAngle", optional = true)]
+		private NumericParser<double> XAngleParser
+		{
+			set
+			{
+				XAngle = value.value;
+			}
+		}
+		[ParserTarget("YAngle", optional = true)]
+		private NumericParser<double> YAngleParser
+		{
+			set
+			{
+				YAngle = value.value;
+			}
+		}
+		[ParserTarget("ZAngle", optional = true)]
+		private NumericParser<double> ZAngleParser
+		{
+			set
+			{
+				ZAngle = value.value;
+			}
+		}
+		private double XAngle = 0;
+		private double YAngle = 0;
+		private double ZAngle = 0;
+
+		private Matrix4x4D rotationMatrix;
+
+		public void Apply(ConfigNode node)
+		{
+		}
+		public void PostApply(ConfigNode node)
+		{
+			rotationMatrix = new Matrix4x4D ();
+
+			var xc = Math.Cos(XAngle * Mathf.Deg2Rad);
+			var yc = Math.Cos(YAngle * Mathf.Deg2Rad);
+			var zc = Math.Cos(ZAngle * Mathf.Deg2Rad);
+			var xs = Math.Sin(XAngle * Mathf.Deg2Rad);
+			var ys = Math.Sin(YAngle * Mathf.Deg2Rad);
+			var zs = Math.Sin(ZAngle * Mathf.Deg2Rad);
+			//x = 0
+			//y = 1
+			//z = 2
+			rotationMatrix.m00 = ys * xs * zs + yc * zc;
+			rotationMatrix.m10 = xc * zs;
+			rotationMatrix.m20 = ys * zc - yc * xs * zs;
+			rotationMatrix.m01 = ys * xs * zc - yc * zs;
+			rotationMatrix.m11 = xc * zc;
+			rotationMatrix.m21 = -yc * xs * zc - ys * zs;
+			rotationMatrix.m02 = -ys * xc;
+			rotationMatrix.m12 = xs;
+			rotationMatrix.m22 = yc * xc;
+		}
+
+		public override void Input (MN_Operator_InputData data)
+		{
+			var input = MN.GetInput (applyTo);
+
+			var nx = (rotationMatrix.m00 * input.x) + (rotationMatrix.m10 * input.y) + (rotationMatrix.m20 * input.z);
+			var ny = (rotationMatrix.m01 * input.x) + (rotationMatrix.m11 * input.y) + (rotationMatrix.m21 * input.z);
+			var nz = (rotationMatrix.m02 * input.x) + (rotationMatrix.m12 * input.y) + (rotationMatrix.m22 * input.z);
+
+			MN.SetInput (applyTo, input);
+		}
+	}
 	#endregion
 
 	//selector modules
