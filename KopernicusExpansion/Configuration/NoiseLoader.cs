@@ -28,11 +28,15 @@ namespace KopernicusExpansion.Configuration
 			}
 		}
 		[ParserTarget("seed", optional = true)]
-		private NumericParser<int> seedParser
+		private string seedParser
 		{
 			set
 			{
-				seed = value.value;
+				if (!int.TryParse (value, out seed))
+				{
+					//if it can't parse the seed into an int, use the string's hashcode
+					seed = value.GetHashCode ();
+				}
 			}
 		}
 		[ParserTarget("octaves", optional = true)]
