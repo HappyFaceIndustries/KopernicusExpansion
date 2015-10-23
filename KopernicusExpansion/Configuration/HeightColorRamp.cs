@@ -225,32 +225,17 @@ namespace KopernicusExpansion.Effects
 {
 	public class PQSMod_HeightColorRamp : SerializedPQSMod
 	{
-		private ColorRamp __Ramp;
-		public ColorRamp Ramp
-		{
-			get
-			{
-				if (__Ramp == null)
-					__Ramp = (ColorRamp)GetProperty ("Ramp");
-				return __Ramp;
-			}
-		}
-		private ModuleBase __Noise;
-		public ModuleBase Noise
-		{
-			get
-			{
-				if (__Noise == null)
-					__Noise = (ModuleBase)GetProperty ("Noise");
-				return __Noise;
-			}
-		}
+		private ColorRamp Ramp;
+		private ModuleBase Noise;
 
 		public float BaseColorBias = 0.2f;
 		public float blend = 1.0f;
 
 		public override void OnSetup ()
 		{
+			Ramp = (ColorRamp)GetProperty ("Ramp");
+			Noise = (ModuleBase)GetProperty ("Noise");
+
 			requirements = PQS.ModiferRequirements.MeshColorChannel;
 		}
 

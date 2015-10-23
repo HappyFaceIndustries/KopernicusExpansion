@@ -125,48 +125,23 @@ namespace KopernicusExpansion.Effects
 	public class PQSMod_ModularNoise : SerializedPQSMod
 	{
 		//parameters
-		private MN_Operator[] __Operators = null;
-		public MN_Operator[] Operators
-		{
-			get
-			{
-				if(__Operators == null)
-					__Operators = (MN_Operator[])GetProperty ("Operators");
-				return __Operators;
-			}
-			set
-			{
-				SetProperty ("Operators", value);
-				__Operators = value;
-			}
-		}
-		private NoiseLoader[] __noises = null;
-		public NoiseLoader[] Noises
-		{
-			get
-			{
-				if(__noises == null)
-					__noises = (NoiseLoader[])GetProperty ("Noises");
-				return __noises;
-			}
-			set
-			{
-				SetProperty ("Noises", value);
-				__noises = value;
-			}
-		}
+		public MN_Operator[] Operators;
+		public NoiseLoader[] Noises;
 
 		public double deformity = 0;
 		public string finalNoise;
 
 		public override void OnSetup ()
 		{
+			Operators = (MN_Operator[])GetProperty ("Operators");
+			Noises = (NoiseLoader[])GetProperty ("Noises");
+
 			NoiseInputs.Clear ();
 			NoiseOutputs.Clear ();
 		}
 		public override double GetVertexMinHeight ()
 		{
-			return -deformity;
+			return 0;
 		}
 		public override double GetVertexMaxHeight ()
 		{
@@ -223,6 +198,13 @@ namespace KopernicusExpansion.Effects
 					input = NoiseInputs [noise.name];
 
 				double value = noise.Module.GetValue (input);
+				if (noise.type != NoiseType.Const)
+				{
+					//attempt to normalize to 0-1 range
+					value += 1;
+					value *= 0.5;
+				}
+
 				if (!NoiseOutputs.ContainsKey (noise.name))
 					NoiseOutputs.Add (noise.name, value);
 				else
@@ -317,7 +299,7 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 			if (applyFrom != null)
 			{
 				output += MN.GetOutput (applyFrom);
-				output *= 0.5;
+				output *= 0.5; //average together
 			}
 			else
 			{
@@ -511,17 +493,6 @@ namespace KopernicusExpansion.Configuration.ModularNoise
 				output = min;
 			if (output > max)
 				output = max;
-			MN.SetOutput (applyTo, output);
-		}
-	}
-
-	[RequireConfigType(ConfigType.Node)]
-	public class ZEROBASED : MN_Operator
-	{
-		public override void Output (MN_Operator_OutputData data)
-		{
-			var output = MN.GetOutput (applyTo);
-			output = (output + 1) * 0.5;
 			MN.SetOutput (applyTo, output);
 		}
 	}
