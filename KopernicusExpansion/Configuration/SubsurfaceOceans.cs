@@ -16,7 +16,7 @@ using KopernicusExpansion.Utility.Geometry;
 
 using UnityEngine;
 
-namespace KopernicusExpansion.Configuration
+namespace Kopernicus.Configuration.ModLoader
 {
 	[RequireConfigType(ConfigType.Node)]
 	public class SubsurfaceOceans : ModLoader, IParserEventSubscriber

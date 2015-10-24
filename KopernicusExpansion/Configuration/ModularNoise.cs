@@ -105,9 +105,12 @@ namespace Kopernicus.Configuration.ModLoader
 				LoadOperators (node.GetNode("Operators"));
 
 			//sort operators by order
-			Operators.Sort (delegate(MN_Operator a, MN_Operator b) {
-				return a.order.CompareTo(b.order);
-			});
+			if(Operators.Count > 0)
+			{
+				Operators.Sort (delegate(MN_Operator a, MN_Operator b) {
+					return a.order.CompareTo(b.order);
+				});
+			}
 
 			Logger.Active.Log ("ModularNoise Operators:");
 			foreach(var op in Operators)
@@ -133,6 +136,8 @@ namespace KopernicusExpansion.Effects
 
 		public override void OnSetup ()
 		{
+			requirements = PQS.ModiferRequirements.VertexMapCoords;
+
 			Operators = (MN_Operator[])GetProperty ("Operators");
 			Noises = (NoiseLoader[])GetProperty ("Noises");
 
@@ -212,8 +217,9 @@ namespace KopernicusExpansion.Effects
 			}
 
 			//run output pass
-			double lat = data.latitude;
-			double lon = data.longitude;
+			double lat = data.latitude * (double)Mathf.Rad2Deg;
+			double lon = data.longitude * (double)Mathf.Rad2Deg;
+			lon += 90; //make longitude range from 0-360 instead of -90-270
 			double height = data.vertHeight - sphere.radius;
 			var outputData = new MN_Operator_OutputData (lat, lon, height);
 			foreach (var op in Operators)

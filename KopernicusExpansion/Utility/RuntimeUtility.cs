@@ -150,9 +150,6 @@ namespace KopernicusExpansion.Utility
 			GUI.DragWindow ();
 		}
 
-
-
-
 		//debugging crap
 		void Update()
 		{
