@@ -162,6 +162,33 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 214.3KB
+        ///
+        ///Shader &quot;Footprint&quot; {
+        ///Properties {
+        /// _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+        /// _Opacity (&quot;Opacity&quot;, Range(0,1)) = 1
+        ///}
+        ///SubShader { 
+        /// LOD 200
+        /// Tags { &quot;RenderType&quot;=&quot;Transparent&quot; }
+        ///
+        ///
+        /// // Stats for Vertex shader:
+        /// //       d3d11 : 19 avg math (6..44)
+        /// //    d3d11_9x : 19 avg math (6..44)
+        /// //        d3d9 : 24 avg math (6..57)
+        /// //      opengl : 24 avg math (6..57)
+        /// // Stats for Fragment shader:
+        /// //       d3d11 : 5 avg math (4..7), 1  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Footprint {
+            get {
+                return ResourceManager.GetString("Footprint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 455.5KB
         ///
         ///Shader &quot;ProceduralGasGiant&quot; {

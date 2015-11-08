@@ -83,6 +83,16 @@ namespace KopernicusExpansion.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] KerbalEVAFootprintMask {
+            get {
+                object obj = ResourceManager.GetObject("KerbalEVAFootprintMask", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] ProceduralGasGiantEditorIcon {
             get {
                 object obj = ResourceManager.GetObject("ProceduralGasGiantEditorIcon", resourceCulture);

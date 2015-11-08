@@ -67,7 +67,6 @@
     <Compile Include="Configuration\CometTailsLoader.cs" />
     <Compile Include="Utility\Geometry\UVSphere.cs" />
     <Compile Include="Utility\Geometry\Teardrop.cs" />
-    <Compile Include="Utility\SceneLoadHooks.cs" />
     <Compile Include="Configuration\SubsurfaceOceans.cs" />
     <Compile Include="Utility\Geometry\CopyMesh.cs" />
     <Compile Include="Utility\WireframeViewer.cs" />
@@ -93,6 +92,9 @@
     <Compile Include="Configuration\NoiseLoader.cs" />
     <Compile Include="Utility\Noise\ExDistPerlin.cs" />
     <Compile Include="Utility\Noise\ImprovedPerlinNoise.cs" />
+    <Compile Include="Configuration\ChildSphereLoader.cs" />
+    <Compile Include="Configuration\EVAFootprints.cs" />
+    <Compile Include="Utility\Geometry\Quad.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -110,6 +112,13 @@
     <None Include="Resources\CreatureBloodExplosionParticle.png">
       <DependentUpon>Textures.resx</DependentUpon>
     </None>
+    <None Include="Resources\KerbalEVAFootprintMask.png">
+      <DependentUpon>Textures.resx</DependentUpon>
+    </None>
+    <None Include="Resources\Compiled-Footprint.shader">
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </None>
+    <None Include="Resources\Footprint.shader" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\EmissiveQuad.shader" />

@@ -29,6 +29,8 @@ namespace KopernicusExpansion
 			AllowCometAnimation = true;
 			AllowCreatures = true;
 			AllowCreatureGore = true;
+			AllowFootprints = true;
+			MaximumFootprints = 256;
 
 			if (node == null)
 				return;
@@ -38,33 +40,45 @@ namespace KopernicusExpansion
 				AllowEditors = false;
 			AllowEditors = node.GetValue("mode").ToLower() == "editor";
 
-			bool allowGasGiants = true;
+			bool allowGasGiants = AllowGasGiants;
 			bool.TryParse (node.GetValue ("allowProceduralGasGiants"), out allowGasGiants);
 			AllowGasGiants = allowGasGiants;
 
-			bool allowAdvComets = true;
+			bool allowAdvComets = AllowAdvancedCometShader;
 			bool.TryParse (node.GetValue ("allowAdvancedCometShader"), out allowAdvComets);
 			AllowAdvancedCometShader = allowAdvComets;
 
-			bool allowAnimatedComets = true;
+			bool allowAnimatedComets = AllowCometAnimation;
 			bool.TryParse (node.GetValue ("allowAnimatedComets"), out allowAnimatedComets);
 			AllowCometAnimation = allowAnimatedComets;
 
-			bool allowGasGiantAnimation = true;
+			bool allowGasGiantAnimation = AllowGasGiantAnimation;
 			bool.TryParse (node.GetValue ("allowAnimatedProceduralGasGiants"), out allowGasGiantAnimation);
 			AllowGasGiantAnimation = allowGasGiantAnimation;
 
-			bool allowRefractiveAtmospheres = true;
+			bool allowRefractiveAtmospheres = AllowRefractiveAtmospheres;
 			bool.TryParse (node.GetValue ("allowRefractiveAtmospheres"), out allowRefractiveAtmospheres);
 			AllowRefractiveAtmospheres = allowRefractiveAtmospheres;
 
-			bool allowCreatures = true;
+			bool allowCreatures = AllowCreatures;
 			bool.TryParse (node.GetValue ("allowCreatures"), out allowCreatures);
 			AllowCreatures = allowCreatures;
 
-			bool allowCreatureGore = true;
+			bool allowCreatureGore = AllowCreatureGore;
 			bool.TryParse (node.GetValue ("allowCreatureGore"), out allowCreatureGore);
 			AllowCreatureGore = allowCreatureGore;
+
+			bool allowFootprints = AllowFootprints;
+			bool.TryParse (node.GetValue ("allowFootprints"), out allowFootprints);
+			AllowFootprints = allowFootprints;
+
+			int maximumFootprints = MaximumFootprints;
+			int.TryParse (node.GetValue ("maximumFootprints"), out maximumFootprints);
+			MaximumFootprints = maximumFootprints;
+			if (MaximumFootprints < 0)
+				MaximumFootprints = 0;
+			if (MaximumFootprints > 2056)
+				MaximumFootprints = 2056;
 		}
 		private static ConfigNode CreateNewSettingsConfig()
 		{
@@ -118,6 +132,16 @@ namespace KopernicusExpansion
 			private set;
 		}
 		public static bool AllowCreatureGore
+		{
+			get;
+			private set;
+		}
+		public static bool AllowFootprints
+		{
+			get;
+			private set;
+		}
+		public static int MaximumFootprints
 		{
 			get;
 			private set;
