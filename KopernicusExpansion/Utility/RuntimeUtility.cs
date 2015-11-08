@@ -155,6 +155,11 @@ namespace KopernicusExpansion.Utility
 		{
 			bool isModDown = GameSettings.MODIFIER_KEY.GetKey ();
 
+			if (isModDown && Input.GetKeyDown (KeyCode.P))
+			{
+				Debug.Log ("FPS: " + (1f / Time.deltaTime));
+			}
+
 			if (isModDown && Input.GetKeyDown (KeyCode.Alpha1))
 			{
 				foreach (var tex in UnityEngine.Resources.FindObjectsOfTypeAll<Texture2D>())

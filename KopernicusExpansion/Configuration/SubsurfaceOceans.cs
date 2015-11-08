@@ -10,7 +10,6 @@ using Kopernicus.Configuration.ModLoader;
 
 using KopernicusExpansion.Effects;
 using KopernicusExpansion.Utility;
-using KopernicusExpansion.Resources;
 using KopernicusExpansion.Configuration;
 using KopernicusExpansion.Utility.Geometry;
 
@@ -365,27 +364,20 @@ namespace KopernicusExpansion.Effects
 		}
 	}
 
-	[KSPAddon(KSPAddon.Startup.Flight, false)]
-	public class SubsurfaceOceanDebugging : MonoBehaviour
-	{
-		void Start()
-		{
-			foreach (var pqs in UnityEngine.Resources.FindObjectsOfTypeAll<PQS>())
-			{
-				Debug.Log ("PQS: " + pqs.name + " -> surfaceRelativeQuads: " + pqs.surfaceRelativeQuads);
-			}
-		}
-		void Update()
-		{
-			if (Input.GetKey (KeyCode.LeftAlt) && Input.GetKeyDown (KeyCode.P))
-			{
-				Debug.Log ("FPS: " + (1f / Time.deltaTime));
-			}
-		}
-		void LateUpdate()
-		{
-			RenderSettings.ambientLight = Color.white * 0.2f;
-		}
-	}
+//	[KSPAddon(KSPAddon.Startup.Flight, false)]
+//	public class SubsurfaceOceanDebugging : MonoBehaviour
+//	{
+//		void Update()
+//		{
+//			if (Input.GetKey (KeyCode.LeftAlt) && Input.GetKeyDown (KeyCode.P))
+//			{
+//				Debug.Log ("FPS: " + (1f / Time.deltaTime));
+//			}
+//		}
+//		void LateUpdate()
+//		{
+//			RenderSettings.ambientLight = Color.white * 0.2f;
+//		}
+//	}
 }
 
