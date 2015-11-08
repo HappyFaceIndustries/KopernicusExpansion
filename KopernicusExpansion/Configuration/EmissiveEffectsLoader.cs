@@ -116,7 +116,6 @@ namespace KopernicusExpansion.Configuration
 					_mod.sphere = pqs;
 					_mod.gameObject.layer = pqs.gameObject.layer;
 					_mod.OnSetup ();
-					pqs.RebuildSphere ();
 					break;
 				}
 			}

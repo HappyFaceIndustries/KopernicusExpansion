@@ -31,7 +31,15 @@ namespace KopernicusExpansion.Configuration
 		}
 		public void PostApply(ConfigNode node)
 		{
+			var obj = new GameObject ("FootprintRemover");
+			obj.transform.parent = Kopernicus.Utility.Deactivator;
 
+			var mod = obj.AddComponent<PQSMod_FootprintRemover> ();
+			obj.transform.parent = generatedBody.pqsVersion.transform;
+			mod.sphere = generatedBody.pqsVersion;
+			mod.modEnabled = true;
+			mod.order = 0;
+			obj.gameObject.layer = generatedBody.pqsVersion.gameObject.layer;
 		}
 	}
 }
@@ -196,6 +204,10 @@ namespace KopernicusExpansion.Effects
 				Ray ray = new Ray (transform.position, FlightGlobals.getGeeForceAtPosition (part.vessel.GetWorldPos3D ()).normalized);
 				if (Physics.Raycast (ray, out  hit, 0.25f, (1 << GameLayers.LocalSpace)))
 				{
+					//don't add footprints to non-terrain features
+					if (hit.transform.GetComponent<PQ> () == null)
+						return;
+
 					var obj = (GameObject)Instantiate (KerbalEVAFootprintSpawner.footprintPrefab);
 					obj.SetActive (true);
 
@@ -204,11 +216,12 @@ namespace KopernicusExpansion.Effects
 					var cross = Vector3.Cross (right, hitNormal);
 
 					obj.transform.position = hit.point + (hitNormal * 0.015f);
-					obj.transform.rotation = Quaternion.LookRotation (cross, hitNormal);
+					obj.transform.rotation = Quaternion.LookRotation (cross, hitNormal); //vector math is fun :D
 					obj.transform.Translate (Vector3.right * 0.1f * leftOrRight);
 					obj.transform.localScale = new Vector3 (leftOrRight, 1f, 1f);
 
-					//obj.transform.parent = obj.transform;
+					//parent to PQS so that we can avoid the Krakensbane/FloatingOrigin
+					obj.transform.parent = obj.transform;
 				}
 			}
 		}
@@ -253,6 +266,18 @@ namespace KopernicusExpansion.Effects
 			}
 		}
 		#endregion
+	}
+
+	//a PQSMod to remove all footprints when the quad is recycled
+	public class PQSMod_FootprintRemover : PQSMod
+	{
+		public override void OnQuadDestroy (PQ quad)
+		{
+			foreach(var footprint in quad.GetComponentsInChildren<KerbalEVAFootprintSpawner.KerbalEVAFootprint>(true))
+			{
+				Destroy (footprint.gameObject);
+			}
+		}
 	}
 }
 
