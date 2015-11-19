@@ -23,10 +23,10 @@ namespace KopernicusExpansion.Configuration
 		//constructor
 		public RefractiveAtmosphereLoader ()
 		{
-			profile = new RefractiveAtmosphereProfile ();
+			profile = new RefractiveAtmosphereSpawner.RefractiveAtmosphereProfile ();
 		}
 
-		private RefractiveAtmosphereProfile profile;
+		private RefractiveAtmosphereSpawner.RefractiveAtmosphereProfile profile;
 
 		[ParserTarget("speed", optional = true)]
 		public NumericParser<float> speed
@@ -161,7 +161,7 @@ namespace KopernicusExpansion.Effects
 				if (CurrentProfile == null || CurrentProfile.strengthCurve == null)
 					return;
 
-				meshRenderer.material.SetFloat ("_BumpAmt", CurrentProfile.strengthCurve.Evaluate((float)FlightGlobals.ActiveVessel.altitude - FlightGlobals.ActiveVessel.pqsAltitude));
+				meshRenderer.material.SetFloat ("_BumpAmt", CurrentProfile.strengthCurve.Evaluate ((float)(FlightGlobals.ActiveVessel.altitude - FlightGlobals.ActiveVessel.pqsAltitude)));
 
 				vector.x += Time.deltaTime * Mathf.Min(TimeWarp.CurrentRate, 75f) * CurrentProfile.flickerSpeed * 0.4f;
 				vector.y += Time.deltaTime * Mathf.Min(TimeWarp.CurrentRate, 75f) * CurrentProfile.flickerSpeed;
@@ -185,7 +185,7 @@ namespace KopernicusExpansion.Effects
 				else
 					CurrentProfile = null;
 
-				if (CurrentProfile == null || CurrentProfile.strengthCurve == null || CurrentProfile.strengthCurve.Evaluate ((float)FlightGlobals.ActiveVessel.altitude) < 0.01f)
+				if (CurrentProfile == null || CurrentProfile.strengthCurve == null || CurrentProfile.strengthCurve.Evaluate ((float)(FlightGlobals.ActiveVessel.altitude - FlightGlobals.ActiveVessel.pqsAltitude)) < 0.01f)
 					meshRenderer.enabled = false;
 				else
 					meshRenderer.enabled = true;
