@@ -14,10 +14,10 @@ using KopernicusExpansion.Configuration;
 
 using UnityEngine;
 
-namespace Kopernicus.Configuration.ModLoader
+namespace KopernicusExpansion.Configuration
 {
 	[RequireConfigType(ConfigType.Node)]
-	public class DebugHeightColor : ModLoader, IParserEventSubscriber
+	public class DebugHeightColor : ModLoader<PQSMod_DebugHeightColor>, IParserEventSubscriber
 	{
 		//constructor
 		public DebugHeightColor()

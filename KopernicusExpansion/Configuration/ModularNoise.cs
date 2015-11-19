@@ -13,7 +13,7 @@ using KopernicusExpansion.Effects;
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Configuration;
 using KopernicusExpansion.Utility.Serialization;
-using KopernicusExpansion.Configuration.ModularNoise;
+using KopernicusExpansion.Configuration.ModularNoiseOperators;
 
 using UnityEngine;
 
@@ -24,10 +24,10 @@ using LibNoise.Unity.Generator;
 //shorthand for faster typing
 using MN = KopernicusExpansion.Effects.PQSMod_ModularNoise;
 
-namespace Kopernicus.Configuration.ModLoader
+namespace KopernicusExpansion.Configuration
 {
 	[RequireConfigType(ConfigType.Node)]
-	public class ModularNoise : ModLoader, IParserEventSubscriber
+	public class ModularNoise : ModLoader<PQSMod_ModularNoise>, IParserEventSubscriber
 	{
 		//constructor
 		public ModularNoise()
@@ -73,7 +73,7 @@ namespace Kopernicus.Configuration.ModLoader
 		{
 			foreach (var opNode in node.GetNodes())
 			{
-				var opType = Type.GetType ("KopernicusExpansion.Configuration.ModularNoise." + opNode.name);
+				var opType = Type.GetType ("KopernicusExpansion.Configuration.ModularNoiseOperators." + opNode.name);
 				if (opType == null)
 				{
 					Logger.Active.Log ("ModularNoise Operator " + opNode.name + " not recognized");
@@ -242,7 +242,7 @@ namespace KopernicusExpansion.Effects
 	}
 }
 
-namespace KopernicusExpansion.Configuration.ModularNoise
+namespace KopernicusExpansion.Configuration.ModularNoiseOperators
 {
 	//IO for Operators
 	public class MN_Operator_InputData

@@ -20,7 +20,7 @@ using UnityEngine;
 namespace KopernicusExpansion.Configuration
 {
 	[RequireConfigType(ConfigType.Node)]
-	public class ParticleGrass : ModLoader, IParserEventSubscriber
+	public class ParticleGrass : ModLoader<PQSMod_ParticleGrass>, IParserEventSubscriber
 	{
 		private const string ParticalMaterialShaderName = "KSP/Particles/Alpha Blended";
 

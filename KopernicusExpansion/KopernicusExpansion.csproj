@@ -36,13 +36,19 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\References\1.0.4\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\References\1.0.5\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\References\1.0.4\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\References\1.0.5\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="Kopernicus">
-      <HintPath>..\..\..\..\..\KSP\ksp_win_1.0_B_planet_testing\KSP_win\GameData\Kopernicus\Plugins\Kopernicus.dll</HintPath>
+      <HintPath>..\..\..\References\Kopernicus_0.5.2\Kopernicus.dll</HintPath>
+    </Reference>
+    <Reference Include="Kopernicus.Components">
+      <HintPath>..\..\..\References\Kopernicus_0.5.2\Kopernicus.Components.dll</HintPath>
+    </Reference>
+    <Reference Include="Kopernicus.OnDemand">
+      <HintPath>..\..\..\References\Kopernicus_0.5.2\Kopernicus.OnDemand.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +101,7 @@
     <Compile Include="Configuration\ChildSphereLoader.cs" />
     <Compile Include="Configuration\EVAFootprints.cs" />
     <Compile Include="Utility\Geometry\Quad.cs" />
+    <Compile Include="Configuration\TerrainTest1.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

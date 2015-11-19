@@ -15,10 +15,10 @@ using KopernicusExpansion.Utility.Geometry;
 
 using UnityEngine;
 
-namespace Kopernicus.Configuration.ModLoader
+namespace KopernicusExpansion.Configuration
 {
 	[RequireConfigType(ConfigType.Node)]
-	public class SubsurfaceOceans : ModLoader, IParserEventSubscriber
+	public class SubsurfaceOceans : ModLoader<PQSMod_SubsurfaceOceans>, IParserEventSubscriber
 	{
 		public SubsurfaceOceans()
 		{
@@ -38,7 +38,7 @@ namespace Kopernicus.Configuration.ModLoader
 	}
 
 	[RequireConfigType(ConfigType.Node)]
-	public class RemoveTrianglesBelowAltitude : ModLoader, IParserEventSubscriber
+	public class RemoveTrianglesBelowAltitude : ModLoader<PQSMod_RemoveTrianglesBelowAltitude>, IParserEventSubscriber
 	{
 		public RemoveTrianglesBelowAltitude()
 		{
