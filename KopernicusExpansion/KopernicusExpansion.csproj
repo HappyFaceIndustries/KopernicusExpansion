@@ -58,7 +58,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Textures.resx</DependentUpon>
     </Compile>
-    <Compile Include="Utility\RuntimeUtility.cs" />
     <Compile Include="Resources\Shaders.Designer.cs">
       <DependentUpon>Shaders.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -102,6 +101,7 @@
     <Compile Include="Configuration\EVAFootprints.cs" />
     <Compile Include="Utility\Geometry\Quad.cs" />
     <Compile Include="Configuration\TerrainTest1.cs" />
+    <Compile Include="Utility\KopernicusExpansionRuntimeUtility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -12,7 +12,7 @@ using KopernicusExpansion.Configuration;
 namespace KopernicusExpansion.Utility
 {
 	[KSPAddon(KSPAddon.Startup.MainMenu, true)]
-	public class KopE_RuntimeUtil : MonoBehaviour
+	public class KopernicusExpansionRuntimeUtility : MonoBehaviour
 	{
 		static bool buttonAdded = false;
 
@@ -117,15 +117,15 @@ namespace KopernicusExpansion.Utility
 
 			if (GUILayout.Button ("Export Textures"))
 			{
-				Directory.CreateDirectory (KSPUtil.ApplicationRootPath + "/GameData/Kopernicus/Cache/PluginData/");
+				Directory.CreateDirectory (KSPUtil.ApplicationRootPath + "GameData/KopernicusExpansion/PluginData/");
 				PQS pqs = pqsPlanets [pqsIndex].pqsController;
 				var texs = pqs.CreateMaps (possibleResolutions [resIndex], pqs.mapMaxHeight, pqsPlanets [pqsIndex].ocean, pqs.mapOceanHeight, pqs.mapOceanColor);
 				var texNorm = Kopernicus.Utility.BumpToNormalMap (texs [1], 9);
 				string bodyName = pqsPlanets [pqsIndex].bodyName;
 
-				File.WriteAllBytes (KSPUtil.ApplicationRootPath + "GameData/Kopernicus/Cache/PluginData/" + bodyName + "_Color.png", texs [0].EncodeToPNG ());
-				File.WriteAllBytes (KSPUtil.ApplicationRootPath + "GameData/Kopernicus/Cache/PluginData/" + bodyName + "_Height.png", texs [1].EncodeToPNG ());
-				File.WriteAllBytes (KSPUtil.ApplicationRootPath + "GameData/Kopernicus/Cache/PluginData/" + bodyName + "_Normal.png", texNorm.EncodeToPNG ());
+				File.WriteAllBytes (KSPUtil.ApplicationRootPath + "GameData/KopernicusExpansion/PluginData/" + bodyName + "_Color.png", texs [0].EncodeToPNG ());
+				File.WriteAllBytes (KSPUtil.ApplicationRootPath + "GameData/KopernicusExpansion/PluginData/" + bodyName + "_Height.png", texs [1].EncodeToPNG ());
+				File.WriteAllBytes (KSPUtil.ApplicationRootPath + "GameData/KopernicusExpansion/PluginData/" + bodyName + "_Normal.png", texNorm.EncodeToPNG ());
 			}
 
 			GUI.DragWindow ();
@@ -170,50 +170,6 @@ namespace KopernicusExpansion.Utility
 			if (isModDown && Input.GetKeyDown (KeyCode.Alpha2))
 			{
 				showTextureWindow = !showTextureWindow;
-			}
-			if (isModDown && Input.GetKeyDown (KeyCode.Alpha3))
-			{
-				Utils.Log ("printing PQSLandControls now...");
-				foreach (var hcm in PQSMod.FindObjectsOfType<PQSLandControl>())
-				{
-					Utils.Log ("LandControl: " + hcm.sphere.name + ": altitudeBlend: " + hcm.altitudeBlend + ", latitudeBlend: " + hcm.latitudeBlend + ", longitudeBlend: " + hcm.longitudeBlend);
-					foreach (var lc in hcm.landClasses)
-					{
-						Utils.Log ("==== LC: " + lc.landClassName);
-						Utils.Log ("==== LatitudeRange:" + lc.latitudeRange.startStart + " => " + lc.latitudeRange.startEnd + " ===\n"
-							+ lc.latitudeRange.endStart + " => " + lc.latitudeRange.endEnd
-						);
-						Utils.Log ("==== LongitudeRange:" + lc.longitudeRange.startStart + " => " + lc.longitudeRange.startEnd + " ===\n"
-							+ lc.longitudeRange.endStart + " => " + lc.longitudeRange.endEnd
-						);
-						Utils.Log ("==== AltitudeRange:" + lc.altitudeRange.startStart + " => " + lc.altitudeRange.startEnd + " ===\n"
-							+ lc.altitudeRange.endStart + " => " + lc.altitudeRange.endEnd
-						);
-						Utils.Log ("==== coverageBlend: " + lc.coverageBlend);
-						Utils.Log ("==== color: " + lc.color);
-						Utils.Log ("==== noiseColor: " + lc.noiseColor);
-						Utils.Log ("==== noiseFrequency: " + lc.noiseFrequency);
-					}
-				}
-			}
-			if (isModDown && Input.GetKeyDown (KeyCode.Alpha4))
-			{
-				Utils.Log ("printing Meshes now");
-				foreach (var mesh in UnityEngine.Resources.FindObjectsOfTypeAll<Mesh>())
-				{
-					Utils.Log (mesh.name);
-				}
-			}
-			if (isModDown && Input.GetKeyDown (KeyCode.Alpha5))
-			{
-				Utils.Log (MapView.OrbitLinesMaterial.renderQueue);
-				Utils.Log (MapView.DottedLinesMaterial.renderQueue);
-			}
-
-			if (isModDown && Input.GetKeyDown (KeyCode.Alpha6))
-			{
-				Debug.Log ("Loading test scene...");
-				PSystemSetup.Instance.LoadTestScene (GameScenes.MAINMENU);
 			}
 		}
 	}
