@@ -128,66 +128,68 @@ namespace KopernicusExpansion.Effects
 			atmosphere.transform.parent = FlightCamera.fetch.cameras[0].transform;
 			atmosphere.SetActive (true);
 		}
-	}
-	public class RefractiveAtmosphereProfile
-	{
-		public string bodyName = null;
-		public float flickerSpeed = 10f;
-		public FloatCurve strengthCurve;
 
-		public RefractiveAtmosphereProfile()
+		//embedded types
+		public class RefractiveAtmosphereProfile
 		{
+			public string bodyName = null;
+			public float flickerSpeed = 10f;
+			public FloatCurve strengthCurve;
 
-		}
-	}
-	public class RefractiveAtmosphere : MonoBehaviour
-	{
-		public RefractiveAtmosphereProfile CurrentProfile;
-
-		private MeshRenderer meshRenderer;
-		private Vector4 vector;
-		void Start()
-		{
-			meshRenderer = GetComponent<MeshRenderer> ();
-		}
-
-		void LateUpdate()
-		{
-			if (!HighLogic.LoadedSceneIsFlight)
-				Destroy (this);
-			if (FlightGlobals.fetch == null || FlightGlobals.ActiveVessel == null)
-				return;
-			if (CurrentProfile == null || CurrentProfile.strengthCurve == null)
-				return;
-
-			meshRenderer.material.SetFloat ("_BumpAmt", CurrentProfile.strengthCurve.Evaluate((float)FlightGlobals.ActiveVessel.terrainAltitude));
-
-			vector.x += Time.deltaTime * Mathf.Min(TimeWarp.CurrentRate, 75f) * CurrentProfile.flickerSpeed * 0.4f;
-			vector.y += Time.deltaTime * Mathf.Min(TimeWarp.CurrentRate, 75f) * CurrentProfile.flickerSpeed;
-			vector.z = 1f;
-			meshRenderer.material.SetVector ("_BumpMapOffset", vector);
-		}
-
-		void Update()
-		{
-			if (!HighLogic.LoadedSceneIsFlight)
-				Destroy (this);
-			if (FlightGlobals.fetch == null || FlightGlobals.ActiveVessel == null)
-				return;
-
-			var currentBody = FlightGlobals.currentMainBody;
-			var profile = RefractiveAtmosphereSpawner.Profiles.Find (p => p.bodyName == currentBody.bodyName);
-			if (profile != null && CurrentProfile != profile)
+			public RefractiveAtmosphereProfile()
 			{
-				CurrentProfile = profile;
-			}
-			else
-				CurrentProfile = null;
 
-			if (CurrentProfile == null || CurrentProfile.strengthCurve == null || CurrentProfile.strengthCurve.Evaluate ((float)FlightGlobals.ActiveVessel.altitude) < 0.01f)
-				meshRenderer.enabled = false;
-			else
-				meshRenderer.enabled = true;
+			}
+		}
+		public class RefractiveAtmosphere : MonoBehaviour
+		{
+			public RefractiveAtmosphereProfile CurrentProfile;
+
+			private MeshRenderer meshRenderer;
+			private Vector4 vector;
+			void Start()
+			{
+				meshRenderer = GetComponent<MeshRenderer> ();
+			}
+
+			void LateUpdate()
+			{
+				if (!HighLogic.LoadedSceneIsFlight)
+					Destroy (this);
+				if (FlightGlobals.fetch == null || FlightGlobals.ActiveVessel == null)
+					return;
+				if (CurrentProfile == null || CurrentProfile.strengthCurve == null)
+					return;
+
+				meshRenderer.material.SetFloat ("_BumpAmt", CurrentProfile.strengthCurve.Evaluate((float)FlightGlobals.ActiveVessel.altitude - FlightGlobals.ActiveVessel.pqsAltitude));
+
+				vector.x += Time.deltaTime * Mathf.Min(TimeWarp.CurrentRate, 75f) * CurrentProfile.flickerSpeed * 0.4f;
+				vector.y += Time.deltaTime * Mathf.Min(TimeWarp.CurrentRate, 75f) * CurrentProfile.flickerSpeed;
+				vector.z = 1f;
+				meshRenderer.material.SetVector ("_BumpMapOffset", vector);
+			}
+
+			void Update()
+			{
+				if (!HighLogic.LoadedSceneIsFlight)
+					Destroy (this);
+				if (FlightGlobals.fetch == null || FlightGlobals.ActiveVessel == null)
+					return;
+
+				var currentBody = FlightGlobals.currentMainBody;
+				var profile = RefractiveAtmosphereSpawner.Profiles.Find (p => p.bodyName == currentBody.bodyName);
+				if (profile != null && CurrentProfile != profile)
+				{
+					CurrentProfile = profile;
+				}
+				else
+					CurrentProfile = null;
+
+				if (CurrentProfile == null || CurrentProfile.strengthCurve == null || CurrentProfile.strengthCurve.Evaluate ((float)FlightGlobals.ActiveVessel.altitude) < 0.01f)
+					meshRenderer.enabled = false;
+				else
+					meshRenderer.enabled = true;
+			}
 		}
 	}
 }
