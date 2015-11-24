@@ -19,23 +19,12 @@ namespace KopernicusExpansion.Configuration
 	[RequireConfigType(ConfigType.Node)]
 	public class DebugHeightColor : ModLoader<PQSMod_DebugHeightColor>, IParserEventSubscriber
 	{
-		//constructor
-		public DebugHeightColor()
-		{
-			var modObj = new GameObject ("DebugHeightColor");
-			modObj.transform.parent = Kopernicus.Utility.Deactivator;
-			_mod = modObj.AddComponent<PQSMod_DebugHeightColor> ();
-			base.mod = _mod;
-		}
-
-		private PQSMod_DebugHeightColor _mod;
-
 		[ParserTarget("maxHeight", optional = true)]
 		public NumericParser<double> maxHeight
 		{
 			set
 			{
-				_mod.maxHeight = value.value;
+				mod.maxHeight = value.value;
 			}
 		}
 

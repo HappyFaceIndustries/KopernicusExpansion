@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace KopernicusExpansion.Utility.Serialization
 {
+	[Serializable]
 	public class SerializedPQSMod : PQSMod
 	{
 		//static values
@@ -23,7 +24,7 @@ namespace KopernicusExpansion.Utility.Serialization
 
 		//this is because SerializationID is not public
 		[SerializeField]
-		protected string SerializationID;
+		public string SerializationID;
 
 		//Properties
 		private Dictionary<string, object> Properties
@@ -31,7 +32,7 @@ namespace KopernicusExpansion.Utility.Serialization
 			get
 			{
 				//return null if our ID is null
-				if (SerializationID == null)
+				if (SerializationID.Equals (null) || SerializationID.Equals(""))
 				{
 					Debug.LogError ("SerializationID is null");
 					return null;
@@ -46,9 +47,7 @@ namespace KopernicusExpansion.Utility.Serialization
 		}
 		public void SetProperty(string name, object value)
 		{
-			//set our ID
-			if (SerializationID == null)
-				SerializationID = NewSerializationID ();
+			Debug.Log ("Setting property: " + name + " for " + SerializationID);
 
 			if (!Properties.ContainsKey (name))
 				Properties.Add (name, value);
@@ -61,6 +60,18 @@ namespace KopernicusExpansion.Utility.Serialization
 				return null;
 			else
 				return Properties [name];
+		}
+		public void DumpDebugData()
+		{
+			Debug.Log ("Dumping serialized data...");
+			if (SerializationID == null)
+				Debug.Log ("SerializationID: NULL");
+			else
+				Debug.Log ("SerializationID: " + SerializationID);
+			foreach (var property in Properties)
+			{
+				Debug.Log ("Property: " + property.Key + " : " + property.Value.GetType ().Name + " > " + property.ToString ());
+			}
 		}
 	}
 }

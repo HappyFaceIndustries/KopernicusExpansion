@@ -11,7 +11,7 @@ using KopernicusExpansion.Configuration;
 
 namespace KopernicusExpansion.Utility
 {
-	[KSPAddon(KSPAddon.Startup.MainMenu, true)]
+	[KSPAddon(KSPAddon.Startup.Instantly, true)]
 	public class KopernicusExpansionRuntimeUtility : MonoBehaviour
 	{
 		static bool buttonAdded = false;
@@ -33,7 +33,8 @@ namespace KopernicusExpansion.Utility
 					pqsPlanets.Add (body);
 			}
 
-			if (!buttonAdded) {
+			if (!buttonAdded)
+			{
 				ApplicationLauncher.Instance.AddModApplication (delegate {
 					showWindow = true;
 				}, delegate {

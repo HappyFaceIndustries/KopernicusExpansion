@@ -29,23 +29,19 @@ namespace KopernicusExpansion.Configuration
 	[RequireConfigType(ConfigType.Node)]
 	public class ModularNoise : ModLoader<PQSMod_ModularNoise>, IParserEventSubscriber
 	{
-		//constructor
-		public ModularNoise()
+		//creation override
+		public override void Create ()
 		{
-			var modObj = new GameObject ("ModularNoise");
-			modObj.transform.parent = Kopernicus.Utility.Deactivator;
-			_mod = modObj.AddComponent<PQSMod_ModularNoise> ();
-			base.mod = _mod;
+			base.Create ();
+			mod.SerializationID = SerializedPQSMod.NewSerializationID ();
 		}
-
-		private PQSMod_ModularNoise _mod;
 
 		[ParserTargetCollection("Noises", optional = false, nameSignificance = NameSignificance.None)]
 		public List<NoiseLoader> Noises
 		{
 			set
 			{
-				_mod.SetProperty ("Noises", value.ToArray());
+				mod.SetProperty ("Noises", value.ToArray());
 			}
 		}
 
@@ -54,7 +50,7 @@ namespace KopernicusExpansion.Configuration
 		{
 			set
 			{
-				_mod.deformity = value.value;
+				mod.deformity = value.value;
 			}
 		}
 
@@ -63,7 +59,7 @@ namespace KopernicusExpansion.Configuration
 		{
 			set
 			{
-				_mod.finalNoise = value;
+				mod.finalNoise = value;
 			}
 		}
 
@@ -118,7 +114,7 @@ namespace KopernicusExpansion.Configuration
 				Logger.Active.Log (op.applyTo + ": " + op.order + " => " + op.GetType ().Name);
 			}
 
-			_mod.SetProperty("Operators", Operators.ToArray ());
+			mod.SetProperty("Operators", Operators.ToArray ());
 		}
 	}
 }
@@ -128,8 +124,8 @@ namespace KopernicusExpansion.Effects
 	public class PQSMod_ModularNoise : SerializedPQSMod
 	{
 		//parameters
-		public MN_Operator[] Operators;
-		public NoiseLoader[] Noises;
+		public MN_Operator[] Operators = null;
+		public NoiseLoader[] Noises = null;
 
 		public double deformity = 0;
 		public string finalNoise;
@@ -137,7 +133,10 @@ namespace KopernicusExpansion.Effects
 		public override void OnSetup ()
 		{
 			requirements = PQS.ModiferRequirements.VertexMapCoords;
-
+			GetData ();
+		}
+		private void GetData()
+		{
 			Operators = (MN_Operator[])GetProperty ("Operators");
 			Noises = (NoiseLoader[])GetProperty ("Noises");
 
