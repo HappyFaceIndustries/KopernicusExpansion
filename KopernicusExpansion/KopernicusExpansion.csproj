@@ -72,7 +72,6 @@
     <Compile Include="Configuration\CometTailsLoader.cs" />
     <Compile Include="Utility\Geometry\UVSphere.cs" />
     <Compile Include="Utility\Geometry\Teardrop.cs" />
-    <Compile Include="Configuration\SubsurfaceOceans.cs" />
     <Compile Include="Utility\Geometry\CopyMesh.cs" />
     <Compile Include="Utility\WireframeViewer.cs" />
     <Compile Include="Utility\Geometry\ReverseMesh.cs" />
@@ -90,7 +89,6 @@
     <Compile Include="Creatures\CreatureVesselHandler.cs" />
     <Compile Include="KopernicusExpansionLogger.cs" />
     <Compile Include="KopernicusExpansionLoaderSystemAdder.cs" />
-    <Compile Include="Configuration\ParticleGrass.cs" />
     <Compile Include="Configuration\ModularNoise.cs" />
     <Compile Include="Configuration\DebugHeightColor.cs" />
     <Compile Include="Utility\Serialization\SerializedPQSMod.cs" />
