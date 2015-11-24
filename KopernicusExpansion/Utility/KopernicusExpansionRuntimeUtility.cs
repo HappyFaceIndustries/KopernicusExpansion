@@ -11,7 +11,7 @@ using KopernicusExpansion.Configuration;
 
 namespace KopernicusExpansion.Utility
 {
-	[KSPAddon(KSPAddon.Startup.Instantly, true)]
+	[KSPAddon(KSPAddon.Startup.MainMenu, true)]
 	public class KopernicusExpansionRuntimeUtility : MonoBehaviour
 	{
 		static bool buttonAdded = false;

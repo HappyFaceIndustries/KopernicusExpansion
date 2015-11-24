@@ -1,12 +1,13 @@
 ﻿<Properties StartupItem="KopernicusExpansion\KopernicusExpansion.csproj" GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="KopernicusExpansion\Utility\RuntimeUtility.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="KopernicusExpansion\Utility\Serialization\SerializedPQSMod.cs">
     <Files>
-      <File FileName="KopernicusExpansion\Configuration\HeightColorRamp.cs" Line="44" Column="44" />
-      <File FileName="KopernicusExpansion\Configuration\SubsurfaceOceans.cs" Line="3" Column="3" />
-      <File FileName="KopernicusExpansion\Configuration\NoiseLoader.cs" Line="1" Column="1" />
-      <File FileName="KopernicusExpansion\Configuration\ModularNoise.cs" Line="59" Column="59" />
-      <File FileName="KopernicusExpansion\Utility\RuntimeUtility.cs" Line="55" Column="55" />
+      <File FileName="KopernicusExpansion\Configuration\SubsurfaceOceans.cs" Line="1" Column="1" />
+      <File FileName="KopernicusExpansion\Configuration\TerrainTest1.cs" Line="1" Column="1" />
+      <File FileName="KopernicusExpansion\Configuration\ParticleGrass.cs" Line="1" Column="1" />
+      <File FileName="KopernicusExpansion\Configuration\RefractiveAtmosphereLoader.cs" Line="1" Column="1" />
+      <File FileName="KopernicusExpansion\Configuration\ModularNoise.cs" Line="36" Column="36" />
+      <File FileName="KopernicusExpansion\Utility\Serialization\SerializedPQSMod.cs" Line="19" Column="19" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
