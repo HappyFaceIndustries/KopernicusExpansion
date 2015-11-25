@@ -161,6 +161,10 @@ namespace KopernicusExpansion.Utility
 				Debug.Log ("FPS: " + (1f / Time.deltaTime));
 			}
 
+			if (isModDown && Input.GetKeyDown (KeyCode.Alpha0))
+			{
+				showWindow = !showWindow;
+			}
 			if (isModDown && Input.GetKeyDown (KeyCode.Alpha1))
 			{
 				foreach (var tex in UnityEngine.Resources.FindObjectsOfTypeAll<Texture2D>())

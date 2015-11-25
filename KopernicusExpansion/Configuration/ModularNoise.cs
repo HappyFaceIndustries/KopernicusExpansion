@@ -69,7 +69,7 @@ namespace KopernicusExpansion.Configuration
 		{
 			foreach (var opNode in node.GetNodes())
 			{
-				var opType = Type.GetType ("KopernicusExpansion.Configuration.ModularNoiseOperators." + opNode.name);
+				var opType = Type.GetType ("KopernicusExpansion.Configuration.ModularNoiseOperators." + opNode.name.ToUpper());
 				if (opType == null)
 				{
 					Logger.Active.Log ("ModularNoise Operator " + opNode.name + " not recognized");
