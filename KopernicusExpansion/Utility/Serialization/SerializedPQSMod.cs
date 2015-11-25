@@ -26,6 +26,11 @@ namespace KopernicusExpansion.Utility.Serialization
 		[SerializeField]
 		protected string SerializationID;
 
+		public void InitializeSerialization()
+		{
+			SerializationID = NewSerializationID ();
+		}
+
 		//Properties
 		private Dictionary<string, object> Properties
 		{

@@ -33,7 +33,7 @@ namespace KopernicusExpansion.Configuration
 		public override void Create ()
 		{
 			base.Create ();
-			mod.SerializationID = SerializedPQSMod.NewSerializationID ();
+			mod.InitializeSerialization ();
 		}
 
 		[ParserTargetCollection("Noises", optional = false, nameSignificance = NameSignificance.None)]

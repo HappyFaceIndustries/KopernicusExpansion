@@ -98,7 +98,6 @@
     <Compile Include="Configuration\ChildSphereLoader.cs" />
     <Compile Include="Configuration\EVAFootprints.cs" />
     <Compile Include="Utility\Geometry\Quad.cs" />
-    <Compile Include="Configuration\TerrainTest1.cs" />
     <Compile Include="Utility\KopernicusExpansionRuntimeUtility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
