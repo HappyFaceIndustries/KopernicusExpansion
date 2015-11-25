@@ -24,7 +24,7 @@ namespace KopernicusExpansion.Utility.Serialization
 
 		//this is because SerializationID is not public
 		[SerializeField]
-		public string SerializationID;
+		protected string SerializationID;
 
 		//Properties
 		private Dictionary<string, object> Properties
