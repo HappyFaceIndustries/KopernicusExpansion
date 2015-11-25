@@ -46,6 +46,8 @@ namespace KopernicusExpansion.Configuration
 
 namespace KopernicusExpansion.Effects
 {
+	//TODO: use ObjectPool for footprints
+
 	[KSPAddon(KSPAddon.Startup.Flight, false)]
 	public class KerbalEVAFootprintSpawner : MonoBehaviour
 	{

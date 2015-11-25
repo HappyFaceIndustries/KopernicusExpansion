@@ -99,6 +99,8 @@
     <Compile Include="Configuration\EVAFootprints.cs" />
     <Compile Include="Utility\Geometry\Quad.cs" />
     <Compile Include="Utility\KopernicusExpansionRuntimeUtility.cs" />
+    <Compile Include="Configuration\ParticleGrassLoader.cs" />
+    <Compile Include="Utility\ObjectPool.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
