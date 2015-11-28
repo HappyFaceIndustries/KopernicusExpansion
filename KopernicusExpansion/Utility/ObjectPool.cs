@@ -19,7 +19,7 @@ namespace KopernicusExpansion.Utility
 
 		private Queue<GameObject> Pool;
 
-		private void Start()
+		public void Initialize()
 		{
 			Pool = new Queue<GameObject> (Size);
 			for (int i = 0; i < Size; i++)
@@ -74,38 +74,21 @@ namespace KopernicusExpansion.Utility
 			return true;
 		}
 
-		public bool SetSize(int size)
+		public void SetSize(int size)
 		{
-			if (Pool != null)
-			{
-				Size = size;
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			Size = size;
 		}
-		public bool SetPrefab(GameObject prefab)
+		public void SetPrefab(GameObject prefab)
 		{
-			if (Pool != null)
-			{
-				Prefab = prefab;
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			Prefab = prefab;
 		}
-		public bool SetCanGrow(bool canGrow)
+		public void SetCanGrow(bool canGrow)
 		{
 			CanGrow = canGrow;
-			return true;
 		}
-		public void SetPoolName(string name)
+		public void SetPoolName(string value)
 		{
-			name = name;
+			name = value;
 		}
 	}
 }
