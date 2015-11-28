@@ -95,7 +95,6 @@
     <Compile Include="Configuration\NoiseLoader.cs" />
     <Compile Include="Utility\Noise\ExDistPerlin.cs" />
     <Compile Include="Utility\Noise\ImprovedPerlinNoise.cs" />
-    <Compile Include="Configuration\ChildSphereLoader.cs" />
     <Compile Include="Configuration\EVAFootprints.cs" />
     <Compile Include="Utility\Geometry\Quad.cs" />
     <Compile Include="Utility\KopernicusExpansionRuntimeUtility.cs" />
