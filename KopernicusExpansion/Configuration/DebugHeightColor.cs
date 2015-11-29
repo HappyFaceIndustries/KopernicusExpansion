@@ -27,6 +27,14 @@ namespace KopernicusExpansion.Configuration
 				mod.maxHeight = value.value;
 			}
 		}
+		[ParserTarget("minHeight", optional = true)]
+		public NumericParser<double> minHeight
+		{
+			set
+			{
+				mod.minHeight = value.value;
+			}
+		}
 
 		public void Apply(ConfigNode node)
 		{
@@ -41,8 +49,8 @@ namespace KopernicusExpansion.Effects
 {
 	public class PQSMod_DebugHeightColor : PQSMod
 	{
-		//noise
 		public double maxHeight = 0;
+		public double minHeight = 0;
 
 		public override void OnSetup ()
 		{
@@ -51,8 +59,8 @@ namespace KopernicusExpansion.Effects
 
 		public override void OnVertexBuild (PQS.VertexBuildData data)
 		{
-			float value = (float)((data.vertHeight - sphere.radius) / maxHeight);
-			Color color = new Color (value, value, value, value);
+			float value = (float)((data.vertHeight - sphere.radius - minHeight) / (maxHeight - minHeight));
+			Color color = new Color (value, value, value, 1f);
 			data.vertColor = color;
 		}
 	}
