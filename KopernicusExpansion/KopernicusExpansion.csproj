@@ -100,6 +100,7 @@
     <Compile Include="Utility\KopernicusExpansionRuntimeUtility.cs" />
     <Compile Include="Configuration\ParticleGrassLoader.cs" />
     <Compile Include="Utility\ObjectPool.cs" />
+    <Compile Include="Configuration\OrbitRendererLoader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
