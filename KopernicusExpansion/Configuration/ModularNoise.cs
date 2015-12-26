@@ -304,7 +304,6 @@ namespace KopernicusExpansion.Configuration.ModularNoiseOperators
 			if (applyFrom != null)
 			{
 				output += MN.GetOutput (applyFrom);
-				output *= 0.5; //average together
 			}
 			else
 			{
