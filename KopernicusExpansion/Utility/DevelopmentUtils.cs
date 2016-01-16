@@ -38,6 +38,11 @@ namespace KopernicusExpansion.Utility
 				return;
 			}
 
+			skin = HighLogic.Skin;
+			lineTexture = new Texture2D (1, 1);
+			lineTexture.SetPixel (0, 0, new Color (0.66f, 0.66f, 0.66f));
+			lineTexture.Apply ();
+
 			DontDestroyOnLoad (this);
 
 			GameEvents.onShowUI.Add (OnShowUI);
@@ -69,14 +74,21 @@ namespace KopernicusExpansion.Utility
 		private int scaledExporterWindowID = "KopE_ScaledExporterWindow".GetHashCode();
 		private int textureViewerWindowID = "KopE_TextureViewerWindow".GetHashCode();
 
-		private Rect mainWindowRect;
+		private Rect mainWindowRect = new Rect (200f, 200f, 350f, 200f);
 		private Rect scaledExporterWindowRect;
 		private Rect textureViewerWindowRect;
+
+		private Vector2 mainScrollView;
+
+		private GUISkin skin;
+		private Texture2D lineTexture;
 
 		private void OnGUI()
 		{
 			if (!showUI)
 				return;
+
+			GUI.skin = skin;
 
 			if (isMainWindowOpen)
 			{
@@ -91,10 +103,36 @@ namespace KopernicusExpansion.Utility
 				textureViewerWindowRect = GUILayout.Window (textureViewerWindowID, textureViewerWindowRect, TextureViewerWindow, textureViewerWindowTitle);
 			}
 		}
+		private void Update()
+		{
+			if (GameSettings.MODIFIER_KEY.GetKey () && Input.GetKeyDown (KeyCode.Alpha0))
+			{
+				isMainWindowOpen = !isMainWindowOpen;
+			}
+		}
 
 		private void MainWindow(int id)
 		{
+			mainScrollView = GUILayout.BeginScrollView (mainScrollView);
 
+			float buttonWidth;
+			float buttonHeight;
+			skin.button.CalcMinMaxWidth (new GUIContent ("Button Tester"), out buttonHeight, out buttonWidth);
+			buttonHeight = skin.button.CalcHeight (new GUIContent ("Button Tester"), buttonWidth);
+
+			isScaledExporterOpen = GUILayout.Toggle (isScaledExporterOpen, "Scaled Exporter", skin.button, GUILayout.Height (buttonHeight));
+			isTextureViewerOpen = GUILayout.Toggle (isTextureViewerOpen, "Texture Viewer", skin.button, GUILayout.Height (buttonHeight));
+
+			GUILayout.Space (10f);
+			var lineRect = GUILayoutUtility.GetRect (0f, 10000f, 1f, 1f);
+			GUI.DrawTexture (lineRect, lineTexture, ScaleMode.StretchToFill, true);
+			GUILayout.Space (10f);
+
+			//TODO: In-game Editors
+
+			GUILayout.EndScrollView ();
+
+			GUI.DragWindow ();
 		}
 
 		private void ScaledExporterWindow(int id)

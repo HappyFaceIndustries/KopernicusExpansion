@@ -16,11 +16,13 @@ namespace KopernicusExpansion.Editors
 	public class IngameEditor : Attribute
 	{
 		public Type editorType;
+		public string editorName;
 		public GameScenes[] scenes;
 
-		public IngameEditor(Type editorClass, params GameScenes[] gameScenes)
+		public IngameEditor(Type editorClass, string editorName, params GameScenes[] gameScenes)
 		{
 			this.editorType = editorClass;
+			this.editorName = editorName;
 			this.scenes = gameScenes;
 		}
 	}

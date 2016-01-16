@@ -19,7 +19,7 @@ using UnityEngine;
 
 namespace KopernicusExpansion.Configuration
 {
-	[IngameEditor(typeof(Editors.ProceduralGasGiantEditor), GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
+	[IngameEditor(typeof(Editors.ProceduralGasGiantEditor), "Gas Giant Editor", GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
 	[ExternalParserTarget("ProceduralGasGiant", parentNodeName = "ScaledVersion")]
 	public class ProceduralGasGiantLoader : ExternalParserTargetLoader, IParserEventSubscriber
 	{
