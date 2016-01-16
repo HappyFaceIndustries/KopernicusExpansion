@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace KopernicusExpansion.Configuration
 {
-	[IngameEditor(typeof(Editors.CometTailLoader), GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
+	[IngameEditor(typeof(Editors.CometTailEditor), "Comet Tail Editor", GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
 	[ExternalParserTarget("CometTails")]
 	public class CometTailsLoader : ExternalParserTargetLoader, IParserEventSubscriber
 	{
@@ -71,6 +71,63 @@ namespace KopernicusExpansion.Configuration
 				tail.color = value.value;
 			}
 		}
+		[ParserTarget("rimPower", optional = true)]
+		public NumericParser<float> rimPower
+		{
+			set
+			{
+				tail.rimPower = value.value;
+			}
+		}
+		[ParserTarget("distortion", optional = true)]
+		public NumericParser<float> distortion
+		{
+			set
+			{
+				tail.distortion = value.value;
+			}
+		}
+		[ParserTarget("alphaDistortion", optional = true)]
+		public NumericParser<float> alphaDistortion
+		{
+			set
+			{
+				tail.alphaDistortion = value.value;
+			}
+		}
+		[ParserTarget("zDistortion", optional = true)]
+		public NumericParser<float> zDistortion
+		{
+			set
+			{
+				tail.zDistortion = value.value;
+			}
+		}
+		[ParserTarget("frequency", optional = true)]
+		public NumericParser<float> frequency
+		{
+			set
+			{
+				tail.frequency = value.value;
+			}
+		}
+		[ParserTarget("lacunarity", optional = true)]
+		public NumericParser<float> lacunarity
+		{
+			set
+			{
+				tail.lacunarity = value.value;
+			}
+		}
+		[ParserTarget("gain", optional = true)]
+		public NumericParser<float> gain
+		{
+			set
+			{
+				tail.gain = value.value;
+			}
+		}
+
 
 		[ParserTarget("radius", optional = true)]
 		public NumericParser<float> radius
@@ -89,7 +146,7 @@ namespace KopernicusExpansion.Configuration
 				tail.length = value.value;
 			}
 		}
-			
+
 		[ParserTarget("opacityCurve", optional = true)]
 		public FloatCurveParser opacityCurve
 		{
@@ -151,7 +208,16 @@ namespace KopernicusExpansion.Effects
 	public class CometTail
 	{
 		public CometTailType type;
+
 		public Color color = Color.white;
+		public float rimPower = 1.41f;
+		public float distortion = 0.143f;
+		public float alphaDistortion = 0.262f;
+		public float zDistortion = 0.12f;
+		public float frequency = 1.547f;
+		public float lacunarity = 1.518f;
+		public float gain = 0.734f;
+
 		public float radius = 2000f;
 		public float length = 16000f;
 		public FloatCurve opacityCurve;
@@ -161,6 +227,11 @@ namespace KopernicusExpansion.Effects
 
 		public static void AddCometTail(PSystemBody body, CometTail tail)
 		{
+			if (body.orbitDriver == null)
+			{
+				return;
+			}
+
 			Transform scaledVersion = body.scaledVersion.transform;
 
 			GameObject obj = new GameObject ("CometTail");
@@ -180,14 +251,14 @@ namespace KopernicusExpansion.Effects
 				//set default material values
 				mr.sharedMaterial.SetColor ("_TintColor", new Color(tail.color.r, tail.color.g, tail.color.b, 0.5f));
 
-				mr.sharedMaterial.SetFloat ("_RimPower", 1.41f);
-				mr.sharedMaterial.SetFloat ("_Distortion", 0.143f);
-				mr.sharedMaterial.SetFloat ("_AlphaDistortion", 0.262f);
-				mr.sharedMaterial.SetFloat ("_ZDistortion", 0.12f);
+				mr.sharedMaterial.SetFloat ("_RimPower", tail.rimPower);
+				mr.sharedMaterial.SetFloat ("_Distortion", tail.distortion);
+				mr.sharedMaterial.SetFloat ("_AlphaDistortion", tail.alphaDistortion);
+				mr.sharedMaterial.SetFloat ("_ZDistortion", tail.zDistortion);
 				mr.sharedMaterial.SetFloat ("_VertexDistortion", 0f);
-				mr.sharedMaterial.SetFloat ("_Frequency", 1.547f);
-				mr.sharedMaterial.SetFloat ("_Lacunarity", 1.518f);
-				mr.sharedMaterial.SetFloat ("_Gain", 0.734f);
+				mr.sharedMaterial.SetFloat ("_Frequency", tail.frequency);
+				mr.sharedMaterial.SetFloat ("_Lacunarity", tail.lacunarity);
+				mr.sharedMaterial.SetFloat ("_Gain", tail.gain);
 			}
 			else
 			{
@@ -201,11 +272,11 @@ namespace KopernicusExpansion.Effects
 			mr.receiveShadows = false;
 
 			var cometController = obj.AddComponent<CometTailController> ();
-			cometController.targetBodyName = "Sun";
+			cometController.targetBodyName = body.orbitDriver.referenceBody.bodyName;
+			cometController.parentBodyName = body.celestialBody.bodyName;
 			cometController.usingAdvancedShader = Settings.AllowAdvancedCometShader;
 			cometController.type = tail.type;
 			cometController.color = tail.color;
-			cometController.orbit = body.celestialBody.orbit;
 			cometController.opacityCurve = tail.opacityCurve;
 			cometController.brightnessCurve = tail.brightnessCurve;
 
@@ -232,14 +303,16 @@ namespace KopernicusExpansion.Effects
 		private const float MaxTime = 10000;
 
 		public CometTailType type;
-		public Orbit orbit;
 		public string targetBodyName;
+		public string parentBodyName;
 		public Color color;
 
 		public FloatCurve opacityCurve;
 		public FloatCurve brightnessCurve;
 
 		private Transform target;
+		//private Orbit parentOrbit;
+		private Quaternion rotation;
 		
 		private float currentTime = 0f;
 		public int seed = 0;
@@ -264,22 +337,55 @@ namespace KopernicusExpansion.Effects
 			}
 		}
 
+		void GetTargets()
+		{
+			var psystemBodyTarget = Utils.GetBodies ().First (p => p != null && p.celestialBody != null && p.celestialBody.bodyName == targetBodyName);
+			if (psystemBodyTarget != null)
+			{
+				target = psystemBodyTarget.scaledVersion.transform;
+			}
+			//var psystemBodyParent = Utils.GetBodies ().First (p => p != null && p.celestialBody != null && p.celestialBody.bodyName == parentBodyName);
+			//if (psystemBodyParent != null)
+			//{
+			//	parentOrbit = psystemBodyParent.orbitDriver.orbit;
+			//}
+		}
+
 		void Update()
 		{
 			if (HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.TRACKSTATION)
 				return;
 
-			if (target != null)
+			if (target == null/* || parentOrbit == null*/)
 			{
-				//look at target
-				var rot = Quaternion.LookRotation ((target.position - transform.position).normalized);
-				transform.rotation = rot;
+				GetTargets ();
+			}
 
-				//TODO: make dust trails deflect from solar wind
+
+			//if (parentOrbit == null)
+			//	Debug.LogError ("parentOrbit");
+
+			//look at target
+			if (type == CometTailType.Dust)
+			{
+				//Vector3 orbitVector = (parentOrbit.getPositionAtUT(Planetarium.GetUniversalTime() + 1) - parentOrbit.getPositionAtUT(Planetarium.GetUniversalTime())) * 0.00001f;
+				//Vector3 orbitVector = parentOrbit.vel * 0.00001f;
+				//var velocity = orbitVector.magnitude;
+				//Vector3 lookVector = Vector3.Normalize(orbitVector - (Vector3.Normalize(transform.position - target.position) * 0.5f));
+				//var forwards = (transform.position - (transform.position + lookVector)).normalized;
+				//rotation = Quaternion.LookRotation (forwards);
+				transform.rotation = Quaternion.LookRotation ((target.position - transform.position).normalized);
 			}
 			else
-				GetTarget();
+			{
+				transform.rotation = Quaternion.LookRotation ((target.position - transform.position).normalized);
+			}
 		}
+		void OnPreRender()
+		{
+			//transform.rotation = rotation;
+		}
+
 		void LateUpdate()
 		{
 			if (HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.TRACKSTATION)
@@ -322,45 +428,19 @@ namespace KopernicusExpansion.Effects
 					renderer.material.SetColor ("_TintColor", calculatedColor);
 				}
 			}
-			else
-				GetTarget();
-		}
-		void GetTarget()
-		{
-			if (HighLogic.LoadedScene == GameScenes.PSYSTEM)
-				return;
-			target = PSystemManager.Instance.scaledBodies.First (t => t.gameObject.name == targetBodyName).transform;
 		}
 	}
 }
 
 namespace KopernicusExpansion.Editors
 {
-	public class CometTailLoader : MonoBehaviour
+	public class CometTailEditor : MonoBehaviour
 	{
 		Rect windowRect = new Rect (250, 200, 450, 350);
 		bool windowOpen = false;
 		Vector2 scroll;
 
 		GameObject targetPlanetScaled;
-
-		ApplicationLauncherButton button;
-		void Start()
-		{
-			var texture = new Texture2D (39, 39);
-			texture.LoadImage (Textures.CometTailEditorIcon);
-			button = ApplicationLauncher.Instance.AddModApplication (delegate {
-				windowOpen = true;
-			}, delegate {
-				windowOpen = false;
-			},
-				null, null, null, null, ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.MAPVIEW, texture);
-		}
-		void OnDestroy()
-		{
-			if(button != null)
-				ApplicationLauncher.Instance.RemoveModApplication (button);
-		}
 
 		void OnGUI()
 		{
