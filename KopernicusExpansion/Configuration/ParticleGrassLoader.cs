@@ -54,9 +54,9 @@ namespace KopernicusExpansion.Effects
 	{
 		public uint GrassSeed = 0;
 		public Texture2D GrassTexture;
-		public float GrassSizeMin = 200f;
-		public float GrassSizeMax = 260f;
-		public float GrassDensity = 3f;
+		public float GrassSizeMin = 1f;
+		public float GrassSizeMax = 1f;
+		public float GrassDensity = 2f;
 
 		protected ObjectPool ParticleEmitterPool;
 
@@ -72,34 +72,46 @@ namespace KopernicusExpansion.Effects
 			ParticleEmitterPool.SetSize (100);
 
 			GameObject prefab = new GameObject ("ParticleGrass");
-			var psystem = prefab.AddComponent<ParticleSystem> ();
-			var prenderer = prefab.GetComponent<ParticleSystemRenderer> (); //auto-added by addind system
+			var psystem = (ParticleEmitter)prefab.AddComponent ("MeshParticleEmitter");
+			var psrenderer = prefab.AddComponent<ParticleRenderer> ();
 
-			//TODO: set up particlesystem(renderer)
-			psystem.emissionRate = 0f;
-			psystem.enableEmission = false;
-			psystem.gravityModifier = 0f;
-			psystem.loop = false;
-			psystem.maxParticles = (int)(100f * GrassDensity);
-			psystem.playbackSpeed = 0f;
-			psystem.playOnAwake = false;
-			psystem.randomSeed = GrassSeed;
-			psystem.simulationSpace = ParticleSystemSimulationSpace.Local;
+			psystem.angularVelocity = 0f;
+			psystem.emit = false;
+			psystem.emitterVelocityScale = 0f;
+			psystem.enabled = true;
+			psystem.localVelocity = Vector3.zero;
+			psystem.maxEmission = 0f;
+			psystem.maxEnergy = float.MaxValue;
+			psystem.maxSize = GrassSizeMax;
+			psystem.minEmission = 0f;
+			psystem.minEnergy = 0f;
+			psystem.minSize = GrassSizeMin;
+			psystem.rndAngularVelocity = 0f;
+			psystem.rndRotation = false;
+			psystem.rndVelocity = Vector3.zero;
+			psystem.useWorldSpace = false;
 
-			prenderer.maxParticleSize = GrassSizeMax;
-			prenderer.renderMode = ParticleSystemRenderMode.VerticalBillboard;
-			prenderer.castShadows = true;
-			prenderer.receiveShadows = true;
-			prenderer.sharedMaterial = new Material (Shader.Find ("Particles/Alpha Blended"));
-			prenderer.sharedMaterial.SetTexture ("_MainTex", GrassTexture);
+			psrenderer.cameraVelocityScale = 1f;
+			psrenderer.lengthScale = 1f;
+			psrenderer.maxParticleSize = GrassSizeMax;
+			//psrenderer.maxPartileSize = GrassSizeMax;
+			psrenderer.particleRenderMode = ParticleRenderMode.Billboard;
+			psrenderer.velocityScale = 1f;
+			psrenderer.castShadows = true;
+			psrenderer.receiveShadows = true;
+			psrenderer.sharedMaterial = new Material (Shader.Find ("Particles/Alpha Blended"));
+			psrenderer.sharedMaterial.SetTexture ("_MainTex", GrassTexture);
 
 			ParticleEmitterPool.SetPrefab (prefab);
 			ParticleEmitterPool.Initialize ();
 		}
 
-		List<ParticleSystem.Particle> particles = new List<ParticleSystem.Particle> ();
+		List<Particle> particles = new List<Particle> ();
 		public override void OnQuadBuilt (PQ quad)
 		{
+			if (!quad.isVisible || quad.subdivision < 3)
+				return;
+
 			//add a particlegrass object from the pool
 			var particleObj = ParticleEmitterPool.GetObject ();
 			particleObj.name = "ParticleGrassEmitterObject";
@@ -110,26 +122,25 @@ namespace KopernicusExpansion.Effects
 			particleObj.SetActive (true);
 			particleObj.renderer.enabled = true;
 
-			var psystem = particleObj.GetComponent<ParticleSystem> ();
+			var psystem = particleObj.GetComponent<ParticleEmitter> ();
 			var verts = quad.mesh.vertices;
 			var colors = quad.mesh.colors;
 			particles.Clear ();
 			for (int i = 0; i < verts.Length; i++)
 			{
-				var p = new ParticleSystem.Particle ();
+				var p = new Particle ();
 				p.angularVelocity = 0f;
-				p.axisOfRotation = Vector3.up;
+				p.energy = float.MaxValue;
 				p.color = colors [i];
-				p.lifetime = float.MaxValue;
-				p.position = verts [i];
+				p.position = verts [i];// + new Vector3 (UnityEngine.Random.Range (-GrassDensity, GrassDensity), 0f, UnityEngine.Random.Range (-GrassDensity, GrassDensity));
 				p.rotation = 0f;
 				p.size = UnityEngine.Random.Range (GrassSizeMin, GrassSizeMax);
-				p.startLifetime = 0f;
+				p.startEnergy = float.MaxValue;
 				p.velocity = Vector3.zero;
 				particles.Add (p);
 			}
 
-			psystem.SetParticles (particles.ToArray (), particles.Count);
+			psystem.particles = particles.ToArray ();
 
 			Debug.Log ("Added Particles!");
 		}
@@ -141,8 +152,8 @@ namespace KopernicusExpansion.Effects
 			{
 				if (ParticleEmitterPool.ContainsObject (trns.gameObject))
 				{
-					var psystem = trns.GetComponent<ParticleSystem> ();
-					psystem.Clear ();
+					var psystem = trns.GetComponent<ParticleEmitter> ();
+					psystem.ClearParticles ();
 					ParticleEmitterPool.DisableObject (trns.gameObject);
 				}
 			}

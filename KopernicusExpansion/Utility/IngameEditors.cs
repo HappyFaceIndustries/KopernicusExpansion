@@ -13,79 +13,69 @@ using UnityEngine;
 namespace KopernicusExpansion.Editors
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class IngameEditor : Attribute
+	public class IngameEditorAttribute : Attribute
 	{
-		public Type editorType;
 		public string editorName;
-		public GameScenes[] scenes;
 
-		public IngameEditor(Type editorClass, string editorName, params GameScenes[] gameScenes)
+		public IngameEditorAttribute(string editorName)
 		{
-			this.editorType = editorClass;
 			this.editorName = editorName;
-			this.scenes = gameScenes;
 		}
 	}
-}
 
-namespace KopernicusExpansion.Editors
-{
-	[KSPAddon(KSPAddon.Startup.MainMenu, true)]
-	public class IngameEditorSpawner : MonoBehaviour
+	public class IngameEditor : MonoBehaviour
 	{
-		private static Dictionary<Type, GameScenes[]> editorTypes = new Dictionary<Type, GameScenes[]> ();
+		public bool IsWindowOpen = false;
+	}
 
-		void Start()
+	public static class IngameEditorUtils
+	{
+		private static Dictionary<string, Type> editorTypes = new Dictionary<string, Type> ();
+
+		public static List<IngameEditor> GetEditors()
 		{
-			DontDestroyOnLoad (this);
-			LoadEditorTypes ();
-			GameEvents.onLevelWasLoadedGUIReady.Add (OnLevelLoaded);
-		}
-		void LoadEditorTypes()
-		{
-			if (Settings.AllowEditors)
+			//find editor types
+			foreach (var assembly in AssemblyLoader.loadedAssemblies.Select(a => a.assembly))
 			{
-				Utils.Log ("Finding editor types...");
-
-				foreach (var assembly in AssemblyLoader.loadedAssemblies.Select(a => a.assembly))
+				foreach (var type in assembly.GetTypes())
 				{
-					foreach (var type in assembly.GetTypes())
+					if(type.BaseType == typeof(IngameEditor))
 					{
 						var attributes = Attribute.GetCustomAttributes (type);
 						foreach (var attr in attributes)
 						{
-							if (attr is IngameEditor)
+							if (attr is IngameEditorAttribute)
 							{
-								var editor = (IngameEditor)attr;
-								editorTypes.Add (editor.editorType, editor.scenes);
-								Utils.Log ("IngameEditor found: " + editor.editorType.Name + " for " + type.Name);
+								var editor = (IngameEditorAttribute)attr;
+								editorTypes.Add (editor.editorName, type);
+								Utils.Log ("IngameEditor found: " + type.Name);
 							}
 						}
 					}
 				}
 			}
-		}
 
-		private void OnLevelLoaded (GameScenes scene)
-		{
-			if (Settings.AllowEditors)
+			List<IngameEditor> editors = new List<IngameEditor> ();
+
+			//spawn editors
+			foreach (var editor in editorTypes)
 			{
-				foreach (var editor in editorTypes.Where(e => e.Value.Contains(scene)))
+				try
 				{
-					try
-					{
-						GameObject obj = new GameObject (editor.Key.Name);
-						obj.AddComponent (editor.Key);
-						obj.SetActive (true);
-						Utils.Log ("IngameEditor " + editor.Key.Name + " created");
-					}
-					catch(Exception e)
-					{
-						Utils.LogError ("Failed to load editor: " + editor.Key.Name);
-						Debug.LogException (e);
-					}
+					GameObject obj = new GameObject (editor.Key);
+					var editorComp = (IngameEditor)obj.AddComponent (editor.Value);
+					editors.Add (editorComp);
+					obj.SetActive (true);
+					Utils.Log ("IngameEditor " + editor.Key + " created");
+				}
+				catch(Exception e)
+				{
+					Utils.LogError ("Failed to load editor: " + editor.Key);
+					Debug.LogException (e);
 				}
 			}
+
+			return editors;
 		}
 	}
 }

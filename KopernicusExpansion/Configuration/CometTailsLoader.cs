@@ -20,7 +20,6 @@ using UnityEngine;
 
 namespace KopernicusExpansion.Configuration
 {
-	[IngameEditor(typeof(Editors.CometTailEditor), "Comet Tail Editor", GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
 	[ExternalParserTarget("CometTails")]
 	public class CometTailsLoader : ExternalParserTargetLoader, IParserEventSubscriber
 	{
@@ -128,7 +127,6 @@ namespace KopernicusExpansion.Configuration
 			}
 		}
 
-
 		[ParserTarget("radius", optional = true)]
 		public NumericParser<float> radius
 		{
@@ -155,7 +153,7 @@ namespace KopernicusExpansion.Configuration
 				tail.opacityCurve = value.curve;
 			}
 		}
-			
+
 		[ParserTarget("brightnessCurve", optional = true)]
 		public FloatCurveParser brightnessCurve
 		{
@@ -227,11 +225,6 @@ namespace KopernicusExpansion.Effects
 
 		public static void AddCometTail(PSystemBody body, CometTail tail)
 		{
-			if (body.orbitDriver == null)
-			{
-				return;
-			}
-
 			Transform scaledVersion = body.scaledVersion.transform;
 
 			GameObject obj = new GameObject ("CometTail");
@@ -272,11 +265,11 @@ namespace KopernicusExpansion.Effects
 			mr.receiveShadows = false;
 
 			var cometController = obj.AddComponent<CometTailController> ();
-			cometController.targetBodyName = body.orbitDriver.referenceBody.bodyName;
-			cometController.parentBodyName = body.celestialBody.bodyName;
+			cometController.targetBodyName = "Sun";
 			cometController.usingAdvancedShader = Settings.AllowAdvancedCometShader;
 			cometController.type = tail.type;
 			cometController.color = tail.color;
+			cometController.orbit = body.celestialBody.orbit;
 			cometController.opacityCurve = tail.opacityCurve;
 			cometController.brightnessCurve = tail.brightnessCurve;
 
@@ -303,17 +296,15 @@ namespace KopernicusExpansion.Effects
 		private const float MaxTime = 10000;
 
 		public CometTailType type;
+		public Orbit orbit;
 		public string targetBodyName;
-		public string parentBodyName;
 		public Color color;
 
 		public FloatCurve opacityCurve;
 		public FloatCurve brightnessCurve;
 
 		private Transform target;
-		//private Orbit parentOrbit;
-		private Quaternion rotation;
-		
+
 		private float currentTime = 0f;
 		public int seed = 0;
 		public float speed = 0.05f;
@@ -337,55 +328,22 @@ namespace KopernicusExpansion.Effects
 			}
 		}
 
-		void GetTargets()
-		{
-			var psystemBodyTarget = Utils.GetBodies ().First (p => p != null && p.celestialBody != null && p.celestialBody.bodyName == targetBodyName);
-			if (psystemBodyTarget != null)
-			{
-				target = psystemBodyTarget.scaledVersion.transform;
-			}
-			//var psystemBodyParent = Utils.GetBodies ().First (p => p != null && p.celestialBody != null && p.celestialBody.bodyName == parentBodyName);
-			//if (psystemBodyParent != null)
-			//{
-			//	parentOrbit = psystemBodyParent.orbitDriver.orbit;
-			//}
-		}
-
 		void Update()
 		{
 			if (HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.TRACKSTATION)
 				return;
 
-			if (target == null/* || parentOrbit == null*/)
+			if (target != null)
 			{
-				GetTargets ();
-			}
+				//look at target
+				var rot = Quaternion.LookRotation ((target.position - transform.position).normalized);
+				transform.rotation = rot;
 
-
-			//if (parentOrbit == null)
-			//	Debug.LogError ("parentOrbit");
-
-			//look at target
-			if (type == CometTailType.Dust)
-			{
-				//Vector3 orbitVector = (parentOrbit.getPositionAtUT(Planetarium.GetUniversalTime() + 1) - parentOrbit.getPositionAtUT(Planetarium.GetUniversalTime())) * 0.00001f;
-				//Vector3 orbitVector = parentOrbit.vel * 0.00001f;
-				//var velocity = orbitVector.magnitude;
-				//Vector3 lookVector = Vector3.Normalize(orbitVector - (Vector3.Normalize(transform.position - target.position) * 0.5f));
-				//var forwards = (transform.position - (transform.position + lookVector)).normalized;
-				//rotation = Quaternion.LookRotation (forwards);
-				transform.rotation = Quaternion.LookRotation ((target.position - transform.position).normalized);
+				//TODO: make dust trails deflect from solar wind
 			}
 			else
-			{
-				transform.rotation = Quaternion.LookRotation ((target.position - transform.position).normalized);
-			}
+				GetTarget();
 		}
-		void OnPreRender()
-		{
-			//transform.rotation = rotation;
-		}
-
 		void LateUpdate()
 		{
 			if (HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.TRACKSTATION)
@@ -428,13 +386,22 @@ namespace KopernicusExpansion.Effects
 					renderer.material.SetColor ("_TintColor", calculatedColor);
 				}
 			}
+			else
+				GetTarget();
+		}
+		void GetTarget()
+		{
+			if (HighLogic.LoadedScene == GameScenes.PSYSTEM)
+				return;
+			target = PSystemManager.Instance.scaledBodies.First (t => t.gameObject.name == targetBodyName).transform;
 		}
 	}
 }
 
 namespace KopernicusExpansion.Editors
 {
-	public class CometTailEditor : MonoBehaviour
+	[IngameEditor("Comet Tail Editor")]
+	public class CometTailEditor : IngameEditor
 	{
 		Rect windowRect = new Rect (250, 200, 450, 350);
 		bool windowOpen = false;
@@ -444,12 +411,12 @@ namespace KopernicusExpansion.Editors
 
 		void OnGUI()
 		{
-			if(windowOpen)
+			if(IsWindowOpen)
 				windowRect = GUILayout.Window ("CometTailEditor".GetHashCode (), windowRect, Window, "Comet Tail Editor");
 		}
 		void Update()
 		{
-			if (!windowOpen)
+			if (!IsWindowOpen)
 				return;
 
 			var mapObj = PlanetariumCamera.fetch.target;

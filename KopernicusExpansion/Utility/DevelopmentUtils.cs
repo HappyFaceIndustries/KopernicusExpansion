@@ -9,6 +9,8 @@ using Kopernicus.Constants;
 using Kopernicus.Configuration;
 
 using KopernicusExpansion;
+using KopernicusExpansion.Editors;
+using KopernicusExpansion.Resources;
 
 using UnityEngine;
 
@@ -43,6 +45,74 @@ namespace KopernicusExpansion.Utility
 			lineTexture.SetPixel (0, 0, new Color (0.66f, 0.66f, 0.66f));
 			lineTexture.Apply ();
 
+			var buttonTexture = new Texture2D (39, 39);
+			buttonTexture.LoadImage (Textures.ProceduralGasGiantEditorIcon);
+			mainWindowButton = ApplicationLauncher.Instance.AddModApplication (delegate {
+				isMainWindowOpen = true;
+			}, delegate {
+				isMainWindowOpen = false;
+			},
+				null, null, null, null, ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.MAPVIEW | ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.FLIGHT, buttonTexture);
+			ApplicationLauncher.Instance.EnableMutuallyExclusive (mainWindowButton);
+
+			var editors = IngameEditorUtils.GetEditors ();
+			foreach (var editor in editors) 
+			{
+				editor.transform.parent = this.transform;
+				ingameEditorObjects.Add (editor.gameObject.name, editor);
+			}
+
+			centeredText = new GUIStyle (skin.label);
+			centeredText.alignment = TextAnchor.MiddleCenter;
+
+			smallButton = new GUIStyle (skin.button);
+			smallButton.padding.top = 3;
+			smallButton.padding.bottom = 3;
+			smallButton.padding.right = 5;
+			smallButton.padding.left = 5;
+
+			hideHorizScrollbar = new GUIStyle (skin.horizontalScrollbar);
+			hideHorizScrollbar.fixedHeight = 0f;
+
+			colorSelectorTextField = new GUIStyle (skin.textField);
+			colorSelectorTextField.normal.background = Texture2D.whiteTexture;
+			colorSelectorTextField.focused.background = Texture2D.whiteTexture;
+			colorSelectorTextField.active.background = Texture2D.whiteTexture;
+			colorSelectorTextField.hover.background = Texture2D.whiteTexture;
+
+			//estimate the height of the text box
+			float height = skin.textField.CalcHeight (new GUIContent ("0.0"), 120f);
+			int marginTop = skin.textField.margin.top;
+			int marginBottom = skin.textField.margin.bottom;
+
+			manipulationSliderStyle = new GUIStyle (skin.horizontalSlider);
+			manipulationSliderStyle.fixedHeight = height;
+			manipulationSliderStyle.margin.top = marginTop;
+			manipulationSliderStyle.margin.bottom = marginBottom;
+			manipulationSliderThumbStyle = new GUIStyle (skin.horizontalSliderThumb);
+			manipulationSliderThumbStyle.fixedHeight = height;
+
+			PQSBodies = Utils.GetBodies ().Where (p => p.pqsController != null).ToArray ();
+
+			if (PQSBodies.Length > 0)
+			{
+				var material = Utils.GetScaled (PQSBodies [selectedPQSBody].name).renderer.sharedMaterial;
+
+				previewTextureColor = (Texture2D)material.GetTexture("_MainTex");
+				previewTextureBump = (Texture2D)material.GetTexture ("_BumpMap");
+
+				if (previewTextureColor == null)
+					previewTextureBump = Texture2D.blackTexture;
+				if (previewTextureBump == null)
+					previewTextureBump = Texture2D.blackTexture;
+			}
+			else
+			{
+				previewTextureColor = Texture2D.blackTexture;
+				previewTextureBump = Texture2D.blackTexture;
+			}
+
+
 			DontDestroyOnLoad (this);
 
 			GameEvents.onShowUI.Add (OnShowUI);
@@ -66,7 +136,9 @@ namespace KopernicusExpansion.Utility
 		private bool isScaledExporterOpen = false;
 		private bool isTextureViewerOpen = false;
 
-		private string mainWindowTitle = "KopernicusExpansion Development Utilities";
+		private ApplicationLauncherButton mainWindowButton;
+
+		private string mainWindowTitle = "KopernicusExpansion Development Tools";
 		private string scaledExporterWindowTitle = "ScaledVersion Exporter";
 		private string textureViewerWindowTitle = "Inbuilt-Texture Viewer";
 
@@ -74,14 +146,37 @@ namespace KopernicusExpansion.Utility
 		private int scaledExporterWindowID = "KopE_ScaledExporterWindow".GetHashCode();
 		private int textureViewerWindowID = "KopE_TextureViewerWindow".GetHashCode();
 
-		private Rect mainWindowRect = new Rect (200f, 200f, 350f, 200f);
-		private Rect scaledExporterWindowRect;
-		private Rect textureViewerWindowRect;
+		private Rect mainWindowRect = new Rect ((Screen.width - 305f), 40f, 300f, 410f);
+		private Rect scaledExporterWindowRect = new Rect (200f, 200f, 600f, 400f);
+		private Rect textureViewerWindowRect = new Rect (200f, 200f, 350f, 200f);
 
 		private Vector2 mainScrollView;
+		private Vector2 scaledExporterScrollView1;
+		private Vector2 scaledExporterScrollView2;
 
 		private GUISkin skin;
 		private Texture2D lineTexture;
+		private GUIStyle centeredText;
+		private GUIStyle smallButton;
+		private GUIStyle colorSelectorTextField;
+		private GUIStyle hideHorizScrollbar;
+
+		private Dictionary<string, IngameEditor> ingameEditorObjects = new Dictionary<string, IngameEditor> ();
+
+		private int selectedPQSBody = 0;
+		private Texture2D previewTextureColor;
+		private Texture2D previewTextureBump;
+		private bool previewIsBump = false;
+		private int exportResolution = 2048;
+		private float normalStrength = 8f;
+		private string specPath = "";
+		private string oceanColorString = "#0000ff";
+		private ColorParser oceanColorColorParser = new ColorParser ();
+		private bool genSpecFromOceans = false;
+		private bool colorOceans = true;
+		private bool updateScaled = true;
+		private bool writeFiles = true;
+		private CelestialBody[] PQSBodies = new CelestialBody[0];
 
 		private void OnGUI()
 		{
@@ -92,7 +187,7 @@ namespace KopernicusExpansion.Utility
 
 			if (isMainWindowOpen)
 			{
-				mainWindowRect = GUILayout.Window (mainWindowID, mainWindowRect, MainWindow, mainWindowTitle, GUILayout.ExpandHeight (true));
+				mainWindowRect = GUILayout.Window (mainWindowID, mainWindowRect, MainWindow, mainWindowTitle);
 			}
 			if (isScaledExporterOpen)
 			{
@@ -123,26 +218,278 @@ namespace KopernicusExpansion.Utility
 			isScaledExporterOpen = GUILayout.Toggle (isScaledExporterOpen, "Scaled Exporter", skin.button, GUILayout.Height (buttonHeight));
 			isTextureViewerOpen = GUILayout.Toggle (isTextureViewerOpen, "Texture Viewer", skin.button, GUILayout.Height (buttonHeight));
 
-			GUILayout.Space (10f);
-			var lineRect = GUILayoutUtility.GetRect (0f, 10000f, 1f, 1f);
+			GUILayout.Space (5f);
+			var lineRect = GUILayoutUtility.GetRect (1f, 1f, 1f, 1f);
 			GUI.DrawTexture (lineRect, lineTexture, ScaleMode.StretchToFill, true);
-			GUILayout.Space (10f);
+			GUILayout.Space (5f);
 
-			//TODO: In-game Editors
+			foreach (var editor in ingameEditorObjects)
+			{
+				editor.Value.IsWindowOpen = GUILayout.Toggle (editor.Value.IsWindowOpen, editor.Key, skin.button, GUILayout.Height (buttonHeight));
+			}
 
 			GUILayout.EndScrollView ();
-
-			GUI.DragWindow ();
 		}
 
 		private void ScaledExporterWindow(int id)
 		{
+			GUILayout.BeginHorizontal ();
 
+			GUILayout.BeginVertical (GUILayout.Width (380f));
+			scaledExporterScrollView1 = GUILayout.BeginScrollView (scaledExporterScrollView1, false, true, hideHorizScrollbar, skin.verticalScrollbar, skin.scrollView);
+
+			var selectedBody = PQSBodies [selectedPQSBody];
+
+			GUILayout.Label ("<b><color=#b7fe00>" + selectedBody.theName + "</color></b>", centeredText);
+			GUILayout.Space (5f);
+
+			GUILayout.BeginHorizontal ();
+			if (previewIsBump)
+			{
+				if (GUILayout.Button ("Color Map", smallButton, GUILayout.ExpandWidth (false)))
+				{
+					previewIsBump = false;
+				}
+			}
+			else
+			{
+				GUILayout.Toggle (true, "Color Map", smallButton, GUILayout.ExpandWidth (false));
+			}
+			if (!previewIsBump)
+			{
+				if (GUILayout.Button ("Bump Map", smallButton, GUILayout.ExpandWidth (false)))
+				{
+					previewIsBump = true;
+				}
+			}
+			else
+			{
+				GUILayout.Toggle (true, "Bump Map", smallButton, GUILayout.ExpandWidth (false));
+			}
+			GUILayout.EndHorizontal ();
+
+			if(previewIsBump)
+				GUILayout.Label (previewTextureBump, GUILayout.Width (360f), GUILayout.Height (180f));
+			else
+				GUILayout.Label (previewTextureColor, GUILayout.Width (360f), GUILayout.Height (180f));
+
+			if (HighLogic.LoadedScene == GameScenes.TRACKSTATION || HighLogic.LoadedScene == GameScenes.FLIGHT)
+			{
+				string buttonText = HighLogic.LoadedSceneIsFlight ? "View in Map Mode" : "Focus on planet";
+				if (GUILayout.Button (buttonText, smallButton, GUILayout.ExpandWidth (false)))
+				{
+					PlanetariumCamera.fetch.SetTarget (selectedBody);
+					PlanetariumCamera.fetch.SetDistance ((float)selectedBody.Radius * 4f * ScaledSpace.InverseScaleFactor);
+					if (HighLogic.LoadedSceneIsFlight)
+						MapView.EnterMapView ();
+				}
+			}
+			GUILayout.Space (5f);
+
+			//resolution
+			GUILayout.Label ("Resolution:");
+			exportResolution = (int)(DrawManipulationSlider ("exportResolution", "", (float)exportResolution, 4f, 8192f, "###0") / 2f) * 2;
+
+			//normal strength
+			GUILayout.Label ("Normal Map Strength:");
+			normalStrength = DrawManipulationSlider ("normalStrength", "", normalStrength, 0f, 16f);
+
+			//specular map selection
+			GUILayout.Label ("Specular Map Path");
+			if (!GameDatabase.Instance.ExistsTexture (specPath))
+			{
+				GUI.color = Color.red;
+			}
+			specPath = GUILayout.TextField (specPath);
+			GUI.color = Color.white;
+
+			GUILayout.Space (5f);
+			var lineRect = GUILayoutUtility.GetRect (1f, 1f, 1f, 1f);
+			GUI.DrawTexture (lineRect, lineTexture, ScaleMode.StretchToFill, true);
+			GUILayout.Space (5f);
+
+			//ocean related options
+			if(selectedBody.ocean)
+			{
+				//ocean color
+				colorOceans = GUILayout.Toggle (colorOceans, "Color Oceans");
+				if(colorOceans)
+				{
+					//ocean color selection
+					GUILayout.Label ("Ocean Color (hexadecimal)");
+					try
+					{
+						oceanColorColorParser.SetFromString (oceanColorString);
+						GUI.backgroundColor = oceanColorColorParser.value;
+						GUI.contentColor = oceanColorColorParser.value.grayscale < 0.5f ? Color.white : Color.black;
+					}
+					catch
+					{
+						GUI.contentColor = Color.red;
+						GUI.backgroundColor = Color.red;
+						GUI.color = Color.red;
+					}
+					oceanColorString = GUILayout.TextField (oceanColorString, colorSelectorTextField);
+					GUI.contentColor = Color.white;
+					GUI.backgroundColor = Color.white;
+					GUI.color = Color.white;
+				}
+
+				//spec
+				genSpecFromOceans = GUILayout.Toggle (genSpecFromOceans, "Generate Specular Map from Oceans");
+
+				GUILayout.Space (5f);
+				lineRect = GUILayoutUtility.GetRect (1f, 1f, 1f, 1f);
+				GUI.DrawTexture (lineRect, lineTexture, ScaleMode.StretchToFill, true);
+				GUILayout.Space (5f);
+			}
+
+			//build options
+			updateScaled = GUILayout.Toggle (updateScaled, "Update ScaledSpace");
+			writeFiles = GUILayout.Toggle (writeFiles, "Export Files");
+
+			if (GUILayout.Button ("<b>Build Maps</b>"))
+			{
+				var specMap = GameDatabase.Instance.GetTexture (specPath, false);
+				Color oceanColor = Color.black;
+				try
+				{
+					oceanColorColorParser.SetFromString (oceanColorString);
+					oceanColor = oceanColorColorParser.value;
+				}
+				catch {}
+
+				Utils.BuildMaps (selectedBody, specMap, exportResolution, normalStrength, writeFiles, genSpecFromOceans, colorOceans, oceanColor, updateScaled);
+				var material = Utils.GetScaled (selectedBody.name).renderer.sharedMaterial;
+
+				previewTextureColor = (Texture2D)material.GetTexture("_MainTex");
+				previewTextureBump = (Texture2D)material.GetTexture ("_BumpMap");
+
+				if (previewTextureColor == null)
+					previewTextureBump = Texture2D.blackTexture;
+				if (previewTextureBump == null)
+					previewTextureBump = Texture2D.blackTexture;
+			}
+
+			GUILayout.EndScrollView ();
+			GUILayout.EndVertical ();
+
+			GUILayout.Space (1f);
+
+			GUILayout.BeginVertical ();
+			GUILayout.Label ("<b><color=#b7fe00>Celestial Bodies</color></b>", centeredText);
+			scaledExporterScrollView2 = GUILayout.BeginScrollView (scaledExporterScrollView2);
+
+			for(int i = 0; i < PQSBodies.Length; i++)
+			{
+				var body = PQSBodies [i];
+				if (i == selectedPQSBody)
+				{
+					GUILayout.Toggle (true, body.theName, skin.button);
+				}
+				else
+				{
+					if (GUILayout.Button (body.theName))
+					{
+						selectedPQSBody = i;
+						var material = Utils.GetScaled (PQSBodies [selectedPQSBody].name).renderer.sharedMaterial;
+
+						previewTextureColor = (Texture2D)material.GetTexture("_MainTex");
+						previewTextureBump = (Texture2D)material.GetTexture ("_BumpMap");
+
+						if (previewTextureColor == null)
+							previewTextureBump = Texture2D.blackTexture;
+						if (previewTextureBump == null)
+							previewTextureBump = Texture2D.blackTexture;
+					}
+				}
+			}
+
+			GUILayout.EndScrollView ();
+			GUILayout.EndVertical ();
+
+			GUILayout.EndHorizontal ();
+
+			GUI.DragWindow ();
+		}
+
+		private Dictionary<string, string> textBoxValues = new Dictionary<string, string>();
+		private Dictionary<string, Color> textBoxColors = new Dictionary<string, Color>();
+		private GUIStyle manipulationSliderStyle;
+		private GUIStyle manipulationSliderThumbStyle;
+		private float DrawManipulationSlider(string uniqueName, string name, float value, float min, float max, string toStringPattern = "###0.0###")
+		{
+			value = Mathf.Clamp (value, min, max);
+			if (!textBoxValues.ContainsKey (uniqueName))
+				textBoxValues.Add (uniqueName, value.ToString ());
+			if (!textBoxColors.ContainsKey (uniqueName))
+				textBoxColors.Add (uniqueName, Color.white);
+
+			GUILayout.BeginHorizontal ();
+
+			if(!string.IsNullOrEmpty(name))
+				GUILayout.Label ("<b><color=orange>" + name + ":</color></b>");
+
+			//gui focus stuff
+			string textBoxControlName = "ManipulationTextBox_" + uniqueName;
+			string sliderControlName = "ManipulationSlider_" + uniqueName;
+			string focusedControl = GUI.GetNameOfFocusedControl ();
+
+			GUI.SetNextControlName (textBoxControlName);
+			GUI.color = textBoxColors [uniqueName];
+			textBoxValues [uniqueName] = GUILayout.TextField (textBoxValues [uniqueName], GUILayout.Width(120f));
+			GUI.color = Color.white;
+
+			float parsedTextBoxFloat;
+			bool parsedTextBox = true;
+			if (!float.TryParse (textBoxValues [uniqueName], out parsedTextBoxFloat))
+			{
+				//make the color red if it fails to parse the text box
+				textBoxColors [uniqueName] = Color.red;
+				parsedTextBox = false;
+			}
+			if (parsedTextBox && (parsedTextBoxFloat < min || parsedTextBoxFloat > max))
+			{
+				//also make the color red if the value is not within the specified contraints
+				textBoxColors [uniqueName] = Color.red;
+				parsedTextBox = false;
+			}
+			if(parsedTextBox)
+			{
+				textBoxColors [uniqueName] = Color.white;
+			}
+
+			float sliderValue = value;
+			if (parsedTextBox && focusedControl == textBoxControlName)
+			{
+				sliderValue = parsedTextBoxFloat;
+			}
+
+			GUI.SetNextControlName (sliderControlName);
+			sliderValue = GUILayout.HorizontalSlider (sliderValue, min, max, manipulationSliderStyle, manipulationSliderThumbStyle, GUILayout.Width(220f));
+
+			//take focus off of the text box if it's focused, and the slider has been clicked
+			Rect sliderRect = GUILayoutUtility.GetLastRect ();
+			if(focusedControl == textBoxControlName && sliderRect.Contains(Event.current.mousePosition) && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
+			{
+				GUI.FocusControl (sliderControlName);
+			}
+
+			if (focusedControl != textBoxControlName)
+			{
+				textBoxValues [uniqueName] = sliderValue.ToString (toStringPattern);
+			}
+
+			GUILayout.EndHorizontal ();
+
+			return sliderValue;
 		}
 
 		private void TextureViewerWindow(int id)
 		{
 
+
+			GUI.DragWindow ();
 		}
 	}
 }
