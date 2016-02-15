@@ -140,7 +140,7 @@ namespace KopernicusExpansion.Utility
 
 		private string mainWindowTitle = "KopernicusExpansion Development Tools";
 		private string scaledExporterWindowTitle = "ScaledVersion Exporter";
-		private string textureViewerWindowTitle = "Inbuilt-Texture Viewer";
+		private string textureViewerWindowTitle = "Builtin-Texture Viewer";
 
 		private int mainWindowID = "KopE_MainWindow".GetHashCode();
 		private int scaledExporterWindowID = "KopE_ScaledExporterWindow".GetHashCode();
@@ -215,7 +215,7 @@ namespace KopernicusExpansion.Utility
 			skin.button.CalcMinMaxWidth (new GUIContent ("Button Tester"), out buttonHeight, out buttonWidth);
 			buttonHeight = skin.button.CalcHeight (new GUIContent ("Button Tester"), buttonWidth);
 
-			isScaledExporterOpen = GUILayout.Toggle (isScaledExporterOpen, "Scaled Exporter", skin.button, GUILayout.Height (buttonHeight));
+			isScaledExporterOpen = GUILayout.Toggle (isScaledExporterOpen, "ScaledVersion Exporter", skin.button, GUILayout.Height (buttonHeight));
 			isTextureViewerOpen = GUILayout.Toggle (isTextureViewerOpen, "Texture Viewer", skin.button, GUILayout.Height (buttonHeight));
 
 			GUILayout.Space (5f);
@@ -312,7 +312,7 @@ namespace KopernicusExpansion.Utility
 			if(selectedBody.ocean)
 			{
 				//ocean color
-				colorOceans = GUILayout.Toggle (colorOceans, "Color Oceans");
+				colorOceans = GUILayout.Toggle (colorOceans, "Render Oceans");
 				if(colorOceans)
 				{
 					//ocean color selection
@@ -370,6 +370,8 @@ namespace KopernicusExpansion.Utility
 				if (previewTextureBump == null)
 					previewTextureBump = Texture2D.blackTexture;
 			}
+
+			GUILayout.Label ("You can see more information about the exported maps in the exported log file at Logs/KopernicusExpansion/" + selectedBody.bodyName + ".ScaledExport.log");
 
 			GUILayout.EndScrollView ();
 			GUILayout.EndVertical ();

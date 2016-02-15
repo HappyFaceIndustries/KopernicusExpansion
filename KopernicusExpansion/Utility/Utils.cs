@@ -124,10 +124,16 @@ namespace KopernicusExpansion
 			}
 			var yResolution = (resolution / 2);
 
+			Utils.Log ("Starting ScaledVerion map build for body " + body.bodyName + " at " + resolution + "x" + yResolution + " pixels");
+			var stopwatch = new System.Diagnostics.Stopwatch ();
+			stopwatch.Start ();
+
+			bool suppliedSpecMap = specularMap != null;
+
 			var colorMap = new Texture2D (resolution, yResolution, TextureFormat.ARGB32, true);
 			var heightMap = new Texture2D (resolution, yResolution, TextureFormat.RGB24, false);
 			var normalMap = new Texture2D (resolution, yResolution, TextureFormat.ARGB32, true);
-			if (generateSpecFromOcean && specularMap == null)
+			if (body.ocean && generateSpecFromOcean && specularMap == null)
 			{
 				specularMap = new Texture2D (resolution, yResolution, TextureFormat.RGB24, false);
 			}
@@ -152,6 +158,8 @@ namespace KopernicusExpansion
 
 					//write height to the scalar field
 					var height = data.vertHeight - pqs.radius;
+					if (body.ocean && generateSpecFromOcean && height < 0) //make ocean flat if there is an ocean, and it is requested
+						height = 0;
 					heightScalarField [x, y] = height;
 
 					//calculate color
@@ -168,7 +176,7 @@ namespace KopernicusExpansion
 						spec = specularMap.GetPixelBilinear ((float)x / (float)resolution, (float)y / (float)yResolution).grayscale;
 					}
 					//generate ocean specularity if requested
-					if (generateSpecFromOcean && specularMap != null && body.ocean)
+					if (body.ocean && generateSpecFromOcean && specularMap != null)
 					{
 						if (height <= 0)
 						{
@@ -191,7 +199,7 @@ namespace KopernicusExpansion
 
 			//finish color/spec maps
 			colorMap.Apply ();
-			if (generateSpecFromOcean && specularMap != null)
+			if (body.ocean && generateSpecFromOcean && specularMap != null)
 			{
 				specularMap.Apply ();
 			}
@@ -251,7 +259,7 @@ namespace KopernicusExpansion
 				File.WriteAllBytes (path + body.bodyName + "_Color.png", colorMap.EncodeToPNG ());
 				File.WriteAllBytes (path + body.bodyName + "_Height.png", heightMap.EncodeToPNG ());
 				File.WriteAllBytes (path + body.bodyName + "_Normal.png", normalMap.EncodeToPNG ());
-				if(generateSpecFromOcean && specularMap != null)
+				if(body.ocean && generateSpecFromOcean && specularMap != null)
 				{
 					File.WriteAllBytes (path + body.bodyName + "_Spec.png", specularMap.EncodeToPNG ());
 				}
@@ -263,6 +271,27 @@ namespace KopernicusExpansion
 				scaled.renderer.sharedMaterial.SetTexture ("_MainTex", colorMap);
 				scaled.renderer.sharedMaterial.SetTexture ("_BumpMap", normalMap);
 			}
+
+			stopwatch.Stop ();
+			Utils.Log ("Finished build in " + stopwatch.ElapsedMilliseconds + "ms");
+			KopernicusExpansionLogger logger = new KopernicusExpansionLogger (body.bodyName + ".ScaledExport");
+			logger.Log ("Map Build Time: " + stopwatch.ElapsedMilliseconds + " milliseconds");
+			logger.Log ("Exported Image Size: " + resolution + "x" + yResolution + " pixels");
+			logger.Log ("Highest Terrain Altitude: " + highestHeight + " meters");
+			logger.Log ("Lowest Terrain Altitude: " + lowestHeight + " meters");
+			logger.Log ("Supplied Specularity Map: " + suppliedSpecMap);
+			if (suppliedSpecMap)
+			{
+				logger.Log ("Specularity Map Image Size: " + specularMap.width + "x" + specularMap.height + " pixels");
+			}
+			logger.Log ("Has Ocean: " + body.ocean);
+			if (body.ocean)
+			{
+				logger.Log ("Rendering Oceans: " + colorFromOcean);
+				logger.Log ("Generating Spec from Oceans: " + generateSpecFromOcean);
+			}
+			logger.Flush ();
+			logger.Close ();
 
 			return new Texture2D[]{ colorMap, heightMap, specularMap, normalMap };
 		}
