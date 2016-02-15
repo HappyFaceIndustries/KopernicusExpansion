@@ -90,16 +90,16 @@
     <Compile Include="KopernicusExpansionLogger.cs" />
     <Compile Include="KopernicusExpansionLoaderSystemAdder.cs" />
     <Compile Include="Configuration\ModularNoise.cs" />
-    <Compile Include="Configuration\DebugHeightColor.cs" />
     <Compile Include="Utility\Serialization\SerializedPQSMod.cs" />
     <Compile Include="Configuration\NoiseLoader.cs" />
     <Compile Include="Utility\Noise\ExDistPerlin.cs" />
     <Compile Include="Utility\Noise\ImprovedPerlinNoise.cs" />
-    <Compile Include="Configuration\EVAFootprints.cs" />
     <Compile Include="Utility\Geometry\Quad.cs" />
     <Compile Include="Configuration\ParticleGrassLoader.cs" />
     <Compile Include="Utility\ObjectPool.cs" />
     <Compile Include="Utility\DevelopmentUtils.cs" />
+    <Compile Include="Configuration\EVAFootprintsLoader.cs" />
+    <Compile Include="Configuration\DebugHeightColorLoader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

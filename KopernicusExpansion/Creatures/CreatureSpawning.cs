@@ -19,10 +19,10 @@ namespace KopernicusExpansion.Creatures
 	{
 		void Update()
 		{
-			if (Input.GetKey (KeyCode.LeftAlt) && Input.GetKeyDown (KeyCode.B))
-			{
-				SpawnCreature (FlightGlobals.upAxis.normalized * 18, CreatureLoader.LoadedCreatures[0]);
-			}
+//			if (Input.GetKey (KeyCode.LeftAlt) && Input.GetKeyDown (KeyCode.B))
+//			{
+//				SpawnCreature (FlightGlobals.upAxis.normalized * 18, CreatureLoader.LoadedCreatures[0]);
+//			}
 		}
 
 		private void SpawnCreature(Vector3 position, Creature creature)
