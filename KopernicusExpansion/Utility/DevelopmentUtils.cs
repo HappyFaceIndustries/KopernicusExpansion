@@ -46,7 +46,7 @@ namespace KopernicusExpansion.Utility
 			lineTexture.Apply ();
 
 			var buttonTexture = new Texture2D (39, 39);
-			buttonTexture.LoadImage (Textures.ProceduralGasGiantEditorIcon);
+			buttonTexture.LoadImage (Textures.DevelopmentUtilsIcon);
 			mainWindowButton = ApplicationLauncher.Instance.AddModApplication (delegate {
 				isMainWindowOpen = true;
 			}, delegate {
@@ -147,6 +147,7 @@ namespace KopernicusExpansion.Utility
 		private int textureViewerWindowID = "KopE_TextureViewerWindow".GetHashCode();
 
 		private Rect mainWindowRect = new Rect ((Screen.width - 305f), 40f, 300f, 410f);
+		private Rect mainWindowRectTrackingStation = new Rect ((Screen.width - 305f), (Screen.height - 460f), 300f, 410f);
 		private Rect scaledExporterWindowRect = new Rect (200f, 200f, 600f, 400f);
 		private Rect textureViewerWindowRect = new Rect (200f, 200f, 350f, 200f);
 
@@ -187,7 +188,8 @@ namespace KopernicusExpansion.Utility
 
 			if (isMainWindowOpen)
 			{
-				mainWindowRect = GUILayout.Window (mainWindowID, mainWindowRect, MainWindow, mainWindowTitle);
+				var rect = HighLogic.LoadedScene == GameScenes.TRACKSTATION ? mainWindowRectTrackingStation : mainWindowRect;
+				GUILayout.Window (mainWindowID, rect, MainWindow, mainWindowTitle);
 			}
 			if (isScaledExporterOpen)
 			{
@@ -231,6 +233,7 @@ namespace KopernicusExpansion.Utility
 			GUILayout.EndScrollView ();
 		}
 
+		#region ScaledExporter
 		private void ScaledExporterWindow(int id)
 		{
 			GUILayout.BeginHorizontal ();
@@ -486,6 +489,11 @@ namespace KopernicusExpansion.Utility
 
 			return sliderValue;
 		}
+		#endregion
+
+		#region TextureViewer
+		private string textureName = "";
+		private Texture2D texture;
 
 		private void TextureViewerWindow(int id)
 		{
@@ -493,6 +501,7 @@ namespace KopernicusExpansion.Utility
 
 			GUI.DragWindow ();
 		}
+		#endregion
 	}
 }
 

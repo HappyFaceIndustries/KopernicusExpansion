@@ -53,15 +53,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Shaders.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Textures.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Textures.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Resources\Shaders.Designer.cs">
-      <DependentUpon>Shaders.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Configuration\ProceduralGasGiantLoader.cs" />
     <Compile Include="Configuration\RefractiveAtmosphereLoader.cs" />
@@ -104,16 +104,9 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="Resources\CometTail.shader" />
-    <None Include="Resources\ProceduralGasGiantEditorIcon.png">
-      <DependentUpon>Textures.resx</DependentUpon>
-    </None>
     <None Include="Resources\Compiled-CometTail.shader">
       <DependentUpon>Shaders.resx</DependentUpon>
     </None>
-    <None Include="Resources\Compiled-DebugCave.shader">
-      <DependentUpon>Shaders.resx</DependentUpon>
-    </None>
-    <None Include="Resources\DebugCave.shader" />
     <None Include="Resources\CreatureBloodExplosionParticle.png">
       <DependentUpon>Textures.resx</DependentUpon>
     </None>
@@ -149,8 +142,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Shaders.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Shaders.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Shaders.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Textures.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -158,16 +151,5 @@
       <LastGenOutput>Textures.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CometTailEditorIcon.png">
-      <DependentUpon>Textures.resx</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Creatures\" />
-    <Folder Include="Creatures\AI\" />
-    <Folder Include="Creatures\PartModules\" />
-    <Folder Include="Utility\Serialization\" />
-    <Folder Include="Utility\Noise\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

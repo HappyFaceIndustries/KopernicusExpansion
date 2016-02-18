@@ -82,33 +82,6 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 185.6KB
-        ///
-        ///Shader &quot;Debug/Cave&quot; {
-        ///Properties {
-        /// _TintColor (&quot;Color&quot;, Color) = (1,1,1,1)
-        ///}
-        ///SubShader { 
-        /// LOD 2000
-        /// Tags { &quot;RenderType&quot;=&quot;Transparent&quot; }
-        ///
-        ///
-        /// // Stats for Vertex shader:
-        /// //       d3d11 : 18 avg math (5..43)
-        /// //    d3d11_9x : 18 avg math (5..43)
-        /// //        d3d9 : 23 avg math (5..56)
-        /// //      opengl : 23 avg math (5..56)
-        /// // Stats for Fragment shader:
-        /// //       d3d11 : 4 avg math (3..6), 0 avg texture (0..1)
-        /// //    d3d11_9x :  [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string DebugCave {
-            get {
-                return ResourceManager.GetString("DebugCave", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 185.4KB
         ///
         ///Shader &quot;EmissiveQuad&quot; {
@@ -162,16 +135,17 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 214.3KB
+        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 214.4KB
         ///
         ///Shader &quot;Footprint&quot; {
         ///Properties {
         /// _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+        /// _Color (&quot;Color&quot;, Color) = (0,0,0,1)
         /// _Opacity (&quot;Opacity&quot;, Range(0,1)) = 1
         ///}
         ///SubShader { 
         /// LOD 200
-        /// Tags { &quot;RenderType&quot;=&quot;Transparent&quot; }
+        /// Tags { &quot;QUEUE&quot;=&quot;Transparent&quot; &quot;RenderType&quot;=&quot;Transparent&quot; }
         ///
         ///
         /// // Stats for Vertex shader:
@@ -179,8 +153,7 @@ namespace KopernicusExpansion.Resources {
         /// //    d3d11_9x : 19 avg math (6..44)
         /// //        d3d9 : 24 avg math (6..57)
         /// //      opengl : 24 avg math (6..57)
-        /// // Stats for Fragment shader:
-        /// //       d3d11 : 5 avg math (4..7), 1  [rest of string was truncated]&quot;;.
+        /// // Stats f [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Footprint {
             get {

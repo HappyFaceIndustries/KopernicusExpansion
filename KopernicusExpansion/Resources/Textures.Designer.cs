@@ -63,16 +63,6 @@ namespace KopernicusExpansion.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] CometTailEditorIcon {
-            get {
-                object obj = ResourceManager.GetObject("CometTailEditorIcon", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] CreatureBloodExplosionParticle {
             get {
                 object obj = ResourceManager.GetObject("CreatureBloodExplosionParticle", resourceCulture);
@@ -83,9 +73,9 @@ namespace KopernicusExpansion.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] KerbalEVAFootprintMask {
+        internal static byte[] DevelopmentUtilsIcon {
             get {
-                object obj = ResourceManager.GetObject("KerbalEVAFootprintMask", resourceCulture);
+                object obj = ResourceManager.GetObject("DevelopmentUtilsIcon", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -93,9 +83,9 @@ namespace KopernicusExpansion.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] ProceduralGasGiantEditorIcon {
+        internal static byte[] KerbalEVAFootprintMask {
             get {
-                object obj = ResourceManager.GetObject("ProceduralGasGiantEditorIcon", resourceCulture);
+                object obj = ResourceManager.GetObject("KerbalEVAFootprintMask", resourceCulture);
                 return ((byte[])(obj));
             }
         }
