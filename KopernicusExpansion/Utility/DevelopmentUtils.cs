@@ -45,7 +45,7 @@ namespace KopernicusExpansion.Utility
 			lineTexture.SetPixel (0, 0, new Color (0.66f, 0.66f, 0.66f));
 			lineTexture.Apply ();
 
-			var buttonTexture = new Texture2D (39, 39);
+			var buttonTexture = new Texture2D (4, 4, TextureFormat.ARGB32, false);
 			buttonTexture.LoadImage (Textures.DevelopmentUtilsIcon);
 			mainWindowButton = ApplicationLauncher.Instance.AddModApplication (delegate {
 				isMainWindowOpen = true;
@@ -70,9 +70,6 @@ namespace KopernicusExpansion.Utility
 			smallButton.padding.bottom = 3;
 			smallButton.padding.right = 5;
 			smallButton.padding.left = 5;
-
-			hideHorizScrollbar = new GUIStyle (skin.horizontalScrollbar);
-			hideHorizScrollbar.fixedHeight = 0f;
 
 			colorSelectorTextField = new GUIStyle (skin.textField);
 			colorSelectorTextField.normal.background = Texture2D.whiteTexture;
@@ -112,6 +109,7 @@ namespace KopernicusExpansion.Utility
 				previewTextureBump = Texture2D.blackTexture;
 			}
 
+			GetPageOfTextures (0);
 
 			DontDestroyOnLoad (this);
 
@@ -149,7 +147,7 @@ namespace KopernicusExpansion.Utility
 		private Rect mainWindowRect = new Rect ((Screen.width - 305f), 40f, 300f, 410f);
 		private Rect mainWindowRectTrackingStation = new Rect ((Screen.width - 305f), (Screen.height - 460f), 300f, 410f);
 		private Rect scaledExporterWindowRect = new Rect (200f, 200f, 600f, 400f);
-		private Rect textureViewerWindowRect = new Rect (200f, 200f, 350f, 200f);
+		private Rect textureViewerWindowRect = new Rect (50f, 40f, 600f, 600f);
 
 		private Vector2 mainScrollView;
 		private Vector2 scaledExporterScrollView1;
@@ -160,7 +158,6 @@ namespace KopernicusExpansion.Utility
 		private GUIStyle centeredText;
 		private GUIStyle smallButton;
 		private GUIStyle colorSelectorTextField;
-		private GUIStyle hideHorizScrollbar;
 
 		private Dictionary<string, IngameEditor> ingameEditorObjects = new Dictionary<string, IngameEditor> ();
 
@@ -205,6 +202,13 @@ namespace KopernicusExpansion.Utility
 			if (GameSettings.MODIFIER_KEY.GetKey () && Input.GetKeyDown (KeyCode.Alpha0))
 			{
 				isMainWindowOpen = !isMainWindowOpen;
+				if (mainWindowButton != null)
+				{
+					if (isMainWindowOpen)
+						mainWindowButton.SetTrue (false);
+					else
+						mainWindowButton.SetFalse (false);
+				}
 			}
 		}
 
@@ -222,6 +226,7 @@ namespace KopernicusExpansion.Utility
 
 			GUILayout.Space (5f);
 			var lineRect = GUILayoutUtility.GetRect (1f, 1f, 1f, 1f);
+			lineRect.xMax -= 10f;
 			GUI.DrawTexture (lineRect, lineTexture, ScaleMode.StretchToFill, true);
 			GUILayout.Space (5f);
 
@@ -238,8 +243,8 @@ namespace KopernicusExpansion.Utility
 		{
 			GUILayout.BeginHorizontal ();
 
-			GUILayout.BeginVertical (GUILayout.Width (380f));
-			scaledExporterScrollView1 = GUILayout.BeginScrollView (scaledExporterScrollView1, false, true, hideHorizScrollbar, skin.verticalScrollbar, skin.scrollView);
+			GUILayout.BeginVertical ();
+			scaledExporterScrollView1 = GUILayout.BeginScrollView (scaledExporterScrollView1, false, true, GUILayout.Width (400f));
 
 			var selectedBody = PQSBodies [selectedPQSBody];
 
@@ -281,21 +286,28 @@ namespace KopernicusExpansion.Utility
 				string buttonText = HighLogic.LoadedSceneIsFlight ? "View in Map Mode" : "Focus on planet";
 				if (GUILayout.Button (buttonText, smallButton, GUILayout.ExpandWidth (false)))
 				{
-					PlanetariumCamera.fetch.SetTarget (selectedBody);
-					PlanetariumCamera.fetch.SetDistance ((float)selectedBody.Radius * 4f * ScaledSpace.InverseScaleFactor);
 					if (HighLogic.LoadedSceneIsFlight)
+					{
 						MapView.EnterMapView ();
+						MapView.MapCamera.SetTarget (selectedBody);
+						MapView.MapCamera.SetDistance ((float)selectedBody.Radius * 4f * ScaledSpace.InverseScaleFactor);
+					}
+					else
+					{
+						PlanetariumCamera.fetch.SetTarget (selectedBody);
+						PlanetariumCamera.fetch.SetDistance ((float)selectedBody.Radius * 4f * ScaledSpace.InverseScaleFactor);
+					}
 				}
 			}
 			GUILayout.Space (5f);
 
 			//resolution
 			GUILayout.Label ("Resolution:");
-			exportResolution = (int)(DrawManipulationSlider ("exportResolution", "", (float)exportResolution, 4f, 8192f, "###0") / 2f) * 2;
+			exportResolution = (int)(DrawManipulationSlider ("exportResolution", "", (float)exportResolution, 4f, 8192f, true, "###0") / 2f) * 2;
 
 			//normal strength
 			GUILayout.Label ("Normal Map Strength:");
-			normalStrength = DrawManipulationSlider ("normalStrength", "", normalStrength, 0f, 16f);
+			normalStrength = DrawManipulationSlider ("normalStrength", "", normalStrength, 0f, 16f, false);
 
 			//specular map selection
 			GUILayout.Label ("Specular Map Path");
@@ -308,6 +320,7 @@ namespace KopernicusExpansion.Utility
 
 			GUILayout.Space (5f);
 			var lineRect = GUILayoutUtility.GetRect (1f, 1f, 1f, 1f);
+			lineRect.xMax -= 10f;
 			GUI.DrawTexture (lineRect, lineTexture, ScaleMode.StretchToFill, true);
 			GUILayout.Space (5f);
 
@@ -343,6 +356,7 @@ namespace KopernicusExpansion.Utility
 
 				GUILayout.Space (5f);
 				lineRect = GUILayoutUtility.GetRect (1f, 1f, 1f, 1f);
+				lineRect.xMax -= 10f;
 				GUI.DrawTexture (lineRect, lineTexture, ScaleMode.StretchToFill, true);
 				GUILayout.Space (5f);
 			}
@@ -374,7 +388,7 @@ namespace KopernicusExpansion.Utility
 					previewTextureBump = Texture2D.blackTexture;
 			}
 
-			GUILayout.Label ("You can see more information about the exported maps in the exported log file at Logs/KopernicusExpansion/" + selectedBody.bodyName + ".ScaledExport.log");
+			GUILayout.Label ("<color=white>You can see more information about the exported maps in the exported log file at <color=orange>Logs/KopernicusExpansion/" + selectedBody.bodyName + ".ScaledExport.log</color></color>");
 
 			GUILayout.EndScrollView ();
 			GUILayout.EndVertical ();
@@ -417,12 +431,14 @@ namespace KopernicusExpansion.Utility
 
 			GUI.DragWindow ();
 		}
+		#endregion
 
+		#region ManipulationSlider
 		private Dictionary<string, string> textBoxValues = new Dictionary<string, string>();
 		private Dictionary<string, Color> textBoxColors = new Dictionary<string, Color>();
 		private GUIStyle manipulationSliderStyle;
 		private GUIStyle manipulationSliderThumbStyle;
-		private float DrawManipulationSlider(string uniqueName, string name, float value, float min, float max, string toStringPattern = "###0.0###")
+		private float DrawManipulationSlider(string uniqueName, string name, float value, float min, float max, bool disallowOutOfBounds = true, string toStringPattern = "###0.0###")
 		{
 			value = Mathf.Clamp (value, min, max);
 			if (!textBoxValues.ContainsKey (uniqueName))
@@ -453,7 +469,7 @@ namespace KopernicusExpansion.Utility
 				textBoxColors [uniqueName] = Color.red;
 				parsedTextBox = false;
 			}
-			if (parsedTextBox && (parsedTextBoxFloat < min || parsedTextBoxFloat > max))
+			if (parsedTextBox && disallowOutOfBounds && (parsedTextBoxFloat < min || parsedTextBoxFloat > max))
 			{
 				//also make the color red if the value is not within the specified contraints
 				textBoxColors [uniqueName] = Color.red;
@@ -471,7 +487,7 @@ namespace KopernicusExpansion.Utility
 			}
 
 			GUI.SetNextControlName (sliderControlName);
-			sliderValue = GUILayout.HorizontalSlider (sliderValue, min, max, manipulationSliderStyle, manipulationSliderThumbStyle, GUILayout.Width(220f));
+			sliderValue = GUILayout.HorizontalSlider (sliderValue, min, max, manipulationSliderStyle, manipulationSliderThumbStyle);
 
 			//take focus off of the text box if it's focused, and the slider has been clicked
 			Rect sliderRect = GUILayoutUtility.GetLastRect ();
@@ -492,14 +508,176 @@ namespace KopernicusExpansion.Utility
 		#endregion
 
 		#region TextureViewer
-		private string textureName = "";
-		private Texture2D texture;
+		private Vector2 textureListScroll;
+		private Texture2D selectedTexture;
+		private float textureDefaultWidth = 400f;
+		private List<Texture2D> thisTexturePage = new List<Texture2D> ();
+		private int thisPageNumber = 0;
+		private int pageLength = 50;
+		private int numberOfTextures;
+		private string textBoxTextureName = "";
+		private Color textBoxTextureNameColor = Color.white;
+		private string pageJumpString = "";
+		private Color pageJumpStringColor = Color.white;
 
 		private void TextureViewerWindow(int id)
 		{
+			GUILayout.BeginHorizontal ();
 
+			GUILayout.BeginVertical (GUILayout.Width(500f));
+			if(selectedTexture != null)
+			{
+				GUILayout.Label ("<b>" + selectedTexture.name + "</b>");
+				GUILayout.Label (selectedTexture, GUILayout.Width (textureDefaultWidth), GUILayout.Height (textureDefaultWidth));
+			}
+			else
+			{
+				GUILayout.Space (100f);
+				GUILayout.Label ("<b><color=#aaaaaa>select a texture</color></b>", GUILayout.Height(textureDefaultWidth));
+			}
+			GUILayout.EndVertical ();
+
+			GUILayout.BeginVertical (GUILayout.Width(400f));
+			//draw pages of textures
+			textureListScroll = GUILayout.BeginScrollView (textureListScroll, false, true);
+			foreach (var texture in thisTexturePage)
+			{
+				if (texture == null)
+					continue;
+				var textureName = string.IsNullOrEmpty (texture.name) ? "<color=orange><unnamed></color>" : texture.name;
+				if (texture == selectedTexture)
+				{
+					GUILayout.Toggle (true, textureName, smallButton);
+				}
+				else
+				{
+					if (GUILayout.Button (textureName, smallButton))
+					{
+						selectedTexture = texture;
+					}
+				}
+			}
+			GUILayout.EndScrollView ();
+
+			GUILayout.BeginHorizontal ();
+			bool hasNextPage = thisPageNumber < Mathf.FloorToInt((float)numberOfTextures / (float)pageLength);
+			bool hasPreviousPage = thisPageNumber > 0;
+			if (hasPreviousPage)
+			{
+				if (GUILayout.Button ("<<", GUILayout.Width (80f)))
+				{
+					GetPageOfTextures (thisPageNumber - 1);
+				}
+			}
+			else
+			{
+				GUILayout.Toggle (true, "<<", skin.button, GUILayout.Width (80f));
+			}
+			GUILayout.Label ("<color=white>Page " + (thisPageNumber + 1) + " of " + (Mathf.FloorToInt((float)numberOfTextures / (float)pageLength) + 1) + "</color>", GUILayout.ExpandWidth (true));
+			if (hasNextPage)
+			{
+				if (GUILayout.Button (">>", GUILayout.Width (80f)))
+				{
+					GetPageOfTextures (thisPageNumber + 1);
+				}
+			}
+			else
+			{
+				GUILayout.Toggle (true, ">>", skin.button, GUILayout.Width (80f));
+			}
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			GUI.color = textBoxTextureNameColor;
+			textBoxTextureName = GUILayout.TextField (textBoxTextureName, GUILayout.ExpandWidth(true));
+			GUI.color = Color.white;
+			if (GUILayout.Button ("Select", GUILayout.Width (120f)))
+			{
+				var allTextures = UnityEngine.Resources.FindObjectsOfTypeAll<Texture2D> ();
+				if (allTextures.Any (t => t.name == textBoxTextureName))
+				{
+					var texture = allTextures.First (t => t.name == textBoxTextureName);
+					if (texture == null)
+					{
+						textBoxTextureNameColor = Color.red;
+					}
+					else
+					{
+						selectedTexture = texture;
+						textBoxTextureNameColor = Color.white;
+					}
+				}
+				else
+				{
+					textBoxTextureNameColor = Color.red;
+				}
+			}
+			GUILayout.EndHorizontal ();
+			GUILayout.BeginHorizontal ();
+			GUI.color = pageJumpStringColor;
+			pageJumpString = GUILayout.TextField (pageJumpString, GUILayout.ExpandWidth(true));
+			GUI.color = Color.white;
+			if (GUILayout.Button ("Jump to page", GUILayout.Width (120f)))
+			{
+				int pageToJumpTo = 0;
+				if (int.TryParse (pageJumpString, out pageToJumpTo))
+				{
+					pageToJumpTo -= 1;
+					bool isValidPage = pageToJumpTo >= 0 && pageToJumpTo <= Mathf.FloorToInt ((float)numberOfTextures / (float)pageLength);
+					if (isValidPage)
+					{
+						GetPageOfTextures (pageToJumpTo);
+						pageJumpStringColor = Color.white;
+					}
+					else
+					{
+						pageJumpStringColor = Color.red;
+					}
+				}
+				else
+				{
+					pageJumpStringColor = Color.red;
+				}
+			}
+			GUILayout.EndHorizontal ();
+
+			if (GUILayout.Button ("Print list of texture names", smallButton))
+			{
+				KopernicusExpansionLogger logger = new KopernicusExpansionLogger ("TextureList");
+				var allTextures = UnityEngine.Resources.FindObjectsOfTypeAll<Texture2D> ();
+				logger.Log ("Number of textures: " + numberOfTextures);
+				logger.Log ("");
+				foreach (var texture in allTextures)
+				{
+					logger.Log ("Texture: " + texture.name);
+				}
+				logger.Flush ();
+				logger.Close ();
+			}
+			GUILayout.Label ("<color=white>Outputs a list of all texture names to <color=orange>Logs/KopernicusExpansion/TextureList.log</color></color>");
+
+			GUILayout.EndVertical ();
+
+			GUILayout.EndHorizontal ();
 
 			GUI.DragWindow ();
+		}
+		private void GetPageOfTextures(int pageNumber)
+		{
+			thisPageNumber = pageNumber;
+			var allTextures = UnityEngine.Resources.FindObjectsOfTypeAll<Texture2D> ();
+			numberOfTextures = allTextures.Length;
+			thisTexturePage.Clear ();
+			int count = 0;
+			for (int i = pageNumber * pageLength; i < allTextures.Length; i++)
+			{
+				if (count >= pageLength)
+					break;
+
+				thisTexturePage.Add (allTextures [i]);
+
+				count++;
+			}
 		}
 		#endregion
 	}
