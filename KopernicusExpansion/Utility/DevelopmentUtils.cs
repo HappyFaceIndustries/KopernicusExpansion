@@ -10,6 +10,7 @@ using Kopernicus.Configuration;
 
 using KopernicusExpansion;
 using KopernicusExpansion.Editors;
+using KopernicusExpansion.Creatures;
 using KopernicusExpansion.Resources;
 
 using UnityEngine;
@@ -133,48 +134,28 @@ namespace KopernicusExpansion.Utility
 		private bool isMainWindowOpen = false;
 		private bool isScaledExporterOpen = false;
 		private bool isTextureViewerOpen = false;
+		private bool isCreatureSpawnerOpen = false;
 
 		private ApplicationLauncherButton mainWindowButton;
 
 		private string mainWindowTitle = "KopernicusExpansion Development Tools";
 		private string scaledExporterWindowTitle = "ScaledVersion Exporter";
 		private string textureViewerWindowTitle = "Builtin-Texture Viewer";
+		private string creatureSpawnerWindowTitle = "Creature Spawner";
 
 		private int mainWindowID = "KopE_MainWindow".GetHashCode();
 		private int scaledExporterWindowID = "KopE_ScaledExporterWindow".GetHashCode();
 		private int textureViewerWindowID = "KopE_TextureViewerWindow".GetHashCode();
+		private int creatureSpawnerWindowID = "KopE_CreatureSpawnerWindow".GetHashCode();
 
 		private Rect mainWindowRect = new Rect ((Screen.width - 305f), 40f, 300f, 410f);
 		private Rect mainWindowRectTrackingStation = new Rect ((Screen.width - 305f), (Screen.height - 460f), 300f, 410f);
 		private Rect scaledExporterWindowRect = new Rect (200f, 200f, 600f, 400f);
 		private Rect textureViewerWindowRect = new Rect (50f, 40f, 600f, 600f);
-
-		private Vector2 mainScrollView;
-		private Vector2 scaledExporterScrollView1;
-		private Vector2 scaledExporterScrollView2;
-
-		private GUISkin skin;
-		private Texture2D lineTexture;
-		private GUIStyle centeredText;
-		private GUIStyle smallButton;
-		private GUIStyle colorSelectorTextField;
+		private Rect creatureSpawnerWindowRect = new Rect (200f, 200f, 200f, 300f);
 
 		private Dictionary<string, IngameEditor> ingameEditorObjects = new Dictionary<string, IngameEditor> ();
-
-		private int selectedPQSBody = 0;
-		private Texture2D previewTextureColor;
-		private Texture2D previewTextureBump;
-		private bool previewIsBump = false;
-		private int exportResolution = 2048;
-		private float normalStrength = 8f;
-		private string specPath = "";
-		private string oceanColorString = "#0000ff";
-		private ColorParser oceanColorColorParser = new ColorParser ();
-		private bool genSpecFromOceans = false;
-		private bool colorOceans = true;
-		private bool updateScaled = true;
-		private bool writeFiles = true;
-		private CelestialBody[] PQSBodies = new CelestialBody[0];
+		private Vector2 mainScrollView;
 
 		private void OnGUI()
 		{
@@ -195,6 +176,10 @@ namespace KopernicusExpansion.Utility
 			if (isTextureViewerOpen)
 			{
 				textureViewerWindowRect = GUILayout.Window (textureViewerWindowID, textureViewerWindowRect, TextureViewerWindow, textureViewerWindowTitle);
+			}
+			if (isCreatureSpawnerOpen)
+			{
+				creatureSpawnerWindowRect = GUILayout.Window (creatureSpawnerWindowID, creatureSpawnerWindowRect, CreatureSpawnerWindow, creatureSpawnerWindowTitle);
 			}
 		}
 		private void Update()
@@ -223,6 +208,7 @@ namespace KopernicusExpansion.Utility
 
 			isScaledExporterOpen = GUILayout.Toggle (isScaledExporterOpen, scaledExporterWindowTitle, skin.button, GUILayout.Height (buttonHeight));
 			isTextureViewerOpen = GUILayout.Toggle (isTextureViewerOpen, textureViewerWindowTitle, skin.button, GUILayout.Height (buttonHeight));
+			isCreatureSpawnerOpen = GUILayout.Toggle (isCreatureSpawnerOpen, creatureSpawnerWindowTitle, skin.button, GUILayout.Height (buttonHeight));
 
 			GUILayout.Space (5f);
 			var lineRect = GUILayoutUtility.GetRect (1f, 1f, 1f, 1f);
@@ -239,6 +225,30 @@ namespace KopernicusExpansion.Utility
 		}
 
 		#region ScaledExporter
+		private Vector2 scaledExporterScrollView1;
+		private Vector2 scaledExporterScrollView2;
+
+		private GUISkin skin;
+		private Texture2D lineTexture;
+		private GUIStyle centeredText;
+		private GUIStyle smallButton;
+		private GUIStyle colorSelectorTextField;
+
+		private int selectedPQSBody = 0;
+		private Texture2D previewTextureColor;
+		private Texture2D previewTextureBump;
+		private bool previewIsBump = false;
+		private int exportResolution = 2048;
+		private float normalStrength = 8f;
+		private string specPath = "";
+		private string oceanColorString = "#0000ff";
+		private ColorParser oceanColorColorParser = new ColorParser ();
+		private bool genSpecFromOceans = false;
+		private bool colorOceans = true;
+		private bool updateScaled = true;
+		private bool writeFiles = true;
+		private CelestialBody[] PQSBodies = new CelestialBody[0];
+
 		private void ScaledExporterWindow(int id)
 		{
 			GUILayout.BeginHorizontal ();
@@ -438,6 +448,7 @@ namespace KopernicusExpansion.Utility
 		private Dictionary<string, Color> textBoxColors = new Dictionary<string, Color>();
 		private GUIStyle manipulationSliderStyle;
 		private GUIStyle manipulationSliderThumbStyle;
+
 		private float DrawManipulationSlider(string uniqueName, string name, float value, float min, float max, bool disallowOutOfBounds = true, string toStringPattern = "###0.0###")
 		{
 			value = Mathf.Clamp (value, min, max);
@@ -683,6 +694,38 @@ namespace KopernicusExpansion.Utility
 
 				count++;
 			}
+		}
+		#endregion
+
+		#region CreatureSpawner
+		private Vector2 creatureSpawnerListScroll;
+
+		private void CreatureSpawnerWindow(int id)
+		{
+			creatureSpawnerListScroll = GUILayout.BeginScrollView (creatureSpawnerListScroll);
+
+			string color = HighLogic.LoadedSceneIsFlight ? "white" : "red";
+			foreach (var creature in CreatureLoader.LoadedCreatures)
+			{
+				if (GUILayout.Button ("<color=" + color + ">" + creature.name + "</color>"))
+				{
+					if(HighLogic.LoadedSceneIsFlight)
+						SpawnCreature (creature);
+				}
+			}
+
+			GUILayout.EndScrollView ();
+		}
+		private void SpawnCreature(Creature creature)
+		{
+			//get position 18 meters above 0,0,0
+			var position = FlightGlobals.upAxis.normalized * 18;
+
+			//spawn in creature vessel
+			var vessel = Creature.Create (creature, position);
+
+			//orient up
+			vessel.ReferenceTransform.up = FlightGlobals.upAxis.normalized;
 		}
 		#endregion
 	}
