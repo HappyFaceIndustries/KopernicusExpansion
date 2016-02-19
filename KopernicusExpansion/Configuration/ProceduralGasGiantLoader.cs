@@ -270,8 +270,16 @@ namespace KopernicusExpansion.Editors
 
 		GameObject targetPlanetScaled;
 
+		void Start()
+		{
+			skin = HighLogic.Skin;
+		}
+
+		private GUISkin skin;
 		void OnGUI()
 		{
+			GUI.skin = skin;
+
 			if(IsWindowOpen)
 				windowRect = GUILayout.Window ("ProceduralGasGiantEditor".GetHashCode (), windowRect, Window, "Procedural Gas Giant Editor");
 		}

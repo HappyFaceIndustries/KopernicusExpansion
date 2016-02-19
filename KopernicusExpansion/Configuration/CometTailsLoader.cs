@@ -409,8 +409,16 @@ namespace KopernicusExpansion.Editors
 
 		GameObject targetPlanetScaled;
 
+		void Start()
+		{
+			skin = HighLogic.Skin;
+		}
+
+		private GUISkin skin;
 		void OnGUI()
 		{
+			GUI.skin = skin;
+
 			if(IsWindowOpen)
 				windowRect = GUILayout.Window ("CometTailEditor".GetHashCode (), windowRect, Window, "Comet Tail Editor");
 		}
