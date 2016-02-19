@@ -41,14 +41,14 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\References\1.0.5\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="Kopernicus">
-      <HintPath>..\..\..\References\Kopernicus_0.5.2\Kopernicus.dll</HintPath>
-    </Reference>
     <Reference Include="Kopernicus.Components">
-      <HintPath>..\..\..\References\Kopernicus_0.5.2\Kopernicus.Components.dll</HintPath>
+      <HintPath>..\..\..\References\Kopernicus_0.6.3\Kopernicus.Components.dll</HintPath>
+    </Reference>
+    <Reference Include="Kopernicus">
+      <HintPath>..\..\..\References\Kopernicus_0.6.3\Kopernicus.dll</HintPath>
     </Reference>
     <Reference Include="Kopernicus.OnDemand">
-      <HintPath>..\..\..\References\Kopernicus_0.5.2\Kopernicus.OnDemand.dll</HintPath>
+      <HintPath>..\..\..\References\Kopernicus_0.6.3\Kopernicus.OnDemand.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

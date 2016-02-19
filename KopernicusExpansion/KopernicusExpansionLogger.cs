@@ -10,16 +10,16 @@ namespace KopernicusExpansion
 {
 	public class KopernicusExpansionLogger : Logger
 	{
-		public static string LogDirectory
+		public static string KopELogDirectory
 		{
-			get{ return KSPUtil.ApplicationRootPath + "/Logs/KopernicusExpansion/"; }
+			get{ return Logger.LogDirectory + "KopernicusExpansion/"; }
 		}
 
 		public KopernicusExpansionLogger(string loggerName = "KopernicusExpansion", string extension = ".log")
 		{
 			try
 			{
-				string logFile = KopernicusExpansionLogger.LogDirectory + loggerName + extension;
+				string logFile = KopELogDirectory + loggerName + extension;
 
 				//manually set loggerStream using reflection
 				var loggerStreamField = typeof(Logger).GetField ("loggerStream", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -40,20 +40,12 @@ namespace KopernicusExpansion
 			try
 			{
 				//create new directory
-				if(!Directory.Exists (LogDirectory))
-					Directory.CreateDirectory (LogDirectory);
-
-				//manually set isInitialized
-				var isInitializedField = typeof(Logger).GetField ("isInitialized", BindingFlags.Static | BindingFlags.NonPublic);
-				isInitializedField.SetValue (true, null);
+				if(!Directory.Exists (KopELogDirectory))
+					Directory.CreateDirectory (KopELogDirectory);
 			}
 			catch(Exception e)
 			{
-				Utils.LogError ("Error initializing KopernicusExpansionLoggers, using backup init:");
 				Debug.LogException (e);
-
-				//backup, in case it fails
-				Logger.Initialize ();
 			}
 		}
 	}
