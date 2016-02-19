@@ -221,8 +221,8 @@ namespace KopernicusExpansion.Utility
 			skin.button.CalcMinMaxWidth (new GUIContent ("Button Tester"), out buttonHeight, out buttonWidth);
 			buttonHeight = skin.button.CalcHeight (new GUIContent ("Button Tester"), buttonWidth);
 
-			isScaledExporterOpen = GUILayout.Toggle (isScaledExporterOpen, "ScaledVersion Exporter", skin.button, GUILayout.Height (buttonHeight));
-			isTextureViewerOpen = GUILayout.Toggle (isTextureViewerOpen, "Texture Viewer", skin.button, GUILayout.Height (buttonHeight));
+			isScaledExporterOpen = GUILayout.Toggle (isScaledExporterOpen, scaledExporterWindowTitle, skin.button, GUILayout.Height (buttonHeight));
+			isTextureViewerOpen = GUILayout.Toggle (isTextureViewerOpen, textureViewerWindowTitle, skin.button, GUILayout.Height (buttonHeight));
 
 			GUILayout.Space (5f);
 			var lineRect = GUILayoutUtility.GetRect (1f, 1f, 1f, 1f);
@@ -509,8 +509,10 @@ namespace KopernicusExpansion.Utility
 
 		#region TextureViewer
 		private Vector2 textureListScroll;
+		private Vector2 textureViewScroll;
 		private Texture2D selectedTexture;
 		private float textureDefaultWidth = 400f;
+		private float textureZoom = 1f;
 		private List<Texture2D> thisTexturePage = new List<Texture2D> ();
 		private int thisPageNumber = 0;
 		private int pageLength = 50;
@@ -525,16 +527,19 @@ namespace KopernicusExpansion.Utility
 			GUILayout.BeginHorizontal ();
 
 			GUILayout.BeginVertical (GUILayout.Width(500f));
+			textureViewScroll = GUILayout.BeginScrollView (textureViewScroll);
 			if(selectedTexture != null)
 			{
 				GUILayout.Label ("<b>" + selectedTexture.name + "</b>");
-				GUILayout.Label (selectedTexture, GUILayout.Width (textureDefaultWidth), GUILayout.Height (textureDefaultWidth));
+				GUILayout.Label (selectedTexture, GUILayout.Width (textureDefaultWidth * textureZoom), GUILayout.Height (textureDefaultWidth * textureZoom));
 			}
 			else
 			{
 				GUILayout.Space (100f);
 				GUILayout.Label ("<b><color=#aaaaaa>select a texture</color></b>", GUILayout.Height(textureDefaultWidth));
 			}
+			GUILayout.EndScrollView ();
+			textureZoom = DrawManipulationSlider ("textureZoom", "Zoom", textureZoom, 0f, 10f, false);
 			GUILayout.EndVertical ();
 
 			GUILayout.BeginVertical (GUILayout.Width(400f));
