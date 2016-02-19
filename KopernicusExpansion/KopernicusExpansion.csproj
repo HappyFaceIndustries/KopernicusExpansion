@@ -35,31 +35,34 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\References\1.0.4\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\References\1.0.5\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\References\1.0.4\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\References\1.0.5\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Kopernicus.Components">
+      <HintPath>..\..\..\References\Kopernicus_0.6.3\Kopernicus.Components.dll</HintPath>
     </Reference>
     <Reference Include="Kopernicus">
-      <HintPath>..\..\..\References\Kopernicus\Kopernicus.dll</HintPath>
+      <HintPath>..\..\..\References\Kopernicus_0.6.3\Kopernicus.dll</HintPath>
+    </Reference>
+    <Reference Include="Kopernicus.OnDemand">
+      <HintPath>..\..\..\References\Kopernicus_0.6.3\Kopernicus.OnDemand.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Shaders.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Textures.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Textures.resx</DependentUpon>
     </Compile>
-    <Compile Include="Utility\RuntimeUtility.cs" />
-    <Compile Include="Resources\Shaders.Designer.cs">
-      <DependentUpon>Shaders.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Utility\ImprovedPerlinNoise.cs" />
     <Compile Include="Configuration\ProceduralGasGiantLoader.cs" />
     <Compile Include="Configuration\RefractiveAtmosphereLoader.cs" />
     <Compile Include="KopernicusExpansionSettings.cs" />
@@ -67,21 +70,53 @@
     <Compile Include="Utility\Utils.cs" />
     <Compile Include="Configuration\EmissiveEffectsLoader.cs" />
     <Compile Include="Configuration\CometTailsLoader.cs" />
-    <Compile Include="Configuration\Parser\MuParser.cs" />
     <Compile Include="Utility\Geometry\UVSphere.cs" />
     <Compile Include="Utility\Geometry\Teardrop.cs" />
-    <Compile Include="Utility\Geometry\InvertNormals.cs" />
-    <Compile Include="Utility\SceneLoadHooks.cs" />
+    <Compile Include="Utility\Geometry\CopyMesh.cs" />
+    <Compile Include="Utility\WireframeViewer.cs" />
+    <Compile Include="Utility\Geometry\ReverseMesh.cs" />
+    <Compile Include="Creatures\Creature.cs" />
+    <Compile Include="Creatures\AI\AIModule.cs" />
+    <Compile Include="Creatures\CreatureSpawning.cs" />
+    <Compile Include="Creatures\CreatureLoader.cs" />
+    <Compile Include="Creatures\AI\LookAtTargets.cs" />
+    <Compile Include="Creatures\AI\Idle.cs" />
+    <Compile Include="Creatures\AI\AlignWithUpAxis.cs" />
+    <Compile Include="Creatures\CreatureVesselSwitching.cs" />
+    <Compile Include="Creatures\CreaturePart.cs" />
+    <Compile Include="Creatures\CreatureFXMonger.cs" />
+    <Compile Include="Creatures\PartModules\ModuleRemovePartBuoyancy.cs" />
+    <Compile Include="Creatures\CreatureVesselHandler.cs" />
+    <Compile Include="KopernicusExpansionLogger.cs" />
+    <Compile Include="KopernicusExpansionLoaderSystemAdder.cs" />
+    <Compile Include="Configuration\ModularNoise.cs" />
+    <Compile Include="Utility\Serialization\SerializedPQSMod.cs" />
+    <Compile Include="Configuration\NoiseLoader.cs" />
+    <Compile Include="Utility\Noise\ExDistPerlin.cs" />
+    <Compile Include="Utility\Noise\ImprovedPerlinNoise.cs" />
+    <Compile Include="Utility\Geometry\Quad.cs" />
+    <Compile Include="Configuration\ParticleGrassLoader.cs" />
+    <Compile Include="Utility\ObjectPool.cs" />
+    <Compile Include="Utility\DevelopmentUtils.cs" />
+    <Compile Include="Configuration\EVAFootprintsLoader.cs" />
+    <Compile Include="Configuration\DebugHeightColorLoader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="Resources\CometTail.shader" />
-    <None Include="Resources\ProceduralGasGiantEditorIcon.png">
-      <DependentUpon>Textures.resx</DependentUpon>
-    </None>
     <None Include="Resources\Compiled-CometTail.shader">
       <DependentUpon>Shaders.resx</DependentUpon>
     </None>
+    <None Include="Resources\CreatureBloodExplosionParticle.png">
+      <DependentUpon>Textures.resx</DependentUpon>
+    </None>
+    <None Include="Resources\KerbalEVAFootprintMask.png">
+      <DependentUpon>Textures.resx</DependentUpon>
+    </None>
+    <None Include="Resources\Compiled-Footprint.shader">
+      <DependentUpon>Shaders.resx</DependentUpon>
+    </None>
+    <None Include="Resources\Footprint.shader" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\EmissiveQuad.shader" />
@@ -107,6 +142,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Shaders.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Shaders.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Textures.resx">
@@ -115,9 +151,5 @@
       <LastGenOutput>Textures.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\CometTailEditorIcon.png">
-      <DependentUpon>Textures.resx</DependentUpon>
-    </None>
-  </ItemGroup>
+  <ItemGroup />
 </Project>

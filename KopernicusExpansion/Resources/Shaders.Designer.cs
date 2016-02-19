@@ -61,19 +61,19 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 316.3KB
+        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 284.7KB
         ///
         ///Shader &quot;CometTail&quot; {
         ///Properties {
         /// _TintColor (&quot;Color&quot;, Color) = (0.5,0.5,0.5,1)
         /// _Evolution (&quot;Time&quot;, Float) = 0
-        /// _RimPower (&quot;Rim Power&quot;, Range(1,4)) = 2
+        /// _RimPower (&quot;Rim Power&quot;, Range(0,4)) = 0.01
         /// _Distortion (&quot;Distortion&quot;, Range(0,0.5)) = 0.2
         /// _ZDistortion (&quot;Z Distortion&quot;, Range(0,1)) = 0.1
         /// _AlphaDistortion (&quot;Alpha Distortion&quot;, Range(0,1)) = 0.2
         /// _VertexDistortion (&quot;Vertex Distortion&quot;, Float) = 0.2
         /// _Frequency (&quot;Frequency&quot;, Float) = 1
-        /// _Lacunarity (&quot;Lacunarity&quot;, Float)  [rest of string was truncated]&quot;;.
+        /// _Lacunarity (&quot;Lacunarity&quot;, Floa [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CometTail {
             get {
@@ -135,20 +135,47 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 912.4KB
+        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 214.4KB
         ///
-        ///Shader &quot;Surface/ProceduralGasGiant&quot; {
+        ///Shader &quot;Footprint&quot; {
+        ///Properties {
+        /// _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+        /// _Color (&quot;Color&quot;, Color) = (0,0,0,1)
+        /// _Opacity (&quot;Opacity&quot;, Range(0,1)) = 1
+        ///}
+        ///SubShader { 
+        /// LOD 200
+        /// Tags { &quot;QUEUE&quot;=&quot;Transparent&quot; &quot;RenderType&quot;=&quot;Transparent&quot; }
+        ///
+        ///
+        /// // Stats for Vertex shader:
+        /// //       d3d11 : 19 avg math (6..44)
+        /// //    d3d11_9x : 19 avg math (6..44)
+        /// //        d3d9 : 24 avg math (6..57)
+        /// //      opengl : 24 avg math (6..57)
+        /// // Stats f [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Footprint {
+            get {
+                return ResourceManager.GetString("Footprint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 455.5KB
+        ///
+        ///Shader &quot;ProceduralGasGiant&quot; {
         ///Properties {
         /// _MainTex (&quot;Ramp Texture&quot;, 2D) = &quot;white&quot; {}
-        /// _PlanetOpacity (&quot;Opacity&quot;, Float) = 1
         /// _Evolution (&quot;Time&quot;, Float) = 0
+        /// _StormMap (&quot;Storm Map&quot;, 2D) = &quot;white&quot; {}
         /// _StormFrequency (&quot;Storm Frequency&quot;, Float) = 5
-        /// _StormThreshold (&quot;Storm Threshold&quot;, Float) = 0.85
+        /// _StormDistortion (&quot;Storm Distortion&quot;, Float) = 0.85
         /// _Distortion (&quot;Distortion&quot;, Range(0,0.05)) = 0.02
         /// _MainFrequency (&quot;Frequency&quot;, Float) = 25
         /// _Lacunarity (&quot;Lacunarity&quot;, Float) = 1.3
         /// _Gain (&quot;Gain&quot;, Float) = 0.9
-        /// _Perm [rest of string was truncated]&quot;;.
+        /// _PermTab [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ProceduralGasGiant {
             get {

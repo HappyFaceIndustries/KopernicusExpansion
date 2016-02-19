@@ -6,6 +6,7 @@ using KopernicusExpansion.Editors;
 using KopernicusExpansion.Effects;
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Resources;
+using KopernicusExpansion.Utility.Noise;
 using KopernicusExpansion.Utility.Geometry;
 
 using Kopernicus;
@@ -19,7 +20,6 @@ using UnityEngine;
 
 namespace KopernicusExpansion.Configuration
 {
-	[IngameEditor(typeof(Editors.CometTailLoader), GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
 	[ExternalParserTarget("CometTails")]
 	public class CometTailsLoader : ExternalParserTargetLoader, IParserEventSubscriber
 	{
@@ -70,6 +70,62 @@ namespace KopernicusExpansion.Configuration
 				tail.color = value.value;
 			}
 		}
+		[ParserTarget("rimPower", optional = true)]
+		public NumericParser<float> rimPower
+		{
+			set
+			{
+				tail.rimPower = value.value;
+			}
+		}
+		[ParserTarget("distortion", optional = true)]
+		public NumericParser<float> distortion
+		{
+			set
+			{
+				tail.distortion = value.value;
+			}
+		}
+		[ParserTarget("alphaDistortion", optional = true)]
+		public NumericParser<float> alphaDistortion
+		{
+			set
+			{
+				tail.alphaDistortion = value.value;
+			}
+		}
+		[ParserTarget("zDistortion", optional = true)]
+		public NumericParser<float> zDistortion
+		{
+			set
+			{
+				tail.zDistortion = value.value;
+			}
+		}
+		[ParserTarget("frequency", optional = true)]
+		public NumericParser<float> frequency
+		{
+			set
+			{
+				tail.frequency = value.value;
+			}
+		}
+		[ParserTarget("lacunarity", optional = true)]
+		public NumericParser<float> lacunarity
+		{
+			set
+			{
+				tail.lacunarity = value.value;
+			}
+		}
+		[ParserTarget("gain", optional = true)]
+		public NumericParser<float> gain
+		{
+			set
+			{
+				tail.gain = value.value;
+			}
+		}
 
 		[ParserTarget("radius", optional = true)]
 		public NumericParser<float> radius
@@ -88,7 +144,7 @@ namespace KopernicusExpansion.Configuration
 				tail.length = value.value;
 			}
 		}
-			
+
 		[ParserTarget("opacityCurve", optional = true)]
 		public FloatCurveParser opacityCurve
 		{
@@ -97,7 +153,7 @@ namespace KopernicusExpansion.Configuration
 				tail.opacityCurve = value.curve;
 			}
 		}
-			
+
 		[ParserTarget("brightnessCurve", optional = true)]
 		public FloatCurveParser brightnessCurve
 		{
@@ -150,7 +206,16 @@ namespace KopernicusExpansion.Effects
 	public class CometTail
 	{
 		public CometTailType type;
+
 		public Color color = Color.white;
+		public float rimPower = 1.41f;
+		public float distortion = 0.143f;
+		public float alphaDistortion = 0.262f;
+		public float zDistortion = 0.12f;
+		public float frequency = 1.547f;
+		public float lacunarity = 1.518f;
+		public float gain = 0.734f;
+
 		public float radius = 2000f;
 		public float length = 16000f;
 		public FloatCurve opacityCurve;
@@ -170,7 +235,7 @@ namespace KopernicusExpansion.Effects
 			var mf = obj.AddComponent<MeshFilter> ();
 
 			var teardrop = new Teardrop (1f, (tail.length / tail.radius), 60, 90);
-			mf.mesh = new InvertNormals (teardrop);
+			mf.mesh = teardrop;
 
 			if (Settings.AllowAdvancedCometShader)
 			{
@@ -179,14 +244,14 @@ namespace KopernicusExpansion.Effects
 				//set default material values
 				mr.sharedMaterial.SetColor ("_TintColor", new Color(tail.color.r, tail.color.g, tail.color.b, 0.5f));
 
-				mr.sharedMaterial.SetFloat ("_RimPower", 1.41f);
-				mr.sharedMaterial.SetFloat ("_Distortion", 0.143f);
-				mr.sharedMaterial.SetFloat ("_AlphaDistortion", 0.262f);
-				mr.sharedMaterial.SetFloat ("_ZDistortion", 0.12f);
+				mr.sharedMaterial.SetFloat ("_RimPower", tail.rimPower);
+				mr.sharedMaterial.SetFloat ("_Distortion", tail.distortion);
+				mr.sharedMaterial.SetFloat ("_AlphaDistortion", tail.alphaDistortion);
+				mr.sharedMaterial.SetFloat ("_ZDistortion", tail.zDistortion);
 				mr.sharedMaterial.SetFloat ("_VertexDistortion", 0f);
-				mr.sharedMaterial.SetFloat ("_Frequency", 1.547f);
-				mr.sharedMaterial.SetFloat ("_Lacunarity", 1.518f);
-				mr.sharedMaterial.SetFloat ("_Gain", 0.734f);
+				mr.sharedMaterial.SetFloat ("_Frequency", tail.frequency);
+				mr.sharedMaterial.SetFloat ("_Lacunarity", tail.lacunarity);
+				mr.sharedMaterial.SetFloat ("_Gain", tail.gain);
 			}
 			else
 			{
@@ -210,7 +275,7 @@ namespace KopernicusExpansion.Effects
 
 			obj.transform.parent = scaledVersion;
 			obj.transform.localPosition = Vector3.zero;
-			obj.transform.localScale = Vector3.one * tail.length;
+			obj.transform.localScale = (Vector3.one * tail.length);
 			obj.SetActive (true);
 			obj.layer = GameLayers.ScaledSpace;
 
@@ -335,7 +400,8 @@ namespace KopernicusExpansion.Effects
 
 namespace KopernicusExpansion.Editors
 {
-	public class CometTailLoader : MonoBehaviour
+	[IngameEditor("Comet Tail Editor")]
+	public class CometTailEditor : IngameEditor
 	{
 		Rect windowRect = new Rect (250, 200, 450, 350);
 		bool windowOpen = false;
@@ -343,32 +409,22 @@ namespace KopernicusExpansion.Editors
 
 		GameObject targetPlanetScaled;
 
-		ApplicationLauncherButton button;
 		void Start()
 		{
-			var texture = new Texture2D (39, 39);
-			texture.LoadImage (Textures.CometTailEditorIcon);
-			button = ApplicationLauncher.Instance.AddModApplication (delegate {
-				windowOpen = true;
-			}, delegate {
-				windowOpen = false;
-			},
-				null, null, null, null, ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.MAPVIEW, texture);
-		}
-		void OnDestroy()
-		{
-			if(button != null)
-				ApplicationLauncher.Instance.RemoveModApplication (button);
+			skin = HighLogic.Skin;
 		}
 
+		private GUISkin skin;
 		void OnGUI()
 		{
-			if(windowOpen)
+			GUI.skin = skin;
+
+			if(IsWindowOpen)
 				windowRect = GUILayout.Window ("CometTailEditor".GetHashCode (), windowRect, Window, "Comet Tail Editor");
 		}
 		void Update()
 		{
-			if (!windowOpen)
+			if (!IsWindowOpen)
 				return;
 
 			var mapObj = PlanetariumCamera.fetch.target;

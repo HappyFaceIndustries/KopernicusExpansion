@@ -6,6 +6,7 @@ using KopernicusExpansion.Editors;
 using KopernicusExpansion.Effects;
 using KopernicusExpansion.Utility;
 using KopernicusExpansion.Resources;
+using KopernicusExpansion.Utility.Noise;
 
 using Kopernicus;
 using Kopernicus.Constants;
@@ -18,7 +19,6 @@ using UnityEngine;
 
 namespace KopernicusExpansion.Configuration
 {
-	[IngameEditor(typeof(Editors.ProceduralGasGiantEditor), GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
 	[ExternalParserTarget("ProceduralGasGiant", parentNodeName = "ScaledVersion")]
 	public class ProceduralGasGiantLoader : ExternalParserTargetLoader, IParserEventSubscriber
 	{
@@ -255,10 +255,6 @@ namespace KopernicusExpansion.Effects
 				if (currentTime >= MaxTime)
 					currentTime = 0;
 
-				//debug
-				if (Input.GetKeyDown (KeyCode.H))
-					currentTime = MaxTime - (speed * 2f);
-
 				renderer.material.SetFloat ("_Evolution", currentTime);
 			}
 		}
@@ -267,39 +263,29 @@ namespace KopernicusExpansion.Effects
 
 namespace KopernicusExpansion.Editors
 {
-	public class ProceduralGasGiantEditor : MonoBehaviour
+	[IngameEditor("Gas Giant Editor")]
+	public class ProceduralGasGiantEditor : IngameEditor
 	{
 		Rect windowRect = new Rect (250, 200, 450, 350);
-		bool windowOpen = false;
 
 		GameObject targetPlanetScaled;
 
-		ApplicationLauncherButton button;
 		void Start()
 		{
-			var texture = new Texture2D (39, 39);
-			texture.LoadImage (Textures.ProceduralGasGiantEditorIcon);
-			button = ApplicationLauncher.Instance.AddModApplication (delegate {
-				windowOpen = true;
-			}, delegate {
-				windowOpen = false;
-			},
-				null, null, null, null, ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.MAPVIEW, texture);
-		}
-		void OnDestroy()
-		{
-			if(button != null)
-				ApplicationLauncher.Instance.RemoveModApplication (button);
+			skin = HighLogic.Skin;
 		}
 
+		private GUISkin skin;
 		void OnGUI()
 		{
-			if(windowOpen)
+			GUI.skin = skin;
+
+			if(IsWindowOpen)
 				windowRect = GUILayout.Window ("ProceduralGasGiantEditor".GetHashCode (), windowRect, Window, "Procedural Gas Giant Editor");
 		}
 		void Update()
 		{
-			if (!windowOpen)
+			if (!IsWindowOpen)
 				return;
 				
 			var mapObj = PlanetariumCamera.fetch.target;
