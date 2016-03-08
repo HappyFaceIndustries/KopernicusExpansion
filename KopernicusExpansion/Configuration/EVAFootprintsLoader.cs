@@ -122,21 +122,27 @@ namespace KopernicusExpansion.Effects
 			footprints = new Queue<KerbalEVAFootprint> (Settings.MaximumFootprints);
 
 			GameEvents.onPartUnpack.Add (AddFootprinter);
+			GameEvents.onCrewOnEva.Add (OnCrewOnEVA);
 		}
 		private void OnDestroy()
 		{
 			GameEvents.onPartUnpack.Remove (AddFootprinter);
+			GameEvents.onCrewOnEva.Remove (OnCrewOnEVA);
 		}
 
+		private void OnCrewOnEVA(GameEvents.FromToAction<Part, Part> fromto)
+		{
+			AddFootprinter (fromto.to);
+		}
 		private void AddFootprinter (Part part)
 		{
-			if (part.vessel.evaController != null)
+			if (part.GetComponent<KerbalEVA>() != null)
 			{
 				var footprinter = part.gameObject.AddComponent<KerbalEVAFootprinter> ();
-				footprinter.eva = part.vessel.evaController;
+				footprinter.eva = part.GetComponent<KerbalEVA> ();
 				footprinter.part = part;
 
-				Utils.Log ("Footprinter added to " + part.vessel.vesselName);
+				Utils.Log ("Footprinter added to " + part.name + " of vessel " + part.vessel.vesselName);
 			}
 		}
 
