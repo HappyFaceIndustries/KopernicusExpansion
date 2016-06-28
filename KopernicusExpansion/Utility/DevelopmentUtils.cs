@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -116,6 +117,27 @@ namespace KopernicusExpansion.Utility
 
 			GameEvents.onShowUI.Add (OnShowUI);
 			GameEvents.onHideUI.Add (OnHideUI);
+
+			File.Delete (KopernicusExpansionLogger.KopELogDirectory + "Framerate.csv");
+			FramerateCSVLogger = new StreamWriter (File.Open (KopernicusExpansionLogger.KopELogDirectory + "Framerate.csv", FileMode.Append));
+			FramerateCSVLogger.WriteLine ("Time,FPS");
+
+			/** Make Stock terrain system take up way less CPU. Do this before PSystemSpawn
+			 * PQS.cacheSideVertCount = 3;
+			 * PQS.CreateCache ();
+			 **/
+
+			/** Transform point onto sphere
+			 * NOTE: (For all matrix multiplications, use Multiply3x4. There is no need for projection)
+			 * get cacheVert by scaling the XZ coords of the PQ mesh vertex to -0.5 -> 0.5.
+			 * set direction to center by multiplying the quad's quadMatrix by the cacheVert at the desired position, and normalizing it
+			 * multiply direction by desired Y value. The direction is now a point on the sphere of radius Y centered around the origin
+			 * create a new matrix that by multiplying the PQS's localToWorldMatrix by the quad's worldToLocalMatrix. This can be cached. Alternatively, try using the quadMatrix.
+			 * //transform point into world space using the PQS's localToWorldMatrix
+			 * //transform point into the quad's local space by multiplying by the worldToLocalMatrix
+			 * transform point into world space, then into the quad's local space by multiplying it by the matrix created/cached earlier
+			 * the point is now on the sphere, in the quad's local space. YAY!
+			 **/
 		}
 
 		//Events
@@ -157,6 +179,8 @@ namespace KopernicusExpansion.Utility
 		private Dictionary<string, IngameEditor> ingameEditorObjects = new Dictionary<string, IngameEditor> ();
 		private Vector2 mainScrollView;
 
+		private bool shouldLogFramerate = false;
+
 		private void OnGUI()
 		{
 			if (!showUI)
@@ -184,7 +208,7 @@ namespace KopernicusExpansion.Utility
 		}
 		private void Update()
 		{
-			if (GameSettings.MODIFIER_KEY.GetKey () && Input.GetKeyDown (KeyCode.Alpha0))
+			if (GameSettings.MODIFIER_KEY.GetKey () && Input.GetKey(KeyCode.K) && Input.GetKeyDown (KeyCode.Alpha0))
 			{
 				isMainWindowOpen = !isMainWindowOpen;
 				if (mainWindowButton != null)
@@ -195,7 +219,18 @@ namespace KopernicusExpansion.Utility
 						mainWindowButton.SetFalse (false);
 				}
 			}
+			if (shouldLogFramerate)
+			{
+				FramerateCSVLogger.WriteLine ("{0},{1}", Time.time, 1f / Time.deltaTime);
+			}
 		}
+		private void OnDestroy()
+		{
+			FramerateCSVLogger.Flush ();
+			FramerateCSVLogger.Close ();
+		}
+
+		private TextWriter FramerateCSVLogger;
 
 		private void MainWindow(int id)
 		{
@@ -222,6 +257,8 @@ namespace KopernicusExpansion.Utility
 			}
 
 			GUILayout.EndScrollView ();
+			GUILayout.Label ("FPS: " + 1f / Time.deltaTime);
+			shouldLogFramerate = GUILayout.Toggle (shouldLogFramerate, "Log Framerate?");
 		}
 
 		#region ScaledExporter

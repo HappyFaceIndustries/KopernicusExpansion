@@ -1,13 +1,8 @@
 ﻿<Properties StartupItem="KopernicusExpansion\KopernicusExpansion.csproj" GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="KopernicusExpansion\Configuration\ModularNoise.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="KopernicusExpansion\Utility\DevelopmentUtils.cs">
     <Files>
-      <File FileName="KopernicusExpansion\Configuration\ModularNoise.cs" Line="25" Column="60" />
-      <File FileName="KopernicusExpansion\Utility\Serialization\SerializedPQSMod.cs" Line="1" Column="1" />
-      <File FileName="KopernicusExpansion\Utility\DevelopmentUtils.cs" Line="1" Column="1" />
-      <File FileName="KopernicusExpansion\Utility\IngameEditors.cs" Line="1" Column="1" />
-      <File FileName="KopernicusExpansion\Configuration\CometTailsLoader.cs" Line="1" Column="1" />
-      <File FileName="KopernicusExpansion\Configuration\ProceduralGasGiantLoader.cs" Line="1" Column="1" />
+      <File FileName="KopernicusExpansion\Utility\DevelopmentUtils.cs" Line="140" Column="8" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
