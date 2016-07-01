@@ -113,7 +113,6 @@ namespace KopernicusExpansion
 			prenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 			prenderer.receiveShadows = true;
 			prenderer.sharedMaterial = GrassMaterial;
-			//prenderer.sharedMaterial.renderQueue = 3100;
 			//TODO: try out MaterialPropertyBlocks
 			//TODO: use MaterialPropertBlocks to set the per-particle vertex scale on the XZ plane
 			//TODO: have different materials with different shader keywords for far-away grass that needs a lower quality

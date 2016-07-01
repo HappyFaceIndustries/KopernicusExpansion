@@ -65,7 +65,6 @@
      <Compile Include="Assets\CommonUtils\Geometry\Teardrop.cs" />
      <Compile Include="Assets\CommonUtils\Geometry\UVSphere.cs" />
      <Compile Include="Assets\CommonUtils\Noise\ImprovedPerlinNoise.cs" />
-     <Compile Include="Assets\ParticleGrass\ParticleGrassGlobalMaterialController.cs" />
      <Compile Include="Assets\ParticleGrass\ParticleGrassSpawner.cs" />
      <Compile Include="Assets\ProceduralGasGiant\ProceduralGasGiant.cs" />
      <Compile Include="Assets\Voxel\StopwatchExtensions.cs" />
