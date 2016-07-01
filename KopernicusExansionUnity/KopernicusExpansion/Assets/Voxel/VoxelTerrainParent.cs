@@ -56,7 +56,6 @@ public class VoxelTerrainParent : MonoBehaviour
 					var moore = GetMooreNeighborhood (chunkMap, x, y, z);
 					var chunk = moore [1, 1, 1];
 
-					var chunkSize = (SurfaceNets.CHUNK_SIZE - 1);
 					for (int i = 0; i < 6; i++)
 					{
 						var currEdgeData = chunk.edgeData [i];

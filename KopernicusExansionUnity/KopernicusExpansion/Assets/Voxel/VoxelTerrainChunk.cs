@@ -108,7 +108,7 @@ public class VoxelTerrainChunk : MonoBehaviour
 					int index = x + ChunkSize * (y + ChunkSize * z);
 
 					var sampleX = (x + ChunkPosition.x) * Frequency * Scale;
-					var sampleY = (y + ChunkPosition.y) * Frequency * Scale;
+					//var sampleY = (y + ChunkPosition.y) * Frequency * Scale;
 					var sampleZ = (z + ChunkPosition.z) * Frequency * Scale;
 					float noise = 0f;
 					float ampl = 1f;

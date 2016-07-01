@@ -68,7 +68,6 @@
      <Compile Include="Assets\ParticleGrass\ParticleGrassGlobalMaterialController.cs" />
      <Compile Include="Assets\ParticleGrass\ParticleGrassSpawner.cs" />
      <Compile Include="Assets\ProceduralGasGiant\ProceduralGasGiant.cs" />
-     <Compile Include="Assets\SubsurfaceScattering\ReplacementShaderEffect.cs" />
      <Compile Include="Assets\Voxel\StopwatchExtensions.cs" />
      <Compile Include="Assets\Voxel\SurfaceNets.cs" />
      <Compile Include="Assets\Voxel\VoxelProjection.cs" />
@@ -82,20 +81,13 @@
      <None Include="Assets\CommonUtils\CharacterController\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
      <None Include="Assets\EmissiveOceans\EmissiveScaled.shader" />
      <None Include="Assets\CometTail\CometTail.shader" />
-     <None Include="Assets\SubsurfaceScattering\StencilWriterShader.shader" />
      <None Include="Assets\Voxel\VoxelTerrainShader.shader" />
      <None Include="Assets\ProceduralGasGiant\ProceduralGasGiant.shader" />
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>C:/Users/Neb/ProgramFiles_Unity/Unity 5.2.4/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Users/Neb/ProgramFiles_Unity/Unity 5.2.4/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Users/Neb/ProgramFiles_Unity/Unity 5.2.4/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Analytics">
- <HintPath>C:/Users/Neb/ProgramFiles_Unity/Unity 5.2.4/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
  <HintPath>C:/Users/Neb/ProgramFiles_Unity/Unity 5.2.4/Editor/Data/Managed/Mono.Cecil.dll</HintPath>
