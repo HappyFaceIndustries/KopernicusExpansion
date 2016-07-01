@@ -1,12 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Temp\Compiled-CometTail.shader">
-    <Files>
-      <File FileName="Temp\Compiled-CometTail.shader" Line="1" Column="1" />
-      <File FileName="Temp\Compiled-ProceduralGasGiant.shader" Line="1" Column="1" />
-      <File FileName="Assets\ParticleGrass\ParticleGrassSpawner.cs" Line="1" Column="1" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

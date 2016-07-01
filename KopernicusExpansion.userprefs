@@ -1,9 +1,8 @@
 ﻿<Properties StartupItem="KopernicusExpansion\KopernicusExpansion.csproj" GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="KopernicusExpansion\Resources\Shaders.resx">
+  <MonoDevelop.Ide.Workbench ActiveDocument="KopernicusExpansion\Utility\DevelopmentUtils.cs">
     <Files>
-      <File FileName="KopernicusExpansion\Utility\DevelopmentUtils.cs" Line="130" Column="30" />
-      <File FileName="KopernicusExpansion\Resources\Shaders.resx" Line="138" Column="10" />
+      <File FileName="KopernicusExpansion\Utility\DevelopmentUtils.cs" Line="115" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
