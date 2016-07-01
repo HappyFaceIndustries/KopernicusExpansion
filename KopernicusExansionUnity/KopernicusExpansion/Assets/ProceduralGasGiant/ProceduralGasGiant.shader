@@ -26,7 +26,7 @@ Shader "KopernicusExpansion/ProceduralGasGiant" {
 		}
 		
 		CGPROGRAM
-		#pragma target 2.0
+		#pragma target 3.0
 		#include "UnityCG.cginc"
 		#include "../CommonUtils/ImprovedPerlinNoise.cginc"
 		#pragma surface surf Lambert alpha vertex:vert
