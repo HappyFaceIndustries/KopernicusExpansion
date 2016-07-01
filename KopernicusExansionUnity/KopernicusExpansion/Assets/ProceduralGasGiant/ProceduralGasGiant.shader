@@ -3,11 +3,11 @@
 Shader "KopernicusExpansion/ProceduralGasGiant" {
 	Properties {
 		_MainTex ("Ramp Texture", 2D) = "white"{}
-		_Evolution ("Time", Vector) = (0.0, 0.0, 0.0)
+		_Evolution ("Time", Vector) = (0.0, 0.0, 0.0, 0.0)
 		_StormMap ("Storm Map", 2D) = "white"{}
 		_StormFrequency ("Storm Frequency", Float) = 5
-		_StormDistortion ("Storm Distortion", Float) = 0.85
-		_Distortion ("Distortion", Range(0, 0.05)) = 0.02
+		_StormDistortion ("Storm Distortion", Range(0, 0.1)) = 0.05
+		_Distortion ("Distortion", Range(0, 0.1)) = 0.02
 		_MainFrequency ("Frequency", Float) = 25
 		_Lacunarity ("Lacunarity", Float) = 1.3
 		_Gain ("Gain", Float) = 0.9
@@ -62,13 +62,13 @@ Shader "KopernicusExpansion/ProceduralGasGiant" {
 			_Frequency = _MainFrequency;
 
 			//main pattern
-			float n = ridgedmf(i.vertPos + _Evolution, 4, inoise(i.vertPos + _Evolution)) * _Distortion;
+			float n = ridgedmf(i.vertPos + _Evolution.xyz, 4, inoise(i.vertPos + _Evolution.xyz)) * _Distortion;
 
 			_Frequency = _StormFrequency;
 
 			//storm pattern
 			float stormStrength = tex2D(_StormMap, i.uv_StormMap).a;
-			float sn4 = fBm(i.vertPos + _Evolution, 3) * stormStrength * _StormDistortion;
+			float sn4 = fBm(i.vertPos + _Evolution.xyz, 3) * stormStrength * _StormDistortion;
 
 			//color
 			float2 mainUV = float2(((i.vertPos.y + n + sn4 + stormStrength) * 0.5) - 0.5, 0);

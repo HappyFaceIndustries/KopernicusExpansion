@@ -25,12 +25,6 @@ namespace KopernicusExpansion
 		private Material material;
 		[SerializeField]
 		private float currentTime = 0f;
-		[SerializeField]
-		private float currentTimeX = 0f;
-		[SerializeField]
-		private float currentTimeY = 0f;
-		[SerializeField]
-		private float currentTimeZ = 0f;
 
 		private void LateUpdate()
 		{
@@ -44,13 +38,7 @@ namespace KopernicusExpansion
 			{
 				currentTime = 0f;
 			}
-			currentTimeX = Mathf.Sin (currentTime);
-			currentTimeY = Mathf.Sin (currentTime + 120f);
-			currentTimeZ = Mathf.Sin (currentTime + 240f);
-			//currentTimeX = currentTime;
-			//currentTimeY = currentTime;
-			//currentTimeZ = currentTime;
-			material.SetVector ("_Evolution", new Vector4 (currentTimeX, currentTimeY, currentTimeZ, 0f));
+			material.SetVector ("_Evolution", new Vector4 (currentTime, 0f, currentTime, 0f));
 		}
 
 		[ContextMenu("(Re)Generate")]
