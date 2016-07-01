@@ -103,41 +103,17 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="Resources\CometTail.shader" />
-    <None Include="Resources\Compiled-CometTail.shader">
-      <DependentUpon>Shaders.resx</DependentUpon>
-    </None>
-    <None Include="Resources\CreatureBloodExplosionParticle.png">
-      <DependentUpon>Textures.resx</DependentUpon>
-    </None>
-    <None Include="Resources\KerbalEVAFootprintMask.png">
-      <DependentUpon>Textures.resx</DependentUpon>
-    </None>
-    <None Include="Resources\Compiled-Footprint.shader">
-      <DependentUpon>Shaders.resx</DependentUpon>
-    </None>
-    <None Include="Resources\Footprint.shader" />
+    <None Include="Resources\Compiled-CometTail.shader" />
+    <None Include="Resources\CreatureBloodExplosionParticle.png" />
+    <None Include="Resources\KerbalEVAFootprintMask.png" />
+    <None Include="Resources\Compiled-Footprint.shader" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\EmissiveQuad.shader" />
-    <None Include="Resources\EmissiveScaled.shader" />
-    <None Include="Resources\Compiled-EmissiveScaled.shader">
-      <DependentUpon>Shaders.resx</DependentUpon>
-    </None>
-    <None Include="Resources\Compiled-EmissiveQuad.shader">
-      <DependentUpon>Shaders.resx</DependentUpon>
-    </None>
-    <None Include="Resources\Compiled-RefractiveAtmosphere.shader">
-      <DependentUpon>Shaders.resx</DependentUpon>
-    </None>
-    <None Include="Resources\RefractiveAtmosphere.shader" />
-    <None Include="Resources\RefractiveAtmosphereNormals.png">
-      <DependentUpon>Textures.resx</DependentUpon>
-    </None>
-    <None Include="Resources\Compiled-ProceduralGasGiant.shader">
-      <DependentUpon>Shaders.resx</DependentUpon>
-    </None>
-    <None Include="Resources\ProceduralGasGiant.shader" />
+    <None Include="Resources\Compiled-EmissiveScaled.shader" />
+    <None Include="Resources\Compiled-EmissiveQuad.shader" />
+    <None Include="Resources\Compiled-RefractiveAtmosphere.shader" />
+    <None Include="Resources\RefractiveAtmosphereNormals.png" />
+    <None Include="Resources\Compiled-ProceduralGasGiant.shader" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Shaders.resx">
@@ -145,6 +121,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Shaders.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Resources\Compiled-ParticleGrass.shader" />
     <EmbeddedResource Include="Resources\Textures.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>

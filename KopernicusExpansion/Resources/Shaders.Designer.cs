@@ -61,9 +61,11 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 284.7KB
+        ///   Looks up a localized string similar to // Compiled shader for PC, Mac &amp; Linux Standalone, uncompressed size: 93.6KB
         ///
-        ///Shader &quot;CometTail&quot; {
+        ///// Skipping shader variants that would not be included into build of current scene.
+        ///
+        ///Shader &quot;KopernicusExpansion/CometTail&quot; {
         ///Properties {
         /// _TintColor (&quot;Color&quot;, Color) = (0.5,0.5,0.5,1)
         /// _Evolution (&quot;Time&quot;, Float) = 0
@@ -71,9 +73,7 @@ namespace KopernicusExpansion.Resources {
         /// _Distortion (&quot;Distortion&quot;, Range(0,0.5)) = 0.2
         /// _ZDistortion (&quot;Z Distortion&quot;, Range(0,1)) = 0.1
         /// _AlphaDistortion (&quot;Alpha Distortion&quot;, Range(0,1)) = 0.2
-        /// _VertexDistortion (&quot;Vertex Distortion&quot;, Float) = 0.2
-        /// _Frequency (&quot;Frequency&quot;, Float) = 1
-        /// _Lacunarity (&quot;Lacunarity&quot;, Floa [rest of string was truncated]&quot;;.
+        /// _Freq [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CometTail {
             get {
@@ -82,12 +82,14 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 185.4KB
+        ///   Looks up a localized string similar to // Compiled shader for PC, Mac &amp; Linux Standalone, uncompressed size: 84.5KB
         ///
-        ///Shader &quot;EmissiveQuad&quot; {
+        ///// Skipping shader variants that would not be included into build of current scene.
+        ///
+        ///Shader &quot;KopernicusExpansion/EmissiveQuad&quot; {
         ///Properties {
         /// _Color (&quot;Color&quot;, Color) = (1,1,1,1)
-        /// _EmissiveMap (&quot;Map&quot;, 2D) = &quot;white&quot; {}
+        /// _EmissiveMap (&quot;Map&quot;, 2D) = &quot;white&quot; { }
         /// _Brightness (&quot;Brightness&quot;, Float) = 1.5
         /// _Transparency (&quot;Transparency&quot;, Float) = 0.35
         ///}
@@ -96,11 +98,7 @@ namespace KopernicusExpansion.Resources {
         /// Tags { &quot;QUEUE&quot;=&quot;Transparent&quot; &quot;RenderType&quot;=&quot;Transparent&quot; }
         ///
         ///
-        /// // Stats for Vertex shader:
-        /// //       d3d11 : 19 avg math (6..44)
-        /// //    d3d11_9x : 19 avg math (6..44)
-        /// //        d3d9 : 24 avg math (6..57)
-        /// [rest of string was truncated]&quot;;.
+        /// // Stats for Vertex shader [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string EmissiveQuad {
             get {
@@ -109,12 +107,14 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 185.4KB
+        ///   Looks up a localized string similar to // Compiled shader for PC, Mac &amp; Linux Standalone, uncompressed size: 84.5KB
         ///
-        ///Shader &quot;EmissiveScaled&quot; {
+        ///// Skipping shader variants that would not be included into build of current scene.
+        ///
+        ///Shader &quot;KopernicusExpansion/EmissiveScaled&quot; {
         ///Properties {
         /// _Color (&quot;Color&quot;, Color) = (1,1,1,1)
-        /// _EmissiveMap (&quot;Map&quot;, 2D) = &quot;white&quot; {}
+        /// _EmissiveMap (&quot;Map&quot;, 2D) = &quot;white&quot; { }
         /// _Brightness (&quot;Brightness&quot;, Float) = 1.25
         /// _Transparency (&quot;Transparency&quot;, Float) = 0.75
         ///}
@@ -123,10 +123,7 @@ namespace KopernicusExpansion.Resources {
         /// Tags { &quot;QUEUE&quot;=&quot;Transparent&quot; &quot;RenderType&quot;=&quot;Transparent&quot; }
         ///
         ///
-        /// // Stats for Vertex shader:
-        /// //       d3d11 : 19 avg math (6..44)
-        /// //    d3d11_9x : 19 avg math (6..44)
-        /// //        d3d9 : 24 avg math (6..57 [rest of string was truncated]&quot;;.
+        /// // Stats for Vertex sha [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string EmissiveScaled {
             get {
@@ -135,11 +132,13 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 214.4KB
+        ///   Looks up a localized string similar to // Compiled shader for PC, Mac &amp; Linux Standalone, uncompressed size: 101.4KB
         ///
-        ///Shader &quot;Footprint&quot; {
+        ///// Skipping shader variants that would not be included into build of current scene.
+        ///
+        ///Shader &quot;KopernicusExpansion/Footprint&quot; {
         ///Properties {
-        /// _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; {}
+        /// _MainTex (&quot;Base (RGB)&quot;, 2D) = &quot;white&quot; { }
         /// _Color (&quot;Color&quot;, Color) = (0,0,0,1)
         /// _Opacity (&quot;Opacity&quot;, Range(0,1)) = 1
         ///}
@@ -149,11 +148,8 @@ namespace KopernicusExpansion.Resources {
         ///
         ///
         /// // Stats for Vertex shader:
-        /// //       d3d11 : 19 avg math (6..44)
-        /// //    d3d11_9x : 19 avg math (6..44)
-        /// //        d3d9 : 24 avg math (6..57)
-        /// //      opengl : 24 avg math (6..57)
-        /// // Stats f [rest of string was truncated]&quot;;.
+        /// //       d3d11 : 44 avg math (34..54)
+        /// //    [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Footprint {
             get {
@@ -162,20 +158,39 @@ namespace KopernicusExpansion.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // Compiled shader for all platforms, uncompressed size: 455.5KB
+        ///   Looks up a localized string similar to // Compiled shader for PC, Mac &amp; Linux Standalone, uncompressed size: 238.8KB
         ///
-        ///Shader &quot;ProceduralGasGiant&quot; {
+        ///// Skipping shader variants that would not be included into build of current scene.
+        ///
+        ///Shader &quot;KopernicusExpansion/ParticleGrass&quot; {
         ///Properties {
-        /// _MainTex (&quot;Ramp Texture&quot;, 2D) = &quot;white&quot; {}
+        /// _MainTex (&quot;Albedo (RGB)&quot;, 2D) = &quot;white&quot; { }
+        /// _TintColor (&quot;Color&quot;, Color) = (1,1,1,1)
+        /// _WindPower (&quot;Wind Power&quot;, Float) = 0.2
         /// _Evolution (&quot;Time&quot;, Float) = 0
-        /// _StormMap (&quot;Storm Map&quot;, 2D) = &quot;white&quot; {}
+        /// _Alpha (&quot;Alpha&quot;, Range(0,1)) = 1
+        /// _AlphaCutoff (&quot;Alpha Cutoff&quot;, Range(0,1)) = 0.5
+        /// _AlphaCutoff2 (&quot;Alpha Cutoff 2&quot;, Ran [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ParticleGrass {
+            get {
+                return ResourceManager.GetString("ParticleGrass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Compiled shader for PC, Mac &amp; Linux Standalone, uncompressed size: 185.3KB
+        ///
+        ///// Skipping shader variants that would not be included into build of current scene.
+        ///
+        ///Shader &quot;KopernicusExpansion/ProceduralGasGiant&quot; {
+        ///Properties {
+        /// _MainTex (&quot;Ramp Texture&quot;, 2D) = &quot;white&quot; { }
+        /// _Evolution (&quot;Time&quot;, Vector) = (0,0,0,0)
+        /// _StormMap (&quot;Storm Map&quot;, 2D) = &quot;white&quot; { }
         /// _StormFrequency (&quot;Storm Frequency&quot;, Float) = 5
-        /// _StormDistortion (&quot;Storm Distortion&quot;, Float) = 0.85
-        /// _Distortion (&quot;Distortion&quot;, Range(0,0.05)) = 0.02
-        /// _MainFrequency (&quot;Frequency&quot;, Float) = 25
-        /// _Lacunarity (&quot;Lacunarity&quot;, Float) = 1.3
-        /// _Gain (&quot;Gain&quot;, Float) = 0.9
-        /// _PermTab [rest of string was truncated]&quot;;.
+        /// _StormDistortion (&quot;Storm Distortion&quot;, Range(0,0.1)) = 0.05
+        /// _Distortion (&quot;Distortion&quot;, Range(0,0 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ProceduralGasGiant {
             get {
