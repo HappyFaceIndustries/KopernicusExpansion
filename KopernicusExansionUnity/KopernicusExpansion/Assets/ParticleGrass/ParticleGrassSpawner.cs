@@ -134,7 +134,7 @@ namespace KopernicusExpansion
 					particle.size = UnityEngine.Random.Range (MinGrassSize, MaxGrassSize);
 					Vector3 randomAdd = new Vector3 (UnityEngine.Random.Range (-GrassRandomSpacing, GrassRandomSpacing), GrassVerticalPos * particle.size, UnityEngine.Random.Range (-GrassRandomSpacing, GrassRandomSpacing));
 					particle.position = (new Vector3 ((float)x - gpx2, 0f, (float)z - gpz2) * GrassSpacing) + randomAdd;
-					particle.rotation = 0f;
+					particle.rotation = UnityEngine.Random.Range (0f, 360f);
 					particle.startLifetime = 0f;
 					particle.velocity = Vector3.zero;
 					particles.Add (particle);
