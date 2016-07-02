@@ -53,7 +53,7 @@ dlldata.c
 *_i.h
 *.ilk
 *.meta
-*.obj
+# *.obj --- Wavefront OBJ files should not be discriminated against! >:(
 *.pch
 *.pdb
 *.pgc
